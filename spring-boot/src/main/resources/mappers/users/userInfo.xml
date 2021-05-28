@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.copycoding.demo.dao.UserInfoDao">
+	<!-- 유저정보 가져오기 테스트 -->
+	<select id="selectUserInfo" resultType="UserInfoVO">
+		select * from test1
+	</select>
+	
+	<!-- 시퀀스 생성 테스트 -->
+	<select id="newSequence" resultType="int">
+		select new_sequence.nextval from dual
+	</select>
+</mapper>
