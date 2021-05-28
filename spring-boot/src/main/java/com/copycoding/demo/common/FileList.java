@@ -2,6 +2,10 @@ package com.copycoding.demo.common;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,10 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.copycoding.demo.service.UserInfoService;
 
-public class FileList  {
+public class FileList implements WriteFile {
 	
 	String initParentPath = null;
 	int folderIdx = 0;
@@ -151,6 +156,104 @@ public class FileList  {
 			listIndex++;
 		}
 		return fileTree; 
+	}
+
+
+	@Override
+	public String fileUpload(List<MultipartFile> mf, String parent) {
+		for(int i =0; i<mf.size(); i++) {
+			System.out.println("----------컨트롤러 내부-------------");
+			System.out.println(mf.get(i).getOriginalFilename());
+		}
+	
+		for (MultipartFile multipartFile : mf) {
+			
+			System.out.println(multipartFile.getOriginalFilename());
+			
+			File fl = new File(parent, multipartFile.getOriginalFilename()); 
+			
+			try {
+				
+				if(fl.exists()) {
+					//파일이 이미 존재한다면 기존파일을 등록하는 파일로 덮어 씌우기
+						File fl2 = new File(parent, multipartFile.getOriginalFilename()); 
+						
+						try {
+							multipartFile.transferTo(fl2);
+							fl.getName();
+							
+						} catch (Exception e) {
+							
+							e.printStackTrace();
+							
+						}//reMultipartFile try~catch end
+				}else {	
+					
+					multipartFile.transferTo(fl);
+					
+				}//multipartFile if~else end
+				
+					
+			} catch (Exception e) {
+				
+				e.printStackTrace();
+				
+			}//multipartFile try~catch end
+			
+		}//forEach end
+		
+		return "파일 등록 완료";
+	}
+
+
+	@Override
+	public String fileDelete(String filePath) {
+		File fl = new File(filePath);
+		
+		fl.delete();
+		
+		return fl.getName()+"을 삭제하였습니다.";
+	}
+
+
+	@Override
+	public String fileModify(String filePath, String fileName) {
+		File folder = new File(filePath);
+		String result = null;
+		
+		if(folder.exists()) {
+			result =  "동일한 이름의 폴더가 존재합니다.";
+		}
+		folder.renameTo(new File(fileName));
+		
+		// 생성여부 확인
+		if(!folder.exists()) {
+			result =  "-1";
+		}
+		
+		return result;
+	}
+
+	@Override
+	public String moveFile(List<MultipartFile> mf, String parent, String dstParent) {
+		for (MultipartFile multipartFile : mf) {
+			
+			//현재경로+전체 파일명
+			Path srcPath = Paths.get(parent+multipartFile.getOriginalFilename());
+			//이동할경로+전체 파일명
+			Path dstPath = Paths.get(dstParent+multipartFile.getOriginalFilename());
+	
+			try {
+				
+				Files.move(srcPath, dstPath, StandardCopyOption.REPLACE_EXISTING);
+	
+			} catch (Exception e) {
+			   e.printStackTrace();
+			}
+			
+		}//forEach end
+		
+		return "파일이동완료";
 	}
 
 }

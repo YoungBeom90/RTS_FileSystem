@@ -4,7 +4,8 @@ let fileList = new Array();
 let fileSizeList = new Array();
 let uploadSize = 50 * 1024 * 1024;
 let maxUploadSize = 500;
-let globalFileData;
+let globalData;
+let selectParentPath;
 let fileNameInput;
 
 
@@ -62,7 +63,7 @@ function init() {
 					check_callback :  true,
 					data : treeData,
 					themes: {
-                        name: "proton",
+                        name: "default",
                         dots: false,
                         icons: false,
                         responsive:true
@@ -135,7 +136,7 @@ function selectList(firstDir) {
 		success : function(res) {
 			if(res) {
 				let data = res.filePath;
-				globalFileData = data;
+				globalData = data;
 				$(".fileList > tr").remove();
 				for(idx in data) {
 					let fileName = data[idx].text;
@@ -146,6 +147,7 @@ function selectList(firstDir) {
 					let filePath = data[idx].url;
 					let lastIdx = filePath.lastIndexOf("\\");
 					filePath = filePath.substr(0, lastIdx);
+					selectParentPath = filePath;
 					console.log(filePath);
 					addFileList(idx, fileName, fileSize, ext, mdfDate, filePath);	
 				}
@@ -178,13 +180,47 @@ function fileDropDown() {
             "border" : "1px solid #802791",
             "background-color" : "#dbccff"
         });
+		var files = e.originalEvent.dataTransfer.files;
 
-        var files = e.originalEvent.dataTransfer.files;
         if(files != null) {
             selectFile(files);
+
+			var form = new FormData();
+			
+			for(var i=0; i<fileIndex; i++){
+				form.append('file', files[i]);
+			}
+			console.log(selectParentPath);
+			form.append('parent', selectParentPath);
+			
+			for (var pair of form.entries()) { 
+				console.log(pair[0]+ ', ' + pair[1]); 
+				}
+
+			$.ajax({
+				url: "/ajax/uploadFile.json",
+				type : "post",
+				enctype : "multipart/form-data",
+				processData :false,
+				contentType :false,
+				data:form,
+				timeout:50000,
+				dataType: "JSON",
+				success : function(JSON){
+					console.log(JSON);
+					console.log("성공");
+				},
+				error : function(err){
+					console.log(err);
+					console.log("에러");
+				}
+			})
+
         } else {
             alert("Error");
         }
+
+		location.reload();
     });
 }
 
@@ -256,13 +292,28 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 }
 
 // 파일 삭제
-function deleteFile(fileIndex) {
+function deleteBtn(fileIndex){
+    axios.post("/axios/deleteFile", null, 
+	{
+		params : {
+			parent : globalData[fileIndex].parent,
+			fileName : globalData[fileIndex].text
+			}
+		}).then(function(res) {
+
+        if(res) {
+            alert(res.data);
+        }
+    }).catch(function(error) {
+        console.log(error);
+    });
     totalFileSize -1;
     delete fileList[fileIndex];
     delete fileSizeList[fileIndex];
-
     $("#fileTr_" + fileIndex).remove();
-}
+	console.log(globalData[fileIndex].parent+"/"+globalData[fileIndex].text);
+
+};
 
 // 폴더 생성
 function createFolder(btn) {

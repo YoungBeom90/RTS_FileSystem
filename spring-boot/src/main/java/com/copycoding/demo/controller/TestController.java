@@ -7,16 +7,19 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.copycoding.demo.common.FileList;
+import com.copycoding.demo.common.WriteFile;
 import com.copycoding.demo.service.UserInfoService;
 import com.copycoding.demo.vo.UserInfoVO;
 
 @Controller
-public class TestController {
+public class TestController { 
 	
 	@Autowired
 	private UserInfoService userInfoService;
@@ -62,8 +65,8 @@ public class TestController {
 	public ModelAndView selectFileList(@RequestParam(value="isDir", required=true) String isDir) throws Exception {
 		System.out.println("isDir: " + isDir);
 		ModelAndView mv = new ModelAndView("jsonView");
-		FileList fl = new FileList();
-		List<Map<String, Object>> filePath = fl.showFilesInDir(isDir);
+		WriteFile wf = new FileList();
+		List<Map<String, Object>> filePath = wf.showFilesInDir(isDir);
 		System.out.println(filePath);
 		mv.addObject("filePath", filePath);
 //		mv.setViewName("/users/fileList");
@@ -103,19 +106,11 @@ public class TestController {
 		String filePath = path;
 		String fileName = value;
 		System.out.println(filePath + "\\" + fileName);
-		File folder = new File(filePath + "\\" + fileName);
+		WriteFile wf = new FileList();
 		
-		if(folder.exists()) {
-			return "동일한 이름의 폴더가 존재합니다.";
-		}
-		folder.renameTo(new File(fileName));
+		String result = wf.fileModify(filePath, fileName);
 		
-		// 생성여부 확인
-		if(!folder.exists()) {
-			return "-1";
-		}
-		
-		return "이름 수정 완료";
+		return result;
 	}
 	
 	/**
@@ -144,10 +139,46 @@ public class TestController {
 	}
 	
 	
+	@RequestMapping(value="/ajax/uploadFile.json", 
+			method = RequestMethod.POST, 
+			produces = "application/json; charset=UTF-8")
+	@ResponseBody
+	public String addFile(
+			@RequestParam (value="file", required=true) List<MultipartFile> list,
+			@RequestParam (value="parent", required=false) String parent)
+	{
+
+		/*
+		 * System.out.println("----------경로-----------"); System.out.println(parent);
+		 * System.out.println("----------0번지-----------");
+		 * System.out.println(list.get(0).getOriginalFilename());
+		 * System.out.println("----------1번지-----------");
+		 * System.out.println(list.get(1).getOriginalFilename());
+		 */
+		
+		WriteFile wf = new FileList();
+		String result = wf.fileUpload(list, parent);
+		
+//		System.out.println(result);
+		
+		
+		return "파일 등록 완료"; 
+	}
 	
 	
-	
-	
+	@RequestMapping("/axios/deleteFile")
+	@ResponseBody
+	public String deleteFile(
+			@RequestParam(value="parent", required=false) String parent,
+			@RequestParam(value="fileName", required=false) String fileName) 
+	{
+		String filePath = parent+"/"+fileName;
+		WriteFile wf = new FileList();
+		wf.fileDelete(filePath);
+		
+		System.out.println(wf.fileDelete(filePath));
+		return "삭제 완료";
+	}
 	
 	
 	

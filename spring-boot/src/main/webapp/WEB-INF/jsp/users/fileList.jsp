@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/bootstrap.css.map" />
     <link rel="stylesheet" href="/css/bootstrap.min.css.map" />
-    <link rel="stylesheet" href="/css/themes/proton/style.css" />
-    <link rel="stylesheet" href="/css/themes/proton/style.less" />
+    <link rel="stylesheet" href="/css/themes/default/style.css" />
+    <!-- <link rel="stylesheet" href="/css/themes/proton/style.less" /> -->
     <script src="/js-lib/jquery-3.3.1.min.js"></script>
     <script src="/js-lib/jstree.min.js"></script>
     <script src="/js/fileList.js"></script>
