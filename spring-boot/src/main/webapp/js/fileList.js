@@ -393,7 +393,7 @@ function axiosCreateFolder(fldNm, fldPrt) {
 				} else {
 					alert(res.data);
 				}
-	            
+	             
 	            return;
 	        }
 	        alert(res.data);
