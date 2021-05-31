@@ -1,6 +1,8 @@
 package com.copycoding.demo.common;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -89,8 +91,6 @@ public class FileList implements WriteFile {
 			
 		}
 		
-		
-		
 		return folderTree;
 	}
 	
@@ -162,7 +162,6 @@ public class FileList implements WriteFile {
 	@Override
 	public String fileUpload(List<MultipartFile> mf, String parent) {
 		for(int i =0; i<mf.size(); i++) {
-			System.out.println("----------컨트롤러 내부-------------");
 			System.out.println(mf.get(i).getOriginalFilename());
 		}
 	
@@ -205,12 +204,44 @@ public class FileList implements WriteFile {
 		return "파일 등록 완료";
 	}
 
-
+	
+	/**
+	 * 파일삭제, 폴더일경우 내부의 파일들을 삭제하고
+	 * 해당 폴더를 삭제, 파일일 경우 바로삭제
+	 * @return fileName
+	 * @param filePath
+	 */
 	@Override
 	public String fileDelete(String filePath) {
+
 		File fl = new File(filePath);
 		
-		fl.delete();
+		try {
+			//파일이 존재하는동안 계속 삭제
+			while(fl.exists()) {
+				//삭제전 파일인지 폴더인지 구분
+				if(fl.isDirectory()) {
+					//폴더라면 배열로 생성
+					File[] flList = fl.listFiles();
+					//폴더인데 내부에 파일이 없을 경우
+					if(fl.isDirectory()&&flList.length==0) {
+						fl.delete();
+					//폴더안에 파일이 존재할 경우
+					}else {
+						//리스트 내부의 파일들 삭제
+						for (File file : flList) {
+							file.delete();
+						}
+						//폴더삭제
+						fl.delete();
+					}//if~else end
+				}else {
+					fl.delete();
+				}//if~else
+			}//while end
+		}catch (Exception e) {
+			e.printStackTrace();
+		}//try~catch end
 		
 		return fl.getName()+"을 삭제하였습니다.";
 	}
@@ -254,6 +285,51 @@ public class FileList implements WriteFile {
 		}//forEach end
 		
 		return "파일이동완료";
+	}
+	
+	@Override
+	public String fileCopy(File prevFile, File nextFile) {
+		
+		File[] fileList = prevFile.listFiles();
+		
+		for (File file : fileList) {
+			
+			File temp = new File(nextFile.getAbsolutePath()+File.separator+file.getName());
+			if(file.isDirectory()) {
+				temp.mkdir();
+				fileCopy(file,temp);
+			}else {
+				FileInputStream fis = null;
+				FileOutputStream fos = null;
+				
+				try {
+					fis = new FileInputStream(file);
+					fos = new FileOutputStream(temp);
+					byte[] b = new byte[4096];
+					int cnt = 0;
+					
+					while((cnt=fis.read(b)) != -1){
+						fos.write(b, 0, cnt);
+					}
+					
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}finally {
+					try {
+						fis.close();
+						fos.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}//try~catch end
+					
+				}//try~catch~finally end
+				
+			}//if~else end
+			
+		}//for end
+		
+		return "복사 완료";
 	}
 
 }

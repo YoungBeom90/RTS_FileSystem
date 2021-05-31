@@ -7,6 +7,7 @@ let maxUploadSize = 500;
 let globalData;
 let selectParentPath;
 let fileNameInput;
+let allFilePath;
 
 
 $(document).ready(function() {
@@ -120,7 +121,32 @@ function init() {
 									/*data.jstree("edit", obj);*/
 								},
 								
-							}
+							},
+							cut : {
+								seperator_before : false,
+								seperator_after : true,
+								label : "잘라내기",
+								shortcut : 58,
+								action : function(data){
+									console.log(data);
+									$.ajax({
+										url:"/ajax/moveFile",
+										data:{
+											"allFilePath":allFilePath,
+											"selectParentPath":selectParentPath
+										},
+										dataType:"json",
+										success:function(){
+											console.log("success");
+										},
+										error:function(){
+											console.log(selectParentPath);
+											console.log("error");
+										}
+
+									})
+								}
+							}/** cut end */
 						}
 					}			
 				},
@@ -144,6 +170,7 @@ function selectList(firstDir) {
 			if(res) {
 				let data = res.filePath;
 				globalData = data;
+				allFilePath=firstDir;
 				$(".fileList > tr").remove();
 				for(idx in data) {
 					let fileName = data[idx].text;
@@ -198,7 +225,7 @@ function fileDropDown() {
 				form.append('file', files[i]);
 			}
 			console.log(selectParentPath);
-			form.append('parent', selectParentPath);
+			form.append('parent', allFilePath);
 			
 			for (var pair of form.entries()) { 
 				console.log(pair[0]+ ', ' + pair[1]); 
@@ -227,7 +254,7 @@ function fileDropDown() {
             alert("Error");
         }
 
-		location.reload();
+		/*location.reload();*/
     });
 }
 
@@ -303,11 +330,12 @@ function deleteBtn(fileIndex){
     axios.post("/axios/deleteFile", null, 
 	{
 		params : {
-			parent : globalData[fileIndex].parent,
+			parent : selectParentPath,
 			fileName : globalData[fileIndex].text
 			}
 		}).then(function(res) {
-
+			confirm("삭제하시겠습니까?");
+			console.log(res);
         if(res) {
             alert(res.data);
         }
@@ -320,7 +348,7 @@ function deleteBtn(fileIndex){
     $("#fileTr_" + fileIndex).remove();
 	console.log(globalData[fileIndex].parent+"/"+globalData[fileIndex].text);
 	
-	location.reload(true);
+	/*location.reload(true);*/
 };
 
 // 폴더 생성
@@ -352,7 +380,7 @@ function createFolder(btn) {
 		addTr += "<td class='fileExt'></td>"; 
 		addTr += "<td class='udTime'></td>";
 		addTr += "<td class='deletechk'>" +
-		            "<img name='xButton' src='/images/xButton.png' onclick='deleteFile("+fileIndex+")'>" +
+		            "<img name='xButton' src='/images/xButton.png' onclick='deleteBtn("+fileIndex+")'>" +
 		        "</td>";
 		addTr += "</tr>";
 		

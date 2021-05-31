@@ -1,5 +1,6 @@
 package com.copycoding.demo.common;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -23,5 +24,7 @@ public interface WriteFile {
 	//파일 이동
 	public String moveFile(List<MultipartFile> mf, String parent, String dstParent);
 	
+	//파일 복사
+	public String fileCopy(File prevFile, File nextFile);
 	
 }

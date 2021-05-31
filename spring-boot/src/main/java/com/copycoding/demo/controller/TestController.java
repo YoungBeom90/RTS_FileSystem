@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +48,7 @@ public class TestController {
 	public ModelAndView showFolderTree() {
 		ModelAndView mv = new ModelAndView("jsonView");
 		FileList fl = new FileList();
-		String isDir = "c:\\testfile";
+		String isDir = "c:\\mind-one\\test";
 		
 		List<Map<String, Object>> folderList = fl.showFolderTree(isDir);
 		mv.addObject("folderList", folderList);
@@ -84,6 +85,7 @@ public class TestController {
 	public String createFolder(@RequestParam(value="value", required=true) String value, String path) throws Exception {
 		String filePath = path;
 		String fileName = value;
+		System.out.println("여기");
 		System.out.println(filePath + "\\" + fileName);
 		File folder = new File(filePath + "\\" + fileName);
 		
@@ -155,6 +157,8 @@ public class TestController {
 		 * System.out.println("----------1번지-----------");
 		 * System.out.println(list.get(1).getOriginalFilename());
 		 */
+		System.out.println("파일생성경로");
+		System.out.println(parent);
 		
 		WriteFile wf = new FileList();
 		String result = wf.fileUpload(list, parent);
@@ -173,11 +177,38 @@ public class TestController {
 			@RequestParam(value="fileName", required=false) String fileName) 
 	{
 		String filePath = parent+"/"+fileName;
+//		System.out.println(parent);
+		
 		WriteFile wf = new FileList();
 		wf.fileDelete(filePath);
 		
-		System.out.println(wf.fileDelete(filePath));
+//		System.out.println(wf.fileDelete(filePath));
+
 		return "삭제 완료";
+	}
+	
+	/**
+	 * 파일을 이동시키거나 복사 하기위해 다음경로를 모르기 때문에
+	 * 임시경로에 잠시 저장후 이동시켜야한다?
+	 * @param fileList
+	 * @param prevPathStr
+	 * @param nextPathStr
+	 * @return
+	 */
+	@RequestMapping("/ajax/moveFile")
+	@ResponseBody
+	public String moveFile(
+			@RequestParam(value="allFilePath", required = true) String prevPathStr,
+			@RequestParam(value="selectParentPath")String nextPathStr) {
+		
+		WriteFile wf = new FileList();
+		File prevPath = new File(prevPathStr);
+		File nextPath = new File(nextPathStr);
+
+		wf.fileCopy(prevPath, nextPath);
+		wf.fileDelete(prevPathStr);
+		
+		return "이동 완료";
 	}
 	
 	
