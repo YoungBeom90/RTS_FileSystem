@@ -128,8 +128,6 @@ function init() {
 			let firstDir = treeData[0].path;
 			selectList(firstDir);
 		}
-		
-		axiosCreateFolder(new_node);
 	}).catch((err) => {
 		console.log(err);
 	});
@@ -293,7 +291,7 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 	html += "<td class='fileExt'>" + ext + "</td>"; 
 	html += "<td class='udTime'>" + fileDate + "</td>";
 	html += "<td class='deletechk'>" +
-	            "<img name='xButton' src='/images/xButton.png' onclick='deleteFile("+fileIndex+")'>" +
+	            "<img name='xButton' src='/images/xButton.png' onclick='deleteBtn("+fileIndex+")'>" +
 	        "</td>";
 	html += "</tr>";
 	
@@ -321,7 +319,8 @@ function deleteBtn(fileIndex){
     delete fileSizeList[fileIndex];
     $("#fileTr_" + fileIndex).remove();
 	console.log(globalData[fileIndex].parent+"/"+globalData[fileIndex].text);
-
+	
+	location.reload(true);
 };
 
 // 폴더 생성
@@ -393,5 +392,5 @@ function axiosCreateFolder(fldNm, fldPrt) {
 	}
 	selectList(fldPrt);
 	$("#jstree").jstree('refresh');
-	/*location.reload();*/
+	location.reload(true);
 }
