@@ -10,12 +10,11 @@ nav {
 }
 .dropZone {
     width: 1024px;
-    height: 300px;
+    height: 500px;
     overflow: auto;
-    margin-left : auto;
     margin-right : 100px;
     text-align: center;
-    margin-top: 100px;
+    margin-top: 80px;
     float: right;
     background-color: rgb(225, 255, 255);
     border: 1px solid gray;
@@ -36,6 +35,7 @@ td {
 	white-space : nowrap;
 	text-overflow: ellipsis;
 	padding: 4px;
+	user-select: none;
 }
 td:last-child {
     padding: 8px;
@@ -61,4 +61,9 @@ img[name='xButton']:hover {
 }
 ::-webkit-scrollbar-track {
     background: #ffffff;
+}
+
+.fileTr:hover {
+	background-color : #4287f5;
+	cursor : pointer;
 }
