@@ -97,7 +97,6 @@ function init() {
 										} catch(ex) {
 											alert(ex);
 										}
-										
 									});
 								},
 								
@@ -119,34 +118,8 @@ function init() {
 									}
 									
 									/*data.jstree("edit", obj);*/
-								},
-								
-							},
-							cut : {
-								seperator_before : false,
-								seperator_after : true,
-								label : "잘라내기",
-								shortcut : 58,
-								action : function(data){
-									console.log(data);
-									$.ajax({
-										url:"/ajax/moveFile",
-										data:{
-											"allFilePath":allFilePath,
-											"selectParentPath":selectParentPath
-										},
-										dataType:"json",
-										success:function(){
-											console.log("success");
-										},
-										error:function(){
-											console.log(selectParentPath);
-											console.log("error");
-										}
-
-									})
 								}
-							}/** cut end */
+							}
 						}
 					}			
 				},
@@ -218,11 +191,20 @@ function fileDropDown() {
 
         if(files != null) {
             selectFile(files);
-
+			console.log("gg");
+			console.log(files);
+			console.log(globalData)
 			var form = new FormData();
 			
+			/** 
+			fname, fext, fdate, size, parent 까지 넘어감
+			
+			append할것 : fid, pid
+			*/
 			for(var i=0; i<fileIndex; i++){
 				form.append('file', files[i]);
+				form.append('fid', globalData[i])
+				form.append('pid', globalData[i])
 			}
 			console.log(selectParentPath);
 			form.append('parent', allFilePath);
