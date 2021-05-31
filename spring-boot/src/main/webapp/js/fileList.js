@@ -36,6 +36,15 @@ $(document).ready(function() {
 
 });//$(document).ready 종료
 
+function selectLine(node) {
+	let nodeId = $(node).attr("id");
+	if($("#"+nodeId).attr("style") === "background-color: #2257d4;") {
+		$("#" + nodeId).removeAttr("style");
+	} else {
+		$("#" + nodeId).attr("style", "background-color: #2257d4;");
+	}
+}
+
 // 폴더 추가시 실행
 function addFolderListener(parent, child) {
 	$("#"+ child).on("focusout", function() {		
@@ -278,7 +287,7 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 	    seconds = "0" + seconds;
 	}
 	let html = "";
-	html += "<tr id='fileTr_" + fileIndex + "'>";
+	html += "<tr id='fileTr_" + fileIndex + "' class='fileTr' onclick='selectLine(this)'>";
 	html += "<td class='fileName'>" + fileName + "</td>";
 	html += "<td class='fileSize'>" + fileSize + "MB</td>";
 	html += "<td class='fileExt'>" + ext + "</td>"; 
@@ -335,7 +344,7 @@ function createFolder(btn) {
 		}
 		
 		
-		let addTr =  "<tr id='fileTr_" + fileIndex + "'>";
+		let addTr =  "<tr id='fileTr_" + fileIndex + "' class='fileTr' onclick='selectLine(this)'>";
 		addTr += "<td class='fileName'>";
 		addTr += "<input type='text' id='fileNameInput' class='folderInput' value='새 폴더' onsubmit='return false' />";
 		addTr += "<input type='button' id='fileNmSubmit' value='저장' />";
