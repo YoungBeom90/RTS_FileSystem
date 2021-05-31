@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.copycoding.demo.service.UserInfoService;
+import com.copycoding.demo.vo.FileListVO;
 
 public class FileList implements WriteFile {
 	
@@ -291,7 +292,6 @@ public class FileList implements WriteFile {
 	public String fileCopy(File prevFile, File nextFile) {
 		
 		File[] fileList = prevFile.listFiles();
-		
 		for (File file : fileList) {
 			
 			File temp = new File(nextFile.getAbsolutePath()+File.separator+file.getName());
@@ -299,8 +299,8 @@ public class FileList implements WriteFile {
 				temp.mkdir();
 				fileCopy(file,temp);
 			}else {
-				FileInputStream fis = null;
-				FileOutputStream fos = null;
+				FileInputStream fis=null; 
+				FileOutputStream fos=null;
 				
 				try {
 					fis = new FileInputStream(file);

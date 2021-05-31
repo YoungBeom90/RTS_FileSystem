@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,14 +17,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.copycoding.demo.common.FileList;
 import com.copycoding.demo.common.WriteFile;
+import com.copycoding.demo.service.RTSService;
 import com.copycoding.demo.service.UserInfoService;
+import com.copycoding.demo.vo.FileListVO;
 import com.copycoding.demo.vo.UserInfoVO;
 
+@Component
 @Controller
 public class TestController { 
 	
 	@Autowired
 	private UserInfoService userInfoService;
+	private RTSService rtsService;
 	
 	@RequestMapping("/user")
 	@ResponseBody
@@ -148,17 +153,12 @@ public class TestController {
 	public String addFile(
 			@RequestParam (value="file", required=true) List<MultipartFile> list,
 			@RequestParam (value="parent", required=false) String parent)
+			
 	{
 
-		/*
-		 * System.out.println("----------경로-----------"); System.out.println(parent);
-		 * System.out.println("----------0번지-----------");
-		 * System.out.println(list.get(0).getOriginalFilename());
-		 * System.out.println("----------1번지-----------");
-		 * System.out.println(list.get(1).getOriginalFilename());
-		 */
 		System.out.println("파일생성경로");
 		System.out.println(parent);
+		
 		
 		WriteFile wf = new FileList();
 		String result = wf.fileUpload(list, parent);
@@ -203,9 +203,14 @@ public class TestController {
 		
 		WriteFile wf = new FileList();
 		File prevPath = new File(prevPathStr);
-		File nextPath = new File(nextPathStr);
-
-		wf.fileCopy(prevPath, nextPath);
+		String fn = prevPath.getName();
+		File nextPath = new File(nextPathStr+ "\\"+"새 폴더"+"\\" +fn);
+		
+		System.out.println(prevPath);
+		System.out.println(nextPath);
+		String result=wf.fileCopy(prevPath, nextPath);
+		System.out.println(result);
+		
 		wf.fileDelete(prevPathStr);
 		
 		return "이동 완료";

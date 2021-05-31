@@ -7,6 +7,8 @@ import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.copycoding.demo.vo.FileListVO;
+
 public interface WriteFile {
 
 	//파일 정보 불러오기

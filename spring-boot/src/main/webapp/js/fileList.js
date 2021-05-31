@@ -203,8 +203,8 @@ function fileDropDown() {
 			*/
 			for(var i=0; i<fileIndex; i++){
 				form.append('file', files[i]);
-				form.append('fid', globalData[i])
-				form.append('pid', globalData[i])
+				form.append('fid', globalData[i]);
+				form.append('pid', globalData[i]);
 			}
 			console.log(selectParentPath);
 			form.append('parent', allFilePath);
