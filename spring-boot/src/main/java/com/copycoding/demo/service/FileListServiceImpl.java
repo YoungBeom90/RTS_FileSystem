@@ -21,13 +21,9 @@ public class FileListServiceImpl implements FileListService{
 	@Override
 	public int registFile(FileListVO fl) {
 		
-		UUID one = UUID.randomUUID();
-		UUID two = UUID.randomUUID();
-		String fid = one.toString();
-		String pid = two.toString();
-		fl.setFid(fid);
-		fl.setPid(pid);
-
+//분기걸어서 fullPath확인후 일치하면 prevent
+//select해서 존재하면 return
+//		if()
 		
 		return fileListDao.addFile(fl);
 	}

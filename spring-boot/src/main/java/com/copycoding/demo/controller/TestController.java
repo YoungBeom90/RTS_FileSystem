@@ -35,6 +35,7 @@ public class TestController {
 	private UserInfoService userInfoService;
 	private FileListService fileListService;
 	
+	@Autowired
 	public void setRtsService(FileListService fileListService) {
 		this.fileListService = fileListService;
 	};
@@ -169,23 +170,62 @@ public class TestController {
 //		System.out.println(parent);
 		FileListVO fl = new FileListVO();
 		
-		
-		System.out.println("fname : "+list.get(0).getOriginalFilename().substring(0,list.get(0).getOriginalFilename().lastIndexOf(".")));
-		System.out.println("fext : "+list.get(0).getOriginalFilename().substring(list.get(0).getOriginalFilename().lastIndexOf(".")));
-		System.out.println("ppath : " + parent.substring(0, parent.lastIndexOf("\\")));
-		System.out.println("fpath : "+parent);
-		/*
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-		Date date = new Date();
-		date.setTime(fdate);
-		
-		System.out.println(date);
-		*/
+		for(int i =	0; i<list.size(); i++) {
+			
+//			System.out.println("fname : "+list.get(i).getOriginalFilename().substring(0,list.get(i).getOriginalFilename().lastIndexOf(".")));
+//			System.out.println("fext : "+list.get(i).getOriginalFilename().substring(list.get(i).getOriginalFilename().lastIndexOf(".")));
+//			System.out.println("ppath : " + parent.substring(0, parent.lastIndexOf("\\")));
+//			System.out.println("fpath : "+parent);
+			
+			//파일이름
+			fl.setFname(list.get(0).getOriginalFilename().substring(0,list.get(i).getOriginalFilename().lastIndexOf(".")));
+			//파일확장자
+			fl.setFext(list.get(0).getOriginalFilename().substring(list.get(i).getOriginalFilename().lastIndexOf(".")));
+			//부모경로
+			fl.setPpath(parent.substring(0, parent.lastIndexOf("\\")));
+			//해당 파일 경로
+			fl.setFpath(parent);
+			//파일 크기
+			fl.setFsize(Long.toString(list.get(i).getSize()));
+			
+			//업데이트 시간
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date date = new Date();
+				date.setTime(fdate);
+				Timestamp timestamp = new Timestamp(date.getTime());
+				fl.setFdate(timestamp);
+//				System.out.println(timestamp);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}//try~catch end
+			
+			UUID one = UUID.randomUUID();
+			UUID two = UUID.randomUUID();
+			String fid = one.toString();
+			String pid = two.toString();
+			fl.setFid(fid);
+			fl.setPid(pid);
+			
+			System.out.println(fl.getFname());
+			System.out.println(fl.getFpath());
+			System.out.println(fl.getFsize());
+			System.out.println(fl.getPpath());
+			System.out.println(fl.getFext());
+			System.out.println(fl.getFdate());
+			System.out.println(fileListService.registFile(fl));
+//			System.out.println(a);
+		}//for end
+
 		WriteFile wf = new FileList();
+		
 		String result = wf.fileUpload(list, parent);
 		
-		fileListService.registFile(fl);
-		System.out.println(result);
+
+		
+
+		
+//		System.out.println(result);
 		
 		
 		return "파일 등록 완료"; 

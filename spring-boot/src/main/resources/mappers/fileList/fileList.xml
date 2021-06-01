@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.copycoding.demo.dao.FileListDao">
+	<!-- 유저정보 가져오기 테스트 -->
+	<select id="addFile" parameterType="com.copycoding.demo.vo.FileListVO">
+		INSERT INTO filelist
+		VALUES(#{fid}, #{pid}, #{fname}, #{fpath}, #{ppath}, #{fsize}, #{fext}, #{fdate}, sysdate)
+	</select>
+</mapper>
