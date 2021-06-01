@@ -415,3 +415,8 @@ function axiosCreateFolder(fldNm, fldPrt) {
 	}
 	
 }
+
+function modalPopup() {
+	console.log("modal!");
+	$('#uploadModal').modal('backdrop');
+}

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/css/themes/default/style.css" />
     <!-- <link rel="stylesheet" href="/css/themes/proton/style.less" /> -->
     <script src="/js-lib/jquery-3.3.1.min.js"></script>
+    <script src="/js-lib/bootstrap.min.js"></script>
     <script src="/js-lib/jstree.min.js"></script>
     <script src="/js/fileList.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script> 
@@ -22,8 +23,12 @@
 	<div id="container">
 		<div id="sidebar">
 			<nav>
+				<div id="logo">
+					Logo
+				</div>
 		    	<div id="topMenuBar">
-		    		<button type="button" id="createFolderBtn" class="btn btn-primary">폴더생성</button>
+		    		<button type="button" id="uploadFileBtn" data-toggle="modal" data-target="#uploadModal" onclick="modalPopup()" class="btn btn-primary btn-sm">업로드</button>
+		    		<button type="button" id="createFolderBtn" class="btn btn-primary btn-sm">폴더생성</button>
 		    	</div>
 		        <div id="jstree"></div>
 		    </nav>
@@ -47,6 +52,33 @@
 		    </form>
 		</div>
 	    
+		<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel">파일 업로드</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="control-label">현재 경로 :</label>
+            <input type="text" class="form-control" id="recipient-name">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="control-label">파일 :</label>
+            <input type="file" id="modalUpload" name="modalUpload" multiple required >
+            <p style="font-size: 9px; margin-top: 5px; color: red;">* 폴더는 업로드 할 수 없습니다.</p>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">취소</button>
+        <button id="modalSubmit" type="button" class="btn btn-success btn-sm">파일저장</button>
+      </div>
+    </div>
+  </div>
+</div>
 	    <%-- <c:forEach var="vo" items="${filePath}">
 	    	${vo}<br/>
 	    </c:forEach> --%>
