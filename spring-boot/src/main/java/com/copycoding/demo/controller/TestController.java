@@ -157,54 +157,23 @@ public class TestController {
 	@ResponseBody
 	public String addFile(
 			@RequestParam (value="file", required=true) List<MultipartFile> list,
-			@RequestParam (value="ppath", required = true) String ppath,
-			@RequestParam (value="fdate", required = true) String fdateStr,
-			@RequestParam (value="size", required = true) String size,
-			@RequestParam (value="ext", required = true) String ext,
-			@RequestParam (value="text", required = true) String text,
 			@RequestParam (value="parent", required=false) String parent)
 			
 	{
 //		System.out.println("파일생성경로");
 //		System.out.println(parent);
 		FileListVO fl = new FileListVO();
-		try {
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-			Date date = df.parse(fdateStr);
-			Timestamp timestamp = new Timestamp(date.getTime());
-			fl.setFdate(timestamp);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String fname = text.substring(0,text.lastIndexOf("."));
 		
-		UUID one = UUID.randomUUID();
-		UUID two = UUID.randomUUID();
-		String fid = one.toString();
-		String pid = two.toString();
-		String fpath = parent;
-		fl.setFid(fid);
-		fl.setPid(pid);
-		fl.setFext(ext);
-		fl.setFsize(size);
-		fl.setPpath(ppath);
-		fl.setFpath(fpath);
-		fl.setFname(fname);
 		
-		System.out.println(fl.getFid());
-		System.out.println(fl.getPid());
-		System.out.println(fl.getFname());
-		System.out.println(fl.getFext());
-		System.out.println(fl.getFpath());
-		System.out.println(fl.getFsize());
-		System.out.println(fl.getPpath());
-		System.out.println(fl.getFdate());
-		
+		System.out.println("fname : "+list.get(0).getOriginalFilename().substring(0,list.get(0).getOriginalFilename().lastIndexOf(".")));
+		System.out.println("fext : "+list.get(0).getOriginalFilename().substring(list.get(0).getOriginalFilename().lastIndexOf(".")));
+//		System.out.println("ppath : "+parent.substring(0, parent.lastIndexOf("/")));
+		System.out.println("fpath : "+parent);
+
 		WriteFile wf = new FileList();
-		int i = rtsService.registFile(fl);
-		System.out.println(i);
 		String result = wf.fileUpload(list, parent);
+		
+		rtsService.registFile(fl);
 //		System.out.println(result);
 		
 		
