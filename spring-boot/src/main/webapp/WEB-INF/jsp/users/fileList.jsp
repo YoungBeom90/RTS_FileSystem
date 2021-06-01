@@ -28,22 +28,25 @@
 		        <div id="jstree"></div>
 		    </nav>
 		</div>
-	    <form name="uploadForm" id="uploadForm" enctype="multipart/form-data" method="POST">
-	        <div class="dropZone" style="overflow-x:hidden">
-	            <table id="fileTable">
-	                <thead>
-	                    <tr>
-	                        <th style="width:55%">파일명</th>
-	                        <th style="width:14%">파일크기</th>
-	                        <th style="width:8%">파일형식</th>
-	                        <th style="width:18%">수정된날짜</th>
-	                        <th style="width:10%">삭제</th>
-	                    </tr>
-	                </thead>
-	                <tbody class="fileList"></tbody>
-	            </table>
-	        </div>
-	    </form>
+		<div id="fileContainer">
+			<form name="uploadForm" id="uploadForm" enctype="multipart/form-data" method="POST">
+		        <div class="dropZone" style="overflow-x:hidden">
+		            <table id="fileTable">
+		                <thead>
+		                    <tr>
+		                        <th style="width:55%">파일명</th>
+		                        <th style="width:14%">파일크기</th>
+		                        <th style="width:8%">파일형식</th>
+		                        <th style="width:18%">수정된날짜</th>
+		                        <th style="width:10%">삭제</th>
+		                    </tr>
+		                </thead>
+		                <tbody class="fileList"></tbody>
+		            </table>
+		        </div>
+		    </form>
+		</div>
+	    
 	    <%-- <c:forEach var="vo" items="${filePath}">
 	    	${vo}<br/>
 	    </c:forEach> --%>

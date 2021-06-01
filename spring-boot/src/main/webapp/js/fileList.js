@@ -25,18 +25,16 @@ $(document).ready(function() {
 	$('#jstree').on("select_node.jstree", function (e, data) { 
 		let selectID = data.node.id;
 		selectID = selectID.substring(3);
-		console.log(e);
+		console.log(selectID);
+		console.log($('#filePath').val());
 		selectList(selectID);
-		console.log($('#filePath').length === 0);
 		if($('#filePath').length === 0) {
 			let html = "<input type='hidden' id='filePath' value='"+selectID+"' />";
-			$("#sidebar").prepend(html);
+			$("#sidebar").append(html);
 		} else if($('#filePath').val() === selectID) {
 			return;
 		} else if($('#filePath').val() !== selectID) {
-			$('#filePath').remove();
-			let html = "<input type='hidden' id='filePath' value='"+selectID+"' />";
-			$(".sidebar").prepend(html);
+			$('#filePath').attr("value", selectID);
 		}
 	});
 	
@@ -60,12 +58,14 @@ function addFolderListener(parent, child) {
 		let addFolderPrt = parent.id.substring(3);
 		renameFolderListener(child);
 		axiosCreateFolder(addFolderNm, addFolderPrt);
+		console.log("폴더 생성.");
 	});
 }
 
 function renameFolderListener(parent, child) {
 	$("#" + child).on("focusout", function() {
 		console.log("focusout");
+		
 	});
 }
 //첫화면 파일트리 가져오기
@@ -163,10 +163,17 @@ function selectList(firstDir) {
 					let lastIdx = filePath.lastIndexOf("\\");
 					filePath = filePath.substr(0, lastIdx);
 					selectParentPath = filePath;
-					console.log(filePath);
 					addFileList(idx, fileName, fileSize, ext, mdfDate, filePath);	
 				}
+				if($(".fileList").children().length === 0) {
+					let html = "<tr>";
+						html += "<td colspan='5' style='text-align: center;'>이 폴더는 비어있습니다.</td>";
+						html += "</tr>";
+						
+					$(".fileList").append(html);
+				}
 			}
+			
 		}
 	});
 		
@@ -199,9 +206,6 @@ function fileDropDown() {
 
         if(files != null) {
             selectFile(files);
-			console.log("gg");
-			console.log(files);
-			console.log(globalData)
 			var form = new FormData();
 			
 			/** 
@@ -214,7 +218,6 @@ function fileDropDown() {
 				form.append('fid', globalData[i]);
 				form.append('pid', globalData[i]);
 			}
-			console.log(selectParentPath);
 			form.append('parent', allFilePath);
 			
 			for (var pair of form.entries()) { 
@@ -278,6 +281,7 @@ function selectFile(files) {
             }
 		
         }
+		
     }
 }
 
@@ -345,32 +349,31 @@ function deleteBtn(fileIndex){
 function createFolder(btn) {
     btn.addEventListener("click", function() {
 		let newFolder = $("#fileNameInput").html();
-		let fileIndex = 0;
 		
 		if(newFolder === "") {
-			console.log("return");
 			return;
 		}
 		
 		let lastNode = $(".fileList > tr:last");
 		if(lastNode.length == 0) {
 			lastNode = $(".fileList");
-		} else {
-			let lastNodeId = lastNode.attr("id");
-			fileIndex = Number(lastNodeId.split("_")[1]) + 1;
+		} 
+		
+		if(lastNode[0].innerText.includes("비어있습니다.")) {
+			lastNode.hide();
 		}
 		
-		
-		let addTr =  "<tr id='fileTr_" + fileIndex + "' class='fileTr' onclick='selectLine(this)'>";
+		let addTr =  "<tr class='fileTr' onclick='selectLine(this)'>";
 		addTr += "<td class='fileName'>";
 		addTr += "<input type='text' id='fileNameInput' class='folderInput' value='새 폴더' onsubmit='return false' />";
-		addTr += "<input type='button' id='fileNmSubmit' class='btn btn-outline-success btn-sm' value='저장' />";
+		addTr += "<input type='button' id='fileNmSubmit' class='btn btn-success btn-sm' value='저장' />";
+		addTr += "<input type='button' class='btn btn-danger btn-sm' value='취소' onclick='createCancel();'/>";
 		addTr += "</td>";
 		addTr += "<td class='fileSize'></td>";
 		addTr += "<td class='fileExt'></td>"; 
 		addTr += "<td class='udTime'></td>";
 		addTr += "<td class='deletechk'>" +
-	            "<img name='xButton' src='/images/xButton.png' onclick='createCancel();'>" +
+	            "<img name='xButton' src='/images/xButton.png'>" +
 	        	"</td>";
 		addTr += "</tr>";
 		
@@ -401,7 +404,8 @@ function axiosCreateFolder(fldNm, fldPrt) {
 		}}).then(function(res) {
 	        if(res) {
 				if(res.data === -1) {
-					alert("권리자 권한 문제로 폴더를 생성하지 못했습니다.");
+					alert("폴더경로를 읽어오지 못했습니다. 폴더 클릭 후 재시도 해주세요.");
+					return;
 				} else {
 					alert(res.data);
 				}
