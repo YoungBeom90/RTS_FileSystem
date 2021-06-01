@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.copycoding.demo.service.UserInfoService;
-import com.copycoding.demo.vo.FileListVO;
 
 public class FileList implements WriteFile {
 	

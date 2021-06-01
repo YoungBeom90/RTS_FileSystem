@@ -3,11 +3,9 @@ package com.copycoding.demo.common;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.copycoding.demo.vo.FileListVO;
 
 public interface WriteFile {
 

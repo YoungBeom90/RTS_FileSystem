@@ -22,7 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.copycoding.demo.common.FileList;
 import com.copycoding.demo.common.WriteFile;
-import com.copycoding.demo.service.RTSService;
+import com.copycoding.demo.service.FileListService;
 import com.copycoding.demo.service.UserInfoService;
 import com.copycoding.demo.vo.FileListVO;
 import com.copycoding.demo.vo.UserInfoVO;
@@ -33,7 +33,11 @@ public class TestController {
 	
 	@Autowired
 	private UserInfoService userInfoService;
-	private RTSService rtsService;
+	private FileListService fileListService;
+	
+	public void setRtsService(FileListService fileListService) {
+		this.fileListService = fileListService;
+	};
 	
 	@RequestMapping("/user")
 	@ResponseBody
@@ -157,6 +161,7 @@ public class TestController {
 	@ResponseBody
 	public String addFile(
 			@RequestParam (value="file", required=true) List<MultipartFile> list,
+			@RequestParam (value="fdate", required=true) Long fdate,
 			@RequestParam (value="parent", required=false) String parent)
 			
 	{
@@ -167,14 +172,20 @@ public class TestController {
 		
 		System.out.println("fname : "+list.get(0).getOriginalFilename().substring(0,list.get(0).getOriginalFilename().lastIndexOf(".")));
 		System.out.println("fext : "+list.get(0).getOriginalFilename().substring(list.get(0).getOriginalFilename().lastIndexOf(".")));
-//		System.out.println("ppath : "+parent.substring(0, parent.lastIndexOf("/")));
+		System.out.println("ppath : " + parent.substring(0, parent.lastIndexOf("\\")));
 		System.out.println("fpath : "+parent);
-
+		/*
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		Date date = new Date();
+		date.setTime(fdate);
+		
+		System.out.println(date);
+		*/
 		WriteFile wf = new FileList();
 		String result = wf.fileUpload(list, parent);
 		
-		rtsService.registFile(fl);
-//		System.out.println(result);
+		fileListService.registFile(fl);
+		System.out.println(result);
 		
 		
 		return "파일 등록 완료"; 
