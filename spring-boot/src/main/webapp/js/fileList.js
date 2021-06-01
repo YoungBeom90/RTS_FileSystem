@@ -7,7 +7,7 @@ let maxUploadSize = 500;
 let globalData;
 let selectParentPath;
 let fileNameInput;
-let allFilePath;
+let allFilePath; 
 
 
 $(document).ready(function() {
