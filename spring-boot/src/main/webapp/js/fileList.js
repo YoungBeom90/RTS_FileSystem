@@ -17,25 +17,32 @@ $(document).ready(function() {
 	fileDropDown();
 	createFolder(btn);
 	
+	setTimeout(function() {
+		$(".jstree-clicked").trigger("click");
+	}, 300);
+	
 	// 파일 트리 생성
 	$('#jstree').on("select_node.jstree", function (e, data) { 
 		let selectID = data.node.id;
 		selectID = selectID.substring(3);
+		console.log(e);
 		selectList(selectID);
-		
+		console.log($('#filePath').length === 0);
 		if($('#filePath').length === 0) {
 			let html = "<input type='hidden' id='filePath' value='"+selectID+"' />";
-			$(".fileList").prepend(html);
+			$("#sidebar").prepend(html);
 		} else if($('#filePath').val() === selectID) {
 			return;
 		} else if($('#filePath').val() !== selectID) {
 			$('#filePath').remove();
 			let html = "<input type='hidden' id='filePath' value='"+selectID+"' />";
-			$(".fileList").prepend(html);
+			$(".sidebar").prepend(html);
 		}
 	});
-
+	
 });//$(document).ready 종료
+
+
 
 function selectLine(node) {
 	let nodeId = $(node).attr("id");
@@ -51,14 +58,14 @@ function addFolderListener(parent, child) {
 	$("#"+ child).on("focusout", function() {		
 		let addFolderNm = $("#"+ child).children().children().eq(1).val();
 		let addFolderPrt = parent.id.substring(3);
-		
+		renameFolderListener(child);
 		axiosCreateFolder(addFolderNm, addFolderPrt);
-	})
+	});
 }
 
 function renameFolderListener(parent, child) {
 	$("#" + child).on("focusout", function() {
-		
+		console.log("focusout");
 	});
 }
 //첫화면 파일트리 가져오기
@@ -130,6 +137,7 @@ function init() {
 	}).catch((err) => {
 		console.log(err);
 	});
+	
 }
 
 // 선택된 폴더에 대한 자식요소 리스트 불러오기
@@ -309,6 +317,7 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 
 // 파일 삭제
 function deleteBtn(fileIndex){
+	confirm("삭제하시겠습니까?");
     axios.post("/axios/deleteFile", null, 
 	{
 		params : {
@@ -316,7 +325,6 @@ function deleteBtn(fileIndex){
 			fileName : globalData[fileIndex].text
 			}
 		}).then(function(res) {
-			confirm("삭제하시겠습니까?");
 			console.log(res);
         if(res) {
             alert(res.data);
@@ -356,14 +364,14 @@ function createFolder(btn) {
 		let addTr =  "<tr id='fileTr_" + fileIndex + "' class='fileTr' onclick='selectLine(this)'>";
 		addTr += "<td class='fileName'>";
 		addTr += "<input type='text' id='fileNameInput' class='folderInput' value='새 폴더' onsubmit='return false' />";
-		addTr += "<input type='button' id='fileNmSubmit' value='저장' />";
+		addTr += "<input type='button' id='fileNmSubmit' class='btn btn-outline-success btn-sm' value='저장' />";
 		addTr += "</td>";
 		addTr += "<td class='fileSize'></td>";
 		addTr += "<td class='fileExt'></td>"; 
 		addTr += "<td class='udTime'></td>";
 		addTr += "<td class='deletechk'>" +
-		            "<img name='xButton' src='/images/xButton.png' onclick='deleteBtn("+fileIndex+")'>" +
-		        "</td>";
+	            "<img name='xButton' src='/images/xButton.png' onclick='createCancel();'>" +
+	        	"</td>";
 		addTr += "</tr>";
 		
 		lastNode.after(addTr);
@@ -375,7 +383,11 @@ function createFolder(btn) {
 	$(document).on("click", "#fileNmSubmit", function() {
 		axiosCreateFolder($("#fileNameInput").val(), $("#filePath").val());
 	});
+	
+}
 
+function createCancel() {
+	$(".fileList tr:last-child").remove();
 }
 
 // 폴더생성 aiox 호출
@@ -393,14 +405,10 @@ function axiosCreateFolder(fldNm, fldPrt) {
 				} else {
 					alert(res.data);
 				}
-	             
-	            return;
 	        }
-	        alert(res.data);
-			
+			init();
+			location.reload();
 	    });
 	}
-	selectList(fldPrt);
-	$("#jstree").jstree('refresh');
-	location.reload(true);
+	
 }
