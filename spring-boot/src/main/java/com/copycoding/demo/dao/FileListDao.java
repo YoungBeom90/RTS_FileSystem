@@ -16,4 +16,6 @@ public interface FileListDao {
 	public String deleteFile(String fname, String fpath);
 	
 	public String deleteDir(String fname, String fpath);
+	
+	public String rename(String fname, String fpath, String rename);
 }

@@ -28,9 +28,9 @@ public class FileListServiceImpl implements FileListService{
 			return "기존값";
 		}else {
 			UUID one = UUID.randomUUID();
-			UUID two = UUID.randomUUID();
+//			UUID two = UUID.randomUUID();
 			String fid = one.toString();
-			String pid = two.toString();
+			String pid = " ";
 			fl.setFid(fid);
 			fl.setPid(pid);
 			String result = fileListDao.addFile(fl);
@@ -50,6 +50,13 @@ public class FileListServiceImpl implements FileListService{
 	public String removeDir(String fname, String fpath) {
 
 		return fileListDao.deleteDir(fname, fpath);
+	}
+	
+	@Override
+	public String renameFile(String fname, String fpath, String rename) {
+
+		
+		return fileListDao.rename(fname, fpath, rename);
 	}
 
 

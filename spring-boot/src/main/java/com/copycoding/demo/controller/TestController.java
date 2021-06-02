@@ -127,14 +127,17 @@ public class TestController {
 	
 	@RequestMapping("/axios/renameFolder")
 	@ResponseBody
-	public String renameFolder(@RequestParam(value="value", required=true) String value, String path) throws Exception{
+	public String renameFolder(@RequestParam(value="value", required=true) String value, String path, String rename) throws Exception{
 		String filePath = path;
 		String fileName = value;
 		WriteFile wf = new FileList();
 		
 		String result = wf.fileModify(filePath, fileName);
-		
-		return result;
+		if(result=="-1") {
+			fileListService.renameFile(fileName, filePath, rename);
+			return result;
+		}else
+			return "동일한 이름의 폴더가 존재";
 	}
 	
 	/**

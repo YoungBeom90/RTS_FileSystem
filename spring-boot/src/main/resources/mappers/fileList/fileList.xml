@@ -28,4 +28,10 @@
 		DELETE fileList
 		WHERE fname=#{fname} AND fpath=#{fpath} OR fpath like #{fpath}||'\%'
 	</select>
+	
+	<select id="renameFile" resultType="String" parameterType="String">
+		UPDATE filelist
+		SET fname =#{rename}
+		WHERE fpath = #{fpath} AND fname=#{fname}
+	</select>
 </mapper>

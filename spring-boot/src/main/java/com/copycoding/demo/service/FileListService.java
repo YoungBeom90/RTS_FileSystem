@@ -10,4 +10,6 @@ public interface FileListService {
 	
 	public String removeDir(String fname, String fpath);
 	
+	public String renameFile(String fname, String fpath, String rename);
+	
 }
