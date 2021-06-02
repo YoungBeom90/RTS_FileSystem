@@ -9,10 +9,10 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
-				<form>
+				<form id="modalForm">
 					<div class="form-group">
 						<label for="recipient-name" class="control-label">현재 경로 :</label>
-						<input type="text" class="form-control" id="recipient-name">
+						<input type="text" class="form-control" id="modalParentPath">
 					</div>
 					<div class="form-group">
 						<label for="message-text" class="control-label">파일 :</label>

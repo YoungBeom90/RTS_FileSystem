@@ -8,6 +8,7 @@ let globalData;
 let selectParentPath;
 let fileNameInput;
 let allFilePath;
+let globalSelectFolder;
 
 $(document).ready(function() {
 	let btn = document.getElementById("createFolderBtn");
@@ -18,12 +19,13 @@ $(document).ready(function() {
 	
 	setTimeout(function() {
 		$(".jstree-clicked").trigger("click");
-	}, 300);
+	}, 1000);
 	
 	// 파일 트리 생성
 	$('#jstree').on("select_node.jstree", function (e, data) { 
 		let selectID = data.node.id;
 		selectID = selectID.substring(3);
+		globalSelectFolder = selectID;
 		console.log(selectID);
 		console.log($('#filePath').val());
 		selectList(selectID);
@@ -41,7 +43,14 @@ $(document).ready(function() {
 	$("#deleteBtn").on("click", function() {
 		console.log("deleteBtn Click!");
 		let checked = $(".checkBox");
-		
+		console.log(checked);
+	});
+	
+	//모달창 저장 클릭 이벤트
+	$("#modalSubmit").on("click", function() {
+		if($("#modalParentPath").val() === "") {
+			
+		}
 	});
 	
 });//$(document).ready 종료
@@ -81,15 +90,27 @@ function addFolderListener(parent, child) {
 	$("#"+ child).on("focusout", function() {		
 		let addFolderNm = $("#"+ child).children().children().eq(1).val();
 		let addFolderPrt = parent.id.substring(3);
-		renameFolderListener(child);
+		/*renameFolderListener(child);*/
 		axiosCreateFolder(addFolderNm, addFolderPrt);
 		console.log("폴더 생성.");
 	});
 }
 
+// 폴더 이름 수정.
 function renameFolderListener(parent, child) {
 	$("#" + child).on("focusout", function() {
+		
 		console.log("focusout");
+		
+		console.log(child);
+		if(child) {
+			axios.post("/axios/renameFolder", null, {params : {
+				filePath : child,
+				
+			}}).then((res) => {
+				
+			});
+		}
 		
 	});
 }
@@ -144,7 +165,7 @@ function init() {
 									console.log(obj.id);
 									try {
 										$("#jstree").jstree(true).edit(obj);
-										addFolderListener(o,obj.id);
+										/*addFolderListener(o,obj.id);*/
 									} catch(ex) {
 										alert(ex);
 									}
@@ -414,7 +435,7 @@ function createFolder(btn) {
 		$(".dropZone").scrollTop($(".dropZone")[0].scrollHeight);
 		$("#fileNameInput").focus();
     });
-	// 새폴더 이름 수정후 이벤트
+	// 새폴더 이름수정 후 이벤트
 	$(document).on("click", "#fileNmSubmit", function() {
 		axiosCreateFolder($("#fileNameInput").val(), $("#filePath").val());
 	});
@@ -452,7 +473,10 @@ function axiosCreateFolder(fldNm, fldPrt) {
 
 // 업로드 모달창
 function modalPopup() {
-	console.log("modal!");
-	$('#uploadModal').modal('backdrop');
+	console.log(globalSelectFolder);
+	$('#uploadModal').modal();
+	console.log($("#modalParentPath"));
+	$("#modalParentPath").val(globalSelectFolder);
+	
 }
 

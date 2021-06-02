@@ -38,11 +38,11 @@
 			</div>
 			<form name="uploadForm" id="uploadForm" enctype="multipart/form-data" method="POST">
 		        <div class="dropZone" style="overflow-x:hidden">
-		            <table id="fileTable" class="table">
+		            <table id="fileTable" class="table table-hover table-sm">
 		                <thead>
 		                    <tr>
 		                    	<th style="width:5%; font-size: 15px">
-		                    		<input type="checkbox" id="allCheck" onclick="checkAll()" style="zoom: 1.5; cursor: pointer;">
+		                    		<input type="checkbox" id="allCheck" onclick="checkAll()" style="cursor: pointer;">
 		                    	</th>
 		                        <th style="width:50%;">파일명</th>
 		                        <th style="width:14%;">파일크기</th>
