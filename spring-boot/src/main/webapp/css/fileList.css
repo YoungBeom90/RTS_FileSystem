@@ -12,10 +12,11 @@ html, body {
 }
 #sidebar {
 	width: 25%;
+	background: #f7f7f7
 }
 
 #topMenuBar {
-	height: 3%;
+	height: 5%;
 	margin-left: 20px;
 }
  
@@ -36,6 +37,23 @@ nav {
 	overflow: scroll;
 	font-size: 12px;
 	font-weight: bold;
+}
+
+#fileTool {
+	width: 300px;
+	border: 1px solid #a3a3a3;
+	border-radius: 10px 10px 10px;
+	position: absolute;
+	top: 25px;
+	left: 100px;
+	display: flex;
+	justify-content: center;
+	background: #f7f7f7;
+	box-shadow: 0 4px 10px 0 rgb(0 0 0 / 50%), 0 4px 20px 0 rgb(0 0 0 / 50%);
+}
+
+#fileTool > button {
+	margin: 10px 3px;
 }
 
 #fileContainer {
@@ -61,31 +79,46 @@ nav {
 }
 
 .dropZone {
-    width: 80%;
+    width: 90%;
     height: 620px;
     overflow: auto;
-    margin: 100px;
-    background-color: rgb(225, 255, 255);
-    border: 1px solid #a3a3a3;
+    margin-top: 120px;
+    margin-left: 100px;
+    background-color: rgb(227,242,253);
     box-shadow: 0 4px 10px 0 rgb(0 0 0 / 50%), 0 4px 20px 0 rgb(0 0 0 / 50%);
     z-index: 1;
+    border-top-left-radius: 10px;
+	border-top-right-radius: 10px; 
 }
 #fileTable {
     width: 100%;
-    border: 0px;
     border-collapse: collapse;
     table-layout: fixed;
 }
+
 th {
-    position: sticky;
-    top: 0;
-    height: 30px;
-    background-color: rgb(184, 201, 255) !important;
-    font-size: 15px;
+    background-color: #707070 !important;
+    font-size: 18px;
+    border-right: 1px solid #a3a3a3;
+    border-left: 1px solid #a3a3a3;
+    color: #fff;
 }
 
-tr {
-	margin: 10px;
+th:first-child {
+	border-top-left-radius: 10px;
+}
+
+th:last-child {
+	border-top-right-radius: 10px; 
+}
+
+td {
+	border-right: 1px solid #a3a3a3;
+	border-bottom: 1px solid #a3a3a3;
+}
+
+td:last-child {
+	border-right: none;
 }
 
 tbody {
@@ -99,44 +132,33 @@ tbody tr:nth-child(2n) {
 tbody tr:nth-child(2n+1) {
 	background-color: #e3f2fd;
 }
-
-img[name='xButton'] {
-    width: 20px;
-    cursor: pointer;
-}
-img[name='xButton']:hover {
-    opacity: 0.5;
-}
   
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
-    background: #ffffff;
+    background: #f7f7f7;
 }
 ::-webkit-scrollbar-thumb {
     border-radius: 3.5px;
     background-color: #ced4da;
-
-    
 }
 ::-webkit-scrollbar-track {
-    background: #ffffff;
+    background: #f7f7f7;
 }
 
 .fileTr:hover {
 	background-color : #4287f5;
-	cursor : pointer;
-}
-
-#createFolderBtn {
-	margin: 5px;
-}
-
-.btn.btn-sm {
-	margin-left: 4px;
 }
 
 #logo {
 	width: 90%;
 	height: 10%;
+	font-size: 24px;
+	text-align: center;
+	padding-top: 20px;
+}
+
+.checkBox {
+	zoom: 1.5;
+	cursor: pointer;
 }

@@ -7,12 +7,11 @@ let maxUploadSize = 500;
 let globalData;
 let selectParentPath;
 let fileNameInput;
-let allFilePath; 
-
+let allFilePath;
 
 $(document).ready(function() {
-	let btn = document.getElementById("createFolderBtn");	
-	
+	let btn = document.getElementById("createFolderBtn");
+
 	init();
 	fileDropDown();
 	createFolder(btn);
@@ -38,13 +37,39 @@ $(document).ready(function() {
 		}
 	});
 	
+	// 삭제 버튼 클릭 이벤트
+	$("#deleteBtn").on("click", function() {
+		console.log("deleteBtn Click!");
+		let checked = $(".checkBox");
+		
+	});
+	
 });//$(document).ready 종료
 
+function checkAll() {
+	console.log("allCheck");
+	let trigger = $("#allCheck");
+	let chkbox = $(".checkBox");
+	console.log(chkbox);
+	if(trigger[0].checked) {
+		for(let i=0; i<chkbox.length; i++) {
+			console.log(chkbox[i].checked);
+			chkbox[i].checked = true;
+			chkbox.eq(i).parent().parent().attr("style", "background-color: #2257d4;");
+		}
+	} else if(trigger[0].checked === false){
+		for(let i=0; i<chkbox.length; i++) {
+			chkbox[i].checked = false;
+			chkbox.eq(i).parent().parent().removeAttr("style");
+		}
+	}
+}
 
-
-function selectLine(node) {
+function checkLine(node) {
 	let nodeId = $(node).attr("id");
-	if($("#"+nodeId).attr("style") === "background-color: #2257d4;") {
+	let checkBox = $(node).children().eq(0).children();
+	console.log(checkBox[0].checked);
+	if(checkBox[0].checked === false) {
 		$("#" + nodeId).removeAttr("style");
 	} else {
 		$("#" + nodeId).attr("style", "background-color: #2257d4;");
@@ -133,6 +158,7 @@ function init() {
 		    });
 			let firstDir = treeData[0].path;
 			selectList(firstDir);
+			
 		}
 	}).catch((err) => {
 		console.log(err);
@@ -148,6 +174,7 @@ function selectList(firstDir) {
 		dataType : 'json',
 		data : "isDir=" + firstDir,
 		success : function(res) {
+			
 			if(res) {
 				let data = res.filePath;
 				globalData = data;
@@ -163,6 +190,7 @@ function selectList(firstDir) {
 					let lastIdx = filePath.lastIndexOf("\\");
 					filePath = filePath.substr(0, lastIdx);
 					selectParentPath = filePath;
+					
 					addFileList(idx, fileName, fileSize, ext, mdfDate, filePath);	
 				}
 				if($(".fileList").children().length === 0) {
@@ -173,11 +201,11 @@ function selectList(firstDir) {
 					$(".fileList").append(html);
 				}
 			}
-			
 		}
 	});
-		
 }
+
+
 	
 // 파일 드롭다운 
 function fileDropDown() {
@@ -284,6 +312,7 @@ function selectFile(files) {
     }
 }
 
+
 // 파일리스트 조회, 추가 
 function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 	
@@ -304,15 +333,17 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 	if(hour < 10 || minute < 10 || seconds < 10) {
 	    seconds = "0" + seconds;
 	}
+	
 	let html = "";
-	html += "<tr id='fileTr_" + fileIndex + "' class='fileTr' onclick='selectLine(this)'>";
+	html += "<tr id='fileTr_" + fileIndex + "' name='"+fileIndex+"' class='fileTr' onclick='checkLine(this)'>";
+	html += "<td>";
+	html += "<input type='checkbox' class='checkBox'/>"
+	html += "</td>";
 	html += "<td class='fileName'>" + fileName + "</td>";
 	html += "<td class='fileSize'>" + fileSize + "MB</td>";
 	html += "<td class='fileExt'>" + ext + "</td>"; 
 	html += "<td class='udTime'>" + fileDate + "</td>";
-	html += "<td class='deletechk'>" +
-	            "<img name='xButton' src='/images/xButton.png' onclick='deleteBtn("+fileIndex+")'>" +
-	        "</td>";
+	html += "<td class='deletechk'>admin</td>";
 	html += "</tr>";
 	
 	$('.fileList').append(html);
@@ -362,7 +393,9 @@ function createFolder(btn) {
 			lastNode.hide();
 		}
 		
-		let addTr =  "<tr class='fileTr' onclick='selectLine(this)'>";
+		let addTr =  "<tr class='fileTr' onclick='checkLine(this)'>";
+		addTr += "<td class='checkBox'>";
+		addTr += "</td>";
 		addTr += "<td class='fileName'>";
 		addTr += "<input type='text' id='fileNameInput' class='folderInput' value='새 폴더' onsubmit='return false' />";
 		addTr += "<input type='button' id='fileNmSubmit' class='btn btn-success btn-sm' value='저장' />";
@@ -388,6 +421,7 @@ function createFolder(btn) {
 	
 }
 
+// 폴더생성 취소
 function createCancel() {
 	$(".fileList tr:last-child").remove();
 }
@@ -416,7 +450,9 @@ function axiosCreateFolder(fldNm, fldPrt) {
 	
 }
 
+// 업로드 모달창
 function modalPopup() {
 	console.log("modal!");
 	$('#uploadModal').modal('backdrop');
 }
+
