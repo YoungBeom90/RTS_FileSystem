@@ -63,7 +63,7 @@ public class TestController {
 	public ModelAndView showFolderTree() {
 		ModelAndView mv = new ModelAndView("jsonView");
 		FileList fl = new FileList();
-		String isDir = "c:\\mind-one\\test";
+		String isDir = "c:\\testFile";
 		
 		List<Map<String, Object>> folderList = fl.showFolderTree(isDir);
 		mv.addObject("folderList", folderList);

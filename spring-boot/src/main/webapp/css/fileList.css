@@ -98,7 +98,7 @@ nav {
 
 th {
     background-color: #707070 !important;
-    font-size: 18px;
+    font-size: 15px;
     border-right: 1px solid #a3a3a3;
     border-left: 1px solid #a3a3a3;
     color: #fff;
@@ -110,11 +110,6 @@ th:first-child {
 
 th:last-child {
 	border-top-right-radius: 10px; 
-}
-
-td {
-	border-right: 1px solid #a3a3a3;
-	border-bottom: 1px solid #a3a3a3;
 }
 
 td:last-child {
@@ -146,10 +141,6 @@ tbody tr:nth-child(2n+1) {
     background: #f7f7f7;
 }
 
-.fileTr:hover {
-	background-color : #4287f5;
-}
-
 #logo {
 	width: 90%;
 	height: 10%;
@@ -159,6 +150,5 @@ tbody tr:nth-child(2n+1) {
 }
 
 .checkBox {
-	zoom: 1.5;
 	cursor: pointer;
 }
