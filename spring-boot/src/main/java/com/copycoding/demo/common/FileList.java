@@ -231,6 +231,9 @@ public class FileList implements WriteFile {
 						//리스트 내부의 파일들 삭제
 						for (File file : flList) {
 							file.delete();
+							if(file.isDirectory())
+								//하위에 폴더가 존재할경우 재귀
+								fileDelete(file.getAbsolutePath());
 						}
 						//폴더삭제
 						fl.delete();

@@ -41,12 +41,16 @@ public class FileListServiceImpl implements FileListService{
 	@Override
 	public String removeFile(String fname, String fpath) {
 		
-		System.out.println(fname);
-		System.out.println(fpath);
 		
 		return fileListDao.deleteFile(fname, fpath);
 	}
 	
+	
+	@Override
+	public String removeDir(String fname, String fpath) {
+
+		return fileListDao.deleteDir(fname, fpath);
+	}
 
 
 }

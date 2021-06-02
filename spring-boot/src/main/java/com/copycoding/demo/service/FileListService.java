@@ -8,4 +8,6 @@ public interface FileListService {
 	
 	public String removeFile(String fname, String fpath);
 	
+	public String removeDir(String fname, String fpath);
+	
 }

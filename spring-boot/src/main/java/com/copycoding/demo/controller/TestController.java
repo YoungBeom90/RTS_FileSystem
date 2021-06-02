@@ -67,7 +67,6 @@ public class TestController {
 		
 		List<Map<String, Object>> folderList = fl.showFolderTree(isDir);
 		mv.addObject("folderList", folderList);
-		System.out.println("folderList : " + mv);
 		return mv;
 	}
 	
@@ -100,10 +99,19 @@ public class TestController {
 	public String createFolder(@RequestParam(value="value", required=true) String value, String path) throws Exception {
 		String filePath = path;
 		String fileName = value;
-		System.out.println("여기");
-		System.out.println(filePath + "\\" + fileName);
 		File folder = new File(filePath + "\\" + fileName);
 		
+		FileListVO fl = new FileListVO();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+	
+		fl.setFname(fileName);
+		fl.setFext("파일 폴더");
+		fl.setFdate(timestamp);
+		fl.setFpath(filePath);
+		fl.setPpath(filePath.substring(0,filePath.lastIndexOf("\\")));
+		fl.setFsize("0");
+		fileListService.registFile(fl);
+	
 		if(folder.exists()) {
 			return "동일한 이름의 폴더가 존재합니다.";
 		}
@@ -122,7 +130,6 @@ public class TestController {
 	public String renameFolder(@RequestParam(value="value", required=true) String value, String path) throws Exception{
 		String filePath = path;
 		String fileName = value;
-		System.out.println(filePath + "\\" + fileName);
 		WriteFile wf = new FileList();
 		
 		String result = wf.fileModify(filePath, fileName);
@@ -138,8 +145,6 @@ public class TestController {
 	 */
 	@RequestMapping("/axios/selectFolderChildList")
 	public ModelAndView selectFolderChildList(@RequestParam(value="sfp", required=false) String sfp) throws Exception {
-		System.out.println("/axios/selectFolderChildList 호출");
-		System.out.println(sfp);
 		ModelAndView mv = new ModelAndView("jsonView");
 		List<Map<String, Object>> folderList = null;
 		FileList fl = new FileList();
@@ -166,18 +171,9 @@ public class TestController {
 			@RequestParam (value="parent", required=false) String parent)
 			
 	{
-//		System.out.println("파일생성경로");
-//		System.out.println(parent);
 		FileListVO fl = new FileListVO();
 		
-		System.out.println("list크기 : "+list.size());
 		for(int i =	0; i<list.size(); i++) {
-			
-//			System.out.println("fname : "+list.get(i).getOriginalFilename().substring(0,list.get(i).getOriginalFilename().lastIndexOf(".")));
-//			System.out.println("fext : "+list.get(i).getOriginalFilename().substring(list.get(i).getOriginalFilename().lastIndexOf(".")));
-//			System.out.println("ppath : " + parent.substring(0, parent.lastIndexOf("\\")));
-//			System.out.println("fpath : "+parent);
-			
 			//파일이름
 			fl.setFname(list.get(i).getOriginalFilename().substring(0,list.get(i).getOriginalFilename().lastIndexOf(".")));
 			//파일확장자
@@ -189,7 +185,6 @@ public class TestController {
 			//파일 크기
 			fl.setFsize(Long.toString(list.get(i).getSize()));
 			
-
 			//업데이트 시간
 			try {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -197,16 +192,9 @@ public class TestController {
 				date.setTime(fdate);
 				Timestamp timestamp = new Timestamp(date.getTime());
 				fl.setFdate(timestamp);
-//				System.out.println(timestamp);
 			}catch (Exception e) {
 				e.printStackTrace();
 			}//try~catch end
-			System.out.println(fl.getFname());
-			System.out.println(fl.getFpath());
-			System.out.println(fl.getFsize());
-			System.out.println(fl.getPpath());
-			System.out.println(fl.getFext());
-			System.out.println(fl.getFdate());
 			fileListService.registFile(fl);
 		}//for end
 
@@ -214,10 +202,6 @@ public class TestController {
 		
 		wf.fileUpload(list, parent);
 
-		
-//		System.out.println(result);
-		
-		
 		return "파일 등록 완료"; 
 	}
 	
@@ -229,22 +213,19 @@ public class TestController {
 			@RequestParam(value="fileName", required=false) String fileName) 
 	{
 		String filePath = parent+"/"+fileName;
-//		System.out.println(parent);
 		FileListVO fl = new FileListVO();
-		String fname=null;
 		
 		WriteFile wf = new FileList();
 
 		if(fileName.lastIndexOf(".")==-1)	{
+			fileListService.removeDir(fileName, parent.toLowerCase());
 			wf.fileDelete(filePath);
 		}else {
-			fname = fileName.substring(0, fileName.lastIndexOf("."));
-			System.out.println(fname);
-			System.out.println(parent);
+			String fname = fileName.substring(0, fileName.lastIndexOf("."));
 			fileListService.removeFile(fname, parent.toLowerCase());
 			wf.fileDelete(filePath);
+
 		}
-		
 		return "삭제 완료";
 	}
 	

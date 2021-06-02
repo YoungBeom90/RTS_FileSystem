@@ -14,4 +14,6 @@ public interface FileListDao {
 	public Integer updateFile(FileListVO fl);
 	
 	public String deleteFile(String fname, String fpath);
+	
+	public String deleteDir(String fname, String fpath);
 }
