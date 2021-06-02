@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.3.11.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.copycoding</groupId>
 	<artifactId>MyBatis</artifactId>
@@ -15,9 +16,9 @@
 	<description>SpringBoot_Maven</description>
 	<properties>
 		<java.version>1.8</java.version>
-		<spring.maven.artifact.version>4.3.22.RELEASE</spring.maven.artifact.version> 
-		<egovframework.rte.version>3.9.0</egovframework.rte.version> 
-		<jackson.version>2.11.3</jackson.version> 
+		<spring.maven.artifact.version>4.3.22.RELEASE</spring.maven.artifact.version>
+		<egovframework.rte.version>3.9.0</egovframework.rte.version>
+		<jackson.version>2.11.3</jackson.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -61,58 +62,80 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<!-- jsp -->
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
-		    <artifactId>jsp-api</artifactId>
-		    <version>2.1</version>
-		    <scope>provided</scope>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- jasper(jsp 경로 설정) -->
 		<dependency>
-		    <groupId>org.apache.tomcat.embed</groupId>
-		    <artifactId>tomcat-embed-jasper</artifactId>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
 		</dependency>
-		
+
 		<!-- jstl -->
 		<dependency>
-		    <groupId>javax.servlet</groupId>
-		    <artifactId>jstl</artifactId>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
 		</dependency>
-		
+
 		<!-- HikariCP -->
 		<dependency>
-		    <groupId>com.zaxxer</groupId>
-		    <artifactId>HikariCP</artifactId>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>1.1</version>
-        </dependency>
-        
-        <dependency>
-		    <groupId>org.webjars.npm</groupId>
-		    <artifactId>axios</artifactId>
-		    <version>0.19.2</version>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.webjars.npm</groupId>
+			<artifactId>axios</artifactId>
+			<version>0.19.2</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>com.oracle.ojdbc</groupId>
+			<artifactId>orai18n</artifactId>
+			<version>19.3.0.0</version>
+		</dependency>
+		<!-- logger -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>				
+			   <exclusions>
+		         <!-- log4j2 사용을 위해 내장 Logger 제외 -->
+		        <exclusion>
+		            <groupId>org.springframework.boot</groupId>
+		            <artifactId>spring-boot-starter-logging</artifactId>
+		        </exclusion>
+		    </exclusions>
+		</dependency>
+        
+        <!-- log4j2 설정 -->
+		<dependency>
+        	<groupId>org.springframework.boot</groupId>
+        	<artifactId>spring-boot-starter-log4j2</artifactId>
+    	</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>

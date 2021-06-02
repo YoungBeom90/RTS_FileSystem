@@ -4,6 +4,8 @@ import com.copycoding.demo.vo.FileListVO;
 
 public interface FileListService {
 
-	public int registFile(FileListVO fl);
+	public String registFile(FileListVO fl);
+	
+	public String removeFile(String fname, String fpath);
 	
 }

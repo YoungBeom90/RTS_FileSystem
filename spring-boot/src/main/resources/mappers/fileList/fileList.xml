@@ -2,8 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.copycoding.demo.dao.FileListDao">
 	<!-- 유저정보 가져오기 테스트 -->
-	<select id="addFile" parameterType="com.copycoding.demo.vo.FileListVO">
+	<select id="addFile" resultType="String" parameterType="com.copycoding.demo.vo.FileListVO">
 		INSERT INTO filelist
 		VALUES(#{fid}, #{pid}, #{fname}, #{fpath}, #{ppath}, #{fsize}, #{fext}, #{fdate}, sysdate)
+	</select>
+	
+	<select id="sameFileChk" resultType="int" parameterType="com.copycoding.demo.vo.FileListVO">
+		SELECT COUNT(*)
+		FROM filelist
+		WHERE fpath = #{fpath} AND fname=#{fname}
+	</select>
+	
+	<select id="updateFile" resultType="int" parameterType="com.copycoding.demo.vo.FileListVO">
+		UPDATE filelist
+		SET fsize=#{fsize}, fDate=#{fdate}, udate=sysdate
+		WHERE fpath = #{fpath} AND fname=#{fname}
+	</select>
+	
+	<select id="deleteFile" resultType="String" parameterType="String">
+		DELETE FROM filelist
+		WHERE fname = #{fname} AND fpath= #{fpath}
 	</select>
 </mapper>

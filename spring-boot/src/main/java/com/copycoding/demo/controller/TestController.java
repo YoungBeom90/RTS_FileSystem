@@ -170,6 +170,7 @@ public class TestController {
 //		System.out.println(parent);
 		FileListVO fl = new FileListVO();
 		
+		System.out.println("list크기 : "+list.size());
 		for(int i =	0; i<list.size(); i++) {
 			
 //			System.out.println("fname : "+list.get(i).getOriginalFilename().substring(0,list.get(i).getOriginalFilename().lastIndexOf(".")));
@@ -178,9 +179,9 @@ public class TestController {
 //			System.out.println("fpath : "+parent);
 			
 			//파일이름
-			fl.setFname(list.get(0).getOriginalFilename().substring(0,list.get(i).getOriginalFilename().lastIndexOf(".")));
+			fl.setFname(list.get(i).getOriginalFilename().substring(0,list.get(i).getOriginalFilename().lastIndexOf(".")));
 			//파일확장자
-			fl.setFext(list.get(0).getOriginalFilename().substring(list.get(i).getOriginalFilename().lastIndexOf(".")));
+			fl.setFext(list.get(i).getOriginalFilename().substring(list.get(i).getOriginalFilename().lastIndexOf(".")));
 			//부모경로
 			fl.setPpath(parent.substring(0, parent.lastIndexOf("\\")));
 			//해당 파일 경로
@@ -188,6 +189,7 @@ public class TestController {
 			//파일 크기
 			fl.setFsize(Long.toString(list.get(i).getSize()));
 			
+
 			//업데이트 시간
 			try {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -199,30 +201,18 @@ public class TestController {
 			}catch (Exception e) {
 				e.printStackTrace();
 			}//try~catch end
-			
-			UUID one = UUID.randomUUID();
-			UUID two = UUID.randomUUID();
-			String fid = one.toString();
-			String pid = two.toString();
-			fl.setFid(fid);
-			fl.setPid(pid);
-			
 			System.out.println(fl.getFname());
 			System.out.println(fl.getFpath());
 			System.out.println(fl.getFsize());
 			System.out.println(fl.getPpath());
 			System.out.println(fl.getFext());
 			System.out.println(fl.getFdate());
-			System.out.println(fileListService.registFile(fl));
-//			System.out.println(a);
+			fileListService.registFile(fl);
 		}//for end
 
 		WriteFile wf = new FileList();
 		
-		String result = wf.fileUpload(list, parent);
-		
-
-		
+		wf.fileUpload(list, parent);
 
 		
 //		System.out.println(result);
@@ -240,12 +230,21 @@ public class TestController {
 	{
 		String filePath = parent+"/"+fileName;
 //		System.out.println(parent);
+		FileListVO fl = new FileListVO();
+		String fname=null;
 		
 		WriteFile wf = new FileList();
-		wf.fileDelete(filePath);
-		
-//		System.out.println(wf.fileDelete(filePath));
 
+		if(fileName.lastIndexOf(".")==-1)	{
+			wf.fileDelete(filePath);
+		}else {
+			fname = fileName.substring(0, fileName.lastIndexOf("."));
+			System.out.println(fname);
+			System.out.println(parent);
+			fileListService.removeFile(fname, parent.toLowerCase());
+			wf.fileDelete(filePath);
+		}
+		
 		return "삭제 완료";
 	}
 	
