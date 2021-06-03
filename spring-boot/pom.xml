@@ -119,10 +119,6 @@
 		    <version>21.1.0.0</version>
 		</dependency>
 		
-<<<<<<< HEAD
-		
-=======
->>>>>>> branch 'master' of http://192.168.1.20:90/r/RTS_TEST.git
 		<!-- logger -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
