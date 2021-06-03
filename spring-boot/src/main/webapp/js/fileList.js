@@ -102,7 +102,7 @@ function renameFolderListener(obj) {
 	let target = obj.node.id;
 	let preNm = obj.old;
 	let afterNm = obj.text;
-	console.log(target.substr(3));
+	target = target.substr(3);
 	console.log(preNm);
 	console.log(afterNm);
 	
