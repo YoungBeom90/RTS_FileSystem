@@ -113,9 +113,10 @@ function renameFolderListener(obj) {
 			rename : afterNm
 		}}).then((res) => {
 			if(res) {
-				
+				console.log(res);
+				alert("이름 수정 완료");
 			}
-		})
+		});
 	}
 }
 
