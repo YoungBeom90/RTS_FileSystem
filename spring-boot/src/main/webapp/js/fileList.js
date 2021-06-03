@@ -409,8 +409,6 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 
 // 파일 삭제
 function deleteBtn(fileIndex){
-<<<<<<< HEAD
-=======
     axios.post("/axios/deleteFile", null, 
 	{
 		params : {
@@ -430,8 +428,6 @@ function deleteBtn(fileIndex){
     delete fileSizeList[fileIndex];
     $("#fileTr_" + fileIndex).remove();
 	console.log(globalData[fileIndex].parent+"/"+globalData[fileIndex].text);
->>>>>>> refs/remotes/origin_yb/master
-	
 };
 
 // 폴더 생성
