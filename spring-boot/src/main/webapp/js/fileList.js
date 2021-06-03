@@ -101,14 +101,14 @@ function addFolderListener(parent, child) {
 function renameFolderListener(obj) {
 	let target = obj.node.id;
 	let preNm = obj.old;
-	let afterNm = obj.old; 
+	let afterNm = obj.text;
 	console.log(target.substr(3));
 	console.log(preNm);
 	console.log(afterNm);
 	
 	if(obj) {
 		axios.post("/axios/renameFolder", null, {params: {
-			path : taget,
+			path : target,
 			value : preNm,
 			rename : afterNm
 		}}).then((res) => {
