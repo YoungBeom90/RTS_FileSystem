@@ -60,7 +60,7 @@ public class FileListServiceImpl implements FileListService{
 	}
 	
 	@Override
-	public String selectFileList(String ppath) {
+	public List<FileListVO> selectFileList(String ppath) {
 
 		return fileListDao.selectFileList(ppath);
 	}

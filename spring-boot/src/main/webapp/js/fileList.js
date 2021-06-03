@@ -318,9 +318,8 @@ function fileDropDown() {
 				contentType :false,
 				data:form,
 				timeout:50000,
-				dataType: "JSON",
-				success : function(JSON){
-					console.log(JSON);
+				success : function(data){
+					console.log(data);
 					console.log("성공");
 				},
 				error : function(err){
@@ -410,6 +409,28 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 
 // 파일 삭제
 function deleteBtn(fileIndex){
+<<<<<<< HEAD
+=======
+    axios.post("/axios/deleteFile", null, 
+	{
+		params : {
+			parent : selectParentPath,
+			fileName : globalData[fileIndex].text
+			}
+		}).then(function(res) {
+			console.log(res);
+        if(res) {
+            alert(res.data);
+        }
+    }).catch(function(error) {
+        console.log(error);
+    });
+    totalFileSize -1;
+    delete fileList[fileIndex];
+    delete fileSizeList[fileIndex];
+    $("#fileTr_" + fileIndex).remove();
+	console.log(globalData[fileIndex].parent+"/"+globalData[fileIndex].text);
+>>>>>>> refs/remotes/origin_yb/master
 	
 };
 

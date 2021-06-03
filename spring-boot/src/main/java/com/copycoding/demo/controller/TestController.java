@@ -183,7 +183,7 @@ public class TestController {
 			method = RequestMethod.POST, 
 			produces = "application/json; charset=UTF-8")
 	@ResponseBody
-	public String addFile(
+	public void addFile(
 			@RequestParam (value="file", required=true) List<MultipartFile> list,
 			@RequestParam (value="fdate", required=true) Long fdate,
 			@RequestParam (value="parent", required=false) String parent)
@@ -220,7 +220,6 @@ public class TestController {
 		
 		wf.fileUpload(list, parent);
 
-		return "파일 등록 완료"; 
 	}
 	
 	/**
