@@ -41,9 +41,35 @@ $(document).ready(function() {
 	
 	// 삭제 버튼 클릭 이벤트
 	$("#deleteBtn").on("click", function() {
-		console.log("deleteBtn Click!");
+		confirm("삭제하시겠습니까?");
+		
 		let checked = $(".checkBox");
-		console.log(checked);
+		let filePath = $("#filePath").val();
+		let reqCnt = 0;
+		let checkList = [];
+		
+		for(let i=0; i<checked.length; i++) {
+			if(target.checked === true) {
+				checkList = checked[i].offsetParent.nextSibling.innerHTML;
+				reqCnt++;
+			}
+		}
+		
+		axios.post("/axios/deleteFile", null, {params : {
+				parent : filePath,
+				fileList : checkList
+		}}).then((res) => {
+			console.log(res);
+        	if(res.data === "삭제 완료") {
+				console.log(res.data);
+        	}
+    	}).catch(function(error) {
+        	console.log(error);
+    	});
+
+		alert(reqCnt + "개 파일을 삭제하였습니다.");
+		
+		location.reload();
 	});
 	
 	//모달창 저장 클릭 이벤트
@@ -57,13 +83,10 @@ $(document).ready(function() {
 });//$(document).ready 종료
 
 function checkAll() {
-	console.log("allCheck");
 	let trigger = $("#allCheck");
 	let chkbox = $(".checkBox");
-	console.log(chkbox);
 	if(trigger[0].checked) {
 		for(let i=0; i<chkbox.length; i++) {
-			console.log(chkbox[i].checked);
 			chkbox[i].checked = true;
 			chkbox.eq(i).parent().parent().attr("style", "background-color: #2257d4;");
 		}
@@ -103,6 +126,7 @@ function renameFolderListener(obj) {
 	let preNm = obj.old;
 	let afterNm = obj.text;
 	target = target.substr(3);
+	console.log(target);
 	console.log(preNm);
 	console.log(afterNm);
 	
@@ -124,8 +148,10 @@ function renameFolderListener(obj) {
 
 //첫화면 파일트리 가져오기
 function init() {
+	console.log("1");
 	axios.post("/axios/showFolderTree").then((res) => {
 		if(res) {
+			console.log(res);
 			let treeData = res.data.folderList
 			globalFolderData = treeData;
 			$('#jstree').jstree({
@@ -188,7 +214,7 @@ function init() {
 		    }).bind("rename_node.jstree", function (e, data) {    
 		    	renameFolderListener(data);
 			});
-			
+			console.log(treeData);
 			let firstDir = treeData[0].path;
 			selectList(firstDir);
 			
@@ -384,28 +410,7 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 
 // 파일 삭제
 function deleteBtn(fileIndex){
-	confirm("삭제하시겠습니까?");
-    axios.post("/axios/deleteFile", null, 
-	{
-		params : {
-			parent : selectParentPath,
-			fileName : globalData[fileIndex].text
-			}
-		}).then(function(res) {
-			console.log(res);
-        if(res) {
-            alert(res.data);
-        }
-    }).catch(function(error) {
-        console.log(error);
-    });
-    totalFileSize -1;
-    delete fileList[fileIndex];
-    delete fileSizeList[fileIndex];
-    $("#fileTr_" + fileIndex).remove();
-	console.log(globalData[fileIndex].parent+"/"+globalData[fileIndex].text);
 	
-	/*location.reload(true);*/
 };
 
 // 폴더 생성
