@@ -232,7 +232,8 @@ public class TestController {
 	@ResponseBody
 	public String deleteFile(
 			@RequestParam(value="parent", required=false) String parent,
-			@RequestParam(value="fileName", required=false) String fileName) 
+			@RequestParam(value="fileName", required=false) String fileName,
+			@RequestParam(value="fileList", required=false) String[] fileList)
 	{
 		String filePath = parent+"/"+fileName;
 		FileListVO fl = new FileListVO();
