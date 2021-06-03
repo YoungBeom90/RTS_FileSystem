@@ -63,7 +63,7 @@ public class TestController {
 	public ModelAndView showFolderTree() {
 		ModelAndView mv = new ModelAndView("jsonView");
 		FileList fl = new FileList();
-		String isDir = "c:\\testFile";
+		String isDir = "c:\\mind-one\\test";
 		
 		List<Map<String, Object>> folderList = fl.showFolderTree(isDir);
 		mv.addObject("folderList", folderList);
@@ -105,7 +105,7 @@ public class TestController {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 	
 		fl.setFname(fileName);
-		fl.setFext("파일 폴더");
+		fl.setFext("폴더");
 		fl.setFdate(timestamp);
 		fl.setFpath(filePath);
 		fl.setPpath(filePath.substring(0,filePath.lastIndexOf("\\")));
@@ -127,12 +127,15 @@ public class TestController {
 	
 	@RequestMapping("/axios/renameFolder")
 	@ResponseBody
-	public String renameFolder(@RequestParam(value="value", required=true) String value, String path) throws Exception{
+	public String renameFolder(@RequestParam(value="value", required=true) String value, String path, String rename) throws Exception{
 		String filePath = path;
 		String fileName = value;
 		WriteFile wf = new FileList();
 		
 		String result = wf.fileModify(filePath, fileName);
+		if(result.equals("-1")) {
+			fileListService.renameFile(fileName, filePath, rename);
+		}
 		
 		return result;
 	}
@@ -230,8 +233,6 @@ public class TestController {
 	}
 	
 	/**
-	 * 파일을 이동시키거나 복사 하기위해 다음경로를 모르기 때문에
-	 * 임시경로에 잠시 저장후 이동시켜야한다?
 	 * @param fileList
 	 * @param prevPathStr
 	 * @param nextPathStr
@@ -257,12 +258,5 @@ public class TestController {
 		
 		return "이동 완료";
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 }

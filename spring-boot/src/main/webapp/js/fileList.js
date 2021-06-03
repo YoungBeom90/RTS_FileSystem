@@ -53,6 +53,7 @@ $(document).ready(function() {
 		}
 	});
 	
+	
 });//$(document).ready 종료
 
 function checkAll() {
@@ -97,23 +98,29 @@ function addFolderListener(parent, child) {
 }
 
 // 폴더 이름 수정.
-function renameFolderListener(parent, child) {
-	$("#" + child).on("focusout", function() {
-		
-		console.log("focusout");
-		
-		console.log(child);
-		if(child) {
-			axios.post("/axios/renameFolder", null, {params : {
-				filePath : child,
+function renameFolderListener(obj) {
+	let target = obj.node.id;
+	let preNm = obj.old;
+	let afterNm = obj.old; 
+	console.log(target.substr(3));
+	console.log(preNm);
+	console.log(afterNm);
+	
+	if(obj) {
+		axios.post("/axios/renameFolder", null, {params: {
+			path : taget,
+			value : preNm,
+			rename : afterNm
+		}}).then((res) => {
+			if(res) {
 				
-			}}).then((res) => {
-				
-			});
-		}
-		
-	});
+			}
+		})
+	}
 }
+
+
+
 //첫화면 파일트리 가져오기
 function init() {
 	axios.post("/axios/showFolderTree").then((res) => {
@@ -159,13 +166,14 @@ function init() {
 								seperator_after : true,
 								label : "이름수정",
 								action : function(data) {
+									let temp;
 									let inst = $.jstree.reference(data.reference);
-									console.log(inst);
 									obj = inst.get_node(data.reference);
-									console.log(obj.id);
+									
 									try {
-										$("#jstree").jstree(true).edit(obj);
-										/*addFolderListener(o,obj.id);*/
+										inst.edit(obj)
+										console.log(obj);
+										
 									} catch(ex) {
 										alert(ex);
 									}
@@ -176,7 +184,10 @@ function init() {
 						}
 					}			
 				},
-		    });
+		    }).bind("rename_node.jstree", function (e, data) {    
+		    	renameFolderListener(data);
+			});
+			
 			let firstDir = treeData[0].path;
 			selectList(firstDir);
 			
@@ -435,6 +446,7 @@ function createFolder(btn) {
 		$(".dropZone").scrollTop($(".dropZone")[0].scrollHeight);
 		$("#fileNameInput").focus();
     });
+
 	// 새폴더 이름수정 후 이벤트
 	$(document).on("click", "#fileNmSubmit", function() {
 		axiosCreateFolder($("#fileNameInput").val(), $("#filePath").val());
@@ -469,6 +481,11 @@ function axiosCreateFolder(fldNm, fldPrt) {
 	    });
 	}
 	
+}
+
+// 폴더 이름수정
+function renameFolder(obj) {
+	$("#")
 }
 
 // 업로드 모달창
