@@ -34,4 +34,14 @@
 		SET fname =#{rename}
 		WHERE fpath = #{fpath} AND fname=#{fname}
 	</select>
+	<select id="selectFileList" resultType="List" parameterType="com.copycoding.demo.vo.FileListVO">
+		SELECT *
+		FROM filelist
+		WHERE ppath=#{ppath}
+	</select>
+	<select id="showFolderTree" resultType="List" parameterType="String">
+		SELECT *
+		FROM filelist
+		WHERE fpath LIKE #{fpath}||'%' AND fext='폴더'
+	</select>
 </mapper>

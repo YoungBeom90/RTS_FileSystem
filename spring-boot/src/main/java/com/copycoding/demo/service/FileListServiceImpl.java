@@ -1,5 +1,6 @@
 package com.copycoding.demo.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,18 @@ public class FileListServiceImpl implements FileListService{
 
 		
 		return fileListDao.rename(fname, fpath, rename);
+	}
+	
+	@Override
+	public String selectFileList(String ppath) {
+
+		return fileListDao.selectFileList(ppath);
+	}
+	
+	@Override
+	public List<FileListVO> showFolderTree(String fpath) {
+
+		return fileListDao.showFolderTree(fpath);
 	}
 
 
