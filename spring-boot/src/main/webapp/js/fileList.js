@@ -292,9 +292,8 @@ function fileDropDown() {
 				contentType :false,
 				data:form,
 				timeout:50000,
-				dataType: "JSON",
-				success : function(JSON){
-					console.log(JSON);
+				success : function(data){
+					console.log(data);
 					console.log("성공");
 				},
 				error : function(err){
@@ -384,7 +383,6 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 
 // 파일 삭제
 function deleteBtn(fileIndex){
-	confirm("삭제하시겠습니까?");
     axios.post("/axios/deleteFile", null, 
 	{
 		params : {

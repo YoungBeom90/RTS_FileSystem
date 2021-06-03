@@ -23,5 +23,5 @@ public interface FileListDao {
 	//JTree 폴더 목록 불러오기
 	public List<FileListVO> showFolderTree(String fpath);
 	//해당파일경로의 파일목록 불러오기
-	public String selectFileList(String ppath);
+	public List<FileListVO> selectFileList(String ppath);
 }
