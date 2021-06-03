@@ -125,16 +125,24 @@ public class TestController {
 		return "폴더 생성 완료.";
 	}
 	
+	/**
+	 * 
+	 * @param value 현재 파일이름
+	 * @param path 현재 파일경로
+	 * @param rename 바꿀이름
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/axios/renameFolder")
 	@ResponseBody
 	public String renameFolder(@RequestParam(value="value", required=true) String value, String path, String rename) throws Exception{
-		String filePath = path;
-		String fileName = value;
-		WriteFile wf = new FileList();
 		
-		String result = wf.fileModify(filePath, fileName);
+		WriteFile wf = new FileList();
+		String parent = path.substring(0, path.lastIndexOf("\\"));
+
+		String result = wf.fileModify(path, rename);
 		if(result.equals("-1")) {
-			fileListService.renameFile(fileName, filePath, rename);
+			fileListService.renameFile(value, parent, rename);
 		}
 		
 		return result;
@@ -164,6 +172,13 @@ public class TestController {
 	}
 	
 	
+	/**
+	 * 
+	 * @param list 업로드하는 파일목록
+	 * @param fdate 파일날짜
+	 * @param parent 부모경로
+	 * @return
+	 */
 	@RequestMapping(value="/ajax/uploadFile.json", 
 			method = RequestMethod.POST, 
 			produces = "application/json; charset=UTF-8")
@@ -208,7 +223,12 @@ public class TestController {
 		return "파일 등록 완료"; 
 	}
 	
-	
+	/**
+	 * 
+	 * @param parent
+	 * @param fileName
+	 * @return
+	 */
 	@RequestMapping("/axios/deleteFile")
 	@ResponseBody
 	public String deleteFile(

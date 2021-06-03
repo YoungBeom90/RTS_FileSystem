@@ -56,8 +56,7 @@ public class FileListServiceImpl implements FileListService{
 	@Override
 	public String renameFile(String fname, String fpath, String rename) {
 
-		
-		return fileListDao.rename(fname, fpath, rename);
+		return fileListDao.renameFile(fname, fpath, rename);
 	}
 	
 	@Override

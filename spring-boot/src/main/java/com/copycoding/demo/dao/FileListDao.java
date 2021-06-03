@@ -19,7 +19,7 @@ public interface FileListDao {
 	//폴더삭제
 	public String deleteDir(String fname, String fpath);
 	//해당 경로의 파일 이름수정
-	public String rename(String fname, String fpath, String rename);
+	public String renameFile(String fname, String fpath, String rename);
 	//JTree 폴더 목록 불러오기
 	public List<FileListVO> showFolderTree(String fpath);
 	//해당파일경로의 파일목록 불러오기

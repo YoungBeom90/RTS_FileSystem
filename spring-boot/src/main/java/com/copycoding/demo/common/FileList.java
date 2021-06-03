@@ -254,16 +254,13 @@ public class FileList implements WriteFile {
 	public String fileModify(String filePath, String fileName) {
 		File folder = new File(filePath);
 		String result = null;
-		
-		if(folder.exists()) {
-			result =  "동일한 이름의 폴더가 존재합니다.";
-		}
-		folder.renameTo(new File(fileName));
-		
+		String parent = filePath.substring(0, filePath.lastIndexOf("\\"));
 		// 생성여부 확인
-		if(!folder.exists()) {
+		if(folder.exists()) {
+			folder.renameTo(new File(parent+"\\"+fileName));
 			result =  "-1";
-		}
+		}else 
+			result =  "동일한 이름의 폴더가 존재합니다.";
 		
 		return result;
 	}
