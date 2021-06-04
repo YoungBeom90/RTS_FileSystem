@@ -9,7 +9,7 @@ let selectParentPath;
 let fileNameInput;
 let allFilePath;
 let globalSelectFolder;
-  
+
 $(document).ready(function() {
 	let btn = document.getElementById("createFolderBtn");
 
