@@ -1,6 +1,7 @@
 package com.copycoding.demo.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +61,14 @@ public class FileListServiceImpl implements FileListService{
 	}
 	
 	@Override
-	public List<FileListVO> selectFileList(String ppath) {
+	public int moveFile(String prevPath, String nextPath, String fname) {
 
+		return fileListDao.moveFile(prevPath, nextPath, fname);
+	}
+	
+	@Override
+	public List<FileListVO> selectFileList(String ppath) {
+		
 		return fileListDao.selectFileList(ppath);
 	}
 	

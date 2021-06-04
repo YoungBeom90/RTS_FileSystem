@@ -37,11 +37,17 @@
 	<select id="selectFileList" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
 		SELECT *
 		FROM filelist
-		WHERE ppath=#{ppath}
+		WHERE fpath=#{ppath}
 	</select>
 	<select id="showFolderTree" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
 		SELECT *
 		FROM filelist
 		WHERE fpath LIKE #{fpath}||'%' AND fext='폴더'
+	</select>
+	
+	<select id="moveFile" resultType="String" parameterType="String">
+		UPDATE filelist
+		SET fpath = #{nextPath}, ppath=#{ppath} 
+		WHERE fpath =#{prevPath} AND fname=#{fname}
 	</select>
 </mapper>
