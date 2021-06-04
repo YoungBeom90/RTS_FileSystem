@@ -277,7 +277,7 @@ function selectList(firstDir) {
 				}
 				if($(".fileList").children().length === 0) {
 					let html = "<tr>";
-						html += "<td colspan='5' style='text-align: center;'>이 폴더는 비어있습니다.</td>";
+						html += "<td colspan='6' style='text-align: center;'>이 폴더는 비어있습니다.</td>";
 						html += "</tr>";
 						
 					$(".fileList").append(html);
@@ -424,7 +424,7 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 	html += "<td class='fileSize'>" + fileSize + "MB</td>";
 	html += "<td class='fileExt'>" + ext + "</td>"; 
 	html += "<td class='udTime'>" + fileDate + "</td>";
-	html += "<td class='deletechk'>admin</td>";
+	html += "<td class='fileAuth'>admin</td>";
 	html += "</tr>";
 	
 	$('.fileList').append(html);
@@ -482,9 +482,7 @@ function createFolder(btn) {
 		addTr += "<td class='fileSize'></td>";
 		addTr += "<td class='fileExt'></td>"; 
 		addTr += "<td class='udTime'></td>";
-		addTr += "<td class='deletechk'>" +
-	            "<img name='xButton' src='/images/xButton.png'>" +
-	        	"</td>";
+		addTr += "<td class='fileAuth'>admin</td>";
 		addTr += "</tr>";
 		
 		lastNode.after(addTr);
