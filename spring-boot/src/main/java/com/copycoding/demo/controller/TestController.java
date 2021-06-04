@@ -63,7 +63,7 @@ public class TestController {
 	public ModelAndView showFolderTree() {
 		ModelAndView mv = new ModelAndView("jsonView");
 		FileList fl = new FileList();
-		String isDir = "c:\\mind-one\\test";
+		String isDir = "z:\\";
 		
 		List<Map<String, Object>> folderList = fl.showFolderTree(isDir);
 		List<FileListVO> folderList2  = fileListService.showFolderTree(isDir);
@@ -84,12 +84,20 @@ public class TestController {
 		ModelAndView mv = new ModelAndView("jsonView");
 		WriteFile wf = new FileList();
 		List<Map<String, Object>> filePath = wf.showFilesInDir(isDir);
-		
+		for(Map<String, Object> i : filePath) {
+			System.out.println("=======[ 리스트 출력 ]========");
+			for(String key : i.keySet()) {
+				Object result = i.get(key);
+				
+				System.out.println(result);
+			}
+			System.out.println("==============================");
+		}
 		//DB에 저장된 값
 		List<FileListVO> fp = fileListService.selectFileList(isDir);
-
-		mv.addObject("filePath", fp);
 		
+		mv.addObject("filePath", filePath);
+
 		return mv;
 	}
 	

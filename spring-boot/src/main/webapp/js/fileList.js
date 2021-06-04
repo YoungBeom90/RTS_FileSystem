@@ -255,20 +255,22 @@ function selectList(firstDir) {
 		url : '/ajax/selectFileList',
 		dataType : 'json',
 		data : "isDir=" + firstDir,
-		success : function(json, res) {
-			console.log(json);
+		success : function(res) {
+			console.log(res);
 			if(res) {
-				let data = json.filePath;
+				let data = res.filePath;
 				globalData = data;
 				allFilePath=firstDir;
 				$(".fileList > tr").remove();
 				for(idx in data) {
-					let fileName = data[idx].fname+data[idx].fext;
-					let ext = data[idx].fext;
-					let fileSize = data[idx].fsize / 1024 / 1024;
+					console.log(idx);
+					let fileName = data[idx].text;
+					console.log(fileName);
+					let ext = data[idx].ext;
+					let fileSize = data[idx].size / 1024 / 1024;
 					fileSize = fileSize.toFixed(3);
-					let mdfDate = data[idx].fdate;
-					let filePath = data[idx].fpath;
+					let mdfDate = data[idx].date;
+					let filePath = data[idx].url;
 					let lastIdx = filePath.lastIndexOf("\\");
 					filePath = filePath.substr(0, lastIdx);
 					selectParentPath = filePath;
@@ -539,5 +541,21 @@ function modalPopup() {
 	console.log($("#modalParentPath"));
 	$("#modalParentPath").val(globalSelectFolder);
 	
+}
+
+function FunLoadingBarStart() {
+	let backHeight = $(document).height(); //뒷 배경의 상하 폭
+	let backWidth = window.document.body.clientWidth; //뒷 배경의 좌우 폭
+	let backGroundCover = "<div id='back'></div>"; //뒷 배경을 감쌀 커버
+	let loadingBarImage = ''; //가운데 띄워 줄 이미지
+	
+	loadingBarImage += "<div id='loadingBar'>";
+	loadingBarImage += " <img src='/images/loadingbar.gif'/>"; //로딩 바 이미지
+	loadingBarImage += "</div>";
+	
+	$('body').append(backGroundCover).append(loadingBarImage);
+	$('#back').css({ 'width': backWidth, 'height': backHeight, 'opacity': '0.3' });
+	$('#back').show();
+	$('#loadingBar').show();
 }
 

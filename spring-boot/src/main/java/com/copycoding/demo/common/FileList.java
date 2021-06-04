@@ -16,10 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.copycoding.demo.service.UserInfoService;
 
 public class FileList implements WriteFile {
 	
@@ -98,8 +95,10 @@ public class FileList implements WriteFile {
 	public List<Map<String, Object>> showFilesInDir(String isDir) {
 		System.out.println("showFilesInDir 호출");
 		int listIndex = 0;
-		
+		System.out.println(isDir);
 		for(File finded : new File(isDir).listFiles()) {
+			
+			System.out.println(finded);
 			if(listIndex == 0) {
 				initParentPath = isDir;
 			}
@@ -155,6 +154,8 @@ public class FileList implements WriteFile {
 			fileTree.add(file);
 			listIndex++;
 		}
+		
+		
 		return fileTree; 
 	}
 
