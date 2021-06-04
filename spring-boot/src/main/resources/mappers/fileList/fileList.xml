@@ -38,6 +38,7 @@
 		SELECT *
 		FROM filelist
 		WHERE fpath=#{ppath}
+		ORDER BY fext desc
 	</select>
 	<select id="showFolderTree" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
 		SELECT *

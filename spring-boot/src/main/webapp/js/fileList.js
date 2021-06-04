@@ -41,12 +41,32 @@ $(document).ready(function() {
 	
 	// 삭제 버튼 클릭 이벤트
 	$("#deleteBtn").on("click", function() {
-		confirm("삭제하시겠습니까?");
-		
 		let checked = $(".checkBox");
 		let filePath = $("#filePath").val();
 		let reqCnt = 0;
 		let checkList = [];
+		
+		Swal.fire({
+			title: '파일을 삭제하시겠습니까?',
+			text: "삭제하시면 다시 복구시킬 수 없습니다.",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: '삭제',
+			cancelButtonText: '취소'
+		}).then((result) => {
+			if (result.value) {
+				deleteFile().then((res) => {
+					console.log(res);
+					reqCnt = res;
+					alert(reqCnt + "개 파일을 삭제하였습니다.");
+					location.reload();
+				});
+			}
+		});
+		
+		
 		
 		async function deleteFile() {
 			
@@ -72,13 +92,6 @@ $(document).ready(function() {
 			
 			return reqCnt;
 		}
-		
-		deleteFile().then((res) => {
-			console.log(res);
-			reqCnt = res;
-			alert(reqCnt + "개 파일을 삭제하였습니다.");
-			location.reload();
-		});
 		
 	});
 	
@@ -242,20 +255,22 @@ function selectList(firstDir) {
 		url : '/ajax/selectFileList',
 		dataType : 'json',
 		data : "isDir=" + firstDir,
-		success : function(json, res) {
-			console.log(json);
+		success : function(res) {
+			console.log(res);
 			if(res) {
-				let data = json.filePath;
+				let data = res.filePath;
 				globalData = data;
 				allFilePath=firstDir;
 				$(".fileList > tr").remove();
 				for(idx in data) {
-					let fileName = data[idx].fname+data[idx].fext;
-					let ext = data[idx].fext;
-					let fileSize = data[idx].fsize / 1024 / 1024;
+					console.log(idx);
+					let fileName = data[idx].text;
+					console.log(fileName);
+					let ext = data[idx].ext;
+					let fileSize = data[idx].size / 1024 / 1024;
 					fileSize = fileSize.toFixed(3);
-					let mdfDate = data[idx].fdate;
-					let filePath = data[idx].fpath;
+					let mdfDate = data[idx].date;
+					let filePath = data[idx].url;
 					let lastIdx = filePath.lastIndexOf("\\");
 					filePath = filePath.substr(0, lastIdx);
 					selectParentPath = filePath;
@@ -264,7 +279,7 @@ function selectList(firstDir) {
 				}
 				if($(".fileList").children().length === 0) {
 					let html = "<tr>";
-						html += "<td colspan='5' style='text-align: center;'>이 폴더는 비어있습니다.</td>";
+						html += "<td colspan='6' style='text-align: center;'>이 폴더는 비어있습니다.</td>";
 						html += "</tr>";
 						
 					$(".fileList").append(html);
@@ -411,7 +426,7 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 	html += "<td class='fileSize'>" + fileSize + "MB</td>";
 	html += "<td class='fileExt'>" + ext + "</td>"; 
 	html += "<td class='udTime'>" + fileDate + "</td>";
-	html += "<td class='deletechk'>admin</td>";
+	html += "<td class='fileAuth'>admin</td>";
 	html += "</tr>";
 	
 	$('.fileList').append(html);
@@ -469,9 +484,7 @@ function createFolder(btn) {
 		addTr += "<td class='fileSize'></td>";
 		addTr += "<td class='fileExt'></td>"; 
 		addTr += "<td class='udTime'></td>";
-		addTr += "<td class='deletechk'>" +
-	            "<img name='xButton' src='/images/xButton.png'>" +
-	        	"</td>";
+		addTr += "<td class='fileAuth'>admin</td>";
 		addTr += "</tr>";
 		
 		lastNode.after(addTr);
@@ -528,5 +541,21 @@ function modalPopup() {
 	console.log($("#modalParentPath"));
 	$("#modalParentPath").val(globalSelectFolder);
 	
+}
+
+function FunLoadingBarStart() {
+	let backHeight = $(document).height(); //뒷 배경의 상하 폭
+	let backWidth = window.document.body.clientWidth; //뒷 배경의 좌우 폭
+	let backGroundCover = "<div id='back'></div>"; //뒷 배경을 감쌀 커버
+	let loadingBarImage = ''; //가운데 띄워 줄 이미지
+	
+	loadingBarImage += "<div id='loadingBar'>";
+	loadingBarImage += " <img src='/images/loadingbar.gif'/>"; //로딩 바 이미지
+	loadingBarImage += "</div>";
+	
+	$('body').append(backGroundCover).append(loadingBarImage);
+	$('#back').css({ 'width': backWidth, 'height': backHeight, 'opacity': '0.3' });
+	$('#back').show();
+	$('#loadingBar').show();
 }
 
