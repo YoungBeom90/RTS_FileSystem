@@ -48,28 +48,38 @@ $(document).ready(function() {
 		let reqCnt = 0;
 		let checkList = [];
 		
-		for(let i=0; i<checked.length; i++) {
-			if(target.checked === true) {
-				checkList = checked[i].offsetParent.nextSibling.innerHTML;
-				reqCnt++;
+		async function deleteFile() {
+			
+			for await(let target of checked) {
+				
+				if(target.checked === true) {
+					let fileName = target.offsetParent.nextSibling.innerHTML;
+				
+					await axios.post("/axios/deleteFile", null, {params : {
+						parent : filePath,
+						fileName : fileName
+					}}).then((res) => {
+						console.log(res);
+			        	if(res.data === "삭제 완료") {
+							console.log(res.data);
+							reqCnt++;
+			        	}
+			    	}).catch(function(error) {
+			        	console.log(error);
+			    	});
+				}
 			}
+			
+			return reqCnt;
 		}
 		
-		axios.post("/axios/deleteFile", null, {params : {
-				parent : filePath,
-				fileList : checkList
-		}}).then((res) => {
+		deleteFile().then((res) => {
 			console.log(res);
-        	if(res.data === "삭제 완료") {
-				console.log(res.data);
-        	}
-    	}).catch(function(error) {
-        	console.log(error);
-    	});
-
-		alert(reqCnt + "개 파일을 삭제하였습니다.");
+			reqCnt = res;
+			alert(reqCnt + "개 파일을 삭제하였습니다.");
+			location.reload();
+		});
 		
-		location.reload();
 	});
 	
 	//모달창 저장 클릭 이벤트
@@ -408,7 +418,7 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 }
 
 // 파일 삭제
-function deleteBtn(fileIndex){
+/*function deleteBtn(fileIndex){
     axios.post("/axios/deleteFile", null, 
 	{
 		params : {
@@ -428,7 +438,7 @@ function deleteBtn(fileIndex){
     delete fileSizeList[fileIndex];
     $("#fileTr_" + fileIndex).remove();
 	console.log(globalData[fileIndex].parent+"/"+globalData[fileIndex].text);
-};
+};*/
 
 // 폴더 생성
 function createFolder(btn) {
