@@ -255,20 +255,20 @@ function selectList(firstDir) {
 		url : '/ajax/selectFileList',
 		dataType : 'json',
 		data : "isDir=" + firstDir,
-		success : function(res) {
-			
+		success : function(json, res) {
+			console.log(json);
 			if(res) {
-				let data = res.filePath;
+				let data = json.filePath;
 				globalData = data;
 				allFilePath=firstDir;
 				$(".fileList > tr").remove();
 				for(idx in data) {
-					let fileName = data[idx].text;
-					let ext = data[idx].ext;
-					let fileSize = data[idx].size / 1024 / 1024;
+					let fileName = data[idx].fname+data[idx].fext;
+					let ext = data[idx].fext;
+					let fileSize = data[idx].fsize / 1024 / 1024;
 					fileSize = fileSize.toFixed(3);
-					let mdfDate = data[idx].date;
-					let filePath = data[idx].url;
+					let mdfDate = data[idx].fdate;
+					let filePath = data[idx].fpath;
 					let lastIdx = filePath.lastIndexOf("\\");
 					filePath = filePath.substr(0, lastIdx);
 					selectParentPath = filePath;

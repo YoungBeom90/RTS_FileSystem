@@ -1,6 +1,7 @@
 package com.copycoding.demo.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -24,4 +25,6 @@ public interface FileListDao {
 	public List<FileListVO> showFolderTree(String fpath);
 	//해당파일경로의 파일목록 불러오기
 	public List<FileListVO> selectFileList(String ppath);
+	//파일 이동
+	public int moveFile(String prevPath, String nextPath, String fname);
 }

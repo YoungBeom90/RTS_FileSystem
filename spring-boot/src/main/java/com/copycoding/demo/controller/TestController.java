@@ -66,6 +66,8 @@ public class TestController {
 		String isDir = "c:\\mind-one\\test";
 		
 		List<Map<String, Object>> folderList = fl.showFolderTree(isDir);
+		List<FileListVO> folderList2  = fileListService.showFolderTree(isDir);
+		
 		mv.addObject("folderList", folderList);
 		return mv;
 	}
@@ -82,9 +84,11 @@ public class TestController {
 		ModelAndView mv = new ModelAndView("jsonView");
 		WriteFile wf = new FileList();
 		List<Map<String, Object>> filePath = wf.showFilesInDir(isDir);
-		System.out.println(filePath);
-		mv.addObject("filePath", filePath);
-//		mv.setViewName("/users/fileList");
+		
+		//DB에 저장된 값
+		List<FileListVO> fp = fileListService.selectFileList(isDir);
+
+		mv.addObject("filePath", fp);
 		
 		return mv;
 	}
@@ -239,20 +243,25 @@ public class TestController {
 		FileListVO fl = new FileListVO();
 		
 		WriteFile wf = new FileList();
-
-		if(fileName.lastIndexOf(".")==-1)	{
-			fileListService.removeDir(fileName, parent.toLowerCase());
-			wf.fileDelete(filePath);
-		}else {
-			String fname = fileName.substring(0, fileName.lastIndexOf("."));
-			fileListService.removeFile(fname, parent.toLowerCase());
-			wf.fileDelete(filePath);
-
-		}
+		
+//		for (String fileName : fileList) {
+			
+			if(fileName.lastIndexOf(".")==-1)	{
+				fileListService.removeDir(fileName, parent.toLowerCase());
+				wf.fileDelete(filePath);
+			}else {
+				String fname = fileName.substring(0, fileName.lastIndexOf("."));
+				fileListService.removeFile(fname, parent.toLowerCase());
+				wf.fileDelete(filePath);
+			}//if~else end
+			
+//		}//for each end
 		return "삭제 완료";
 	}
 	
 	/**
+	 * 현재파일경로와 이동할 경로 param을 받아옴
+	 * 
 	 * @param fileList
 	 * @param prevPathStr
 	 * @param nextPathStr
@@ -266,17 +275,17 @@ public class TestController {
 		
 		WriteFile wf = new FileList();
 		File prevPath = new File(prevPathStr);
-		String fn = prevPath.getName();
-		File nextPath = new File(nextPathStr+ "\\"+"새 폴더"+"\\" +fn);
+		String fileName = prevPath.getName();
+		File nextPath = new File(nextPathStr+fileName);
 		
-		System.out.println(prevPath);
-		System.out.println(nextPath);
+		fileListService.moveFile(prevPathStr, nextPathStr, fileName);
+
 		String result=wf.fileCopy(prevPath, nextPath);
-		System.out.println(result);
+//		System.out.println(result);
 		
 		wf.fileDelete(prevPathStr);
 		
-		return "이동 완료";
+		return result;
 	}
 	
 }
