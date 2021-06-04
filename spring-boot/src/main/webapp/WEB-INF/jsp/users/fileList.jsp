@@ -32,6 +32,11 @@
 		<div id="fileContainer">
 			
 			<form name="uploadForm" id="uploadForm" enctype="multipart/form-data" method="POST">
+				<div id="fileTool">
+					<button type="button" id="uploadFileBtn" data-toggle="modal" data-target="#uploadModal" onclick="modalPopup()" class="btn btn-primary btn-sm">업로드</button>
+			    	<button type="button" id="createFolderBtn" class="btn btn-primary btn-sm">폴더생성</button>
+			    	<button type="button" id="deleteBtn" class="btn btn-danger btn-sm">삭제</button>
+				</div>
 		        <div class="dropZone" style="overflow-x:hidden">
 		            <table id="fileTable" class="table table-hover table-sm">
 		                <thead>
@@ -49,11 +54,7 @@
 		                <tbody class="fileList"></tbody>
 		            </table>
 		        </div>
-		        <div id="fileTool">
-					<button type="button" id="uploadFileBtn" data-toggle="modal" data-target="#uploadModal" onclick="modalPopup()" class="btn btn-primary btn-sm">업로드</button>
-			    	<button type="button" id="createFolderBtn" class="btn btn-primary btn-sm">폴더생성</button>
-			    	<button type="button" id="deleteBtn" class="btn btn-danger btn-sm">삭제</button>
-				</div>
+		        
 		    </form>
 		</div>
 	

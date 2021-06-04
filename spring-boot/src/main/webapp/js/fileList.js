@@ -17,9 +17,9 @@ $(document).ready(function() {
 	fileDropDown();
 	createFolder(btn);
 	
-	setTimeout(function() {
+	/*setTimeout(function() {
 		$(".jstree-clicked").trigger("click");
-	}, 1000);
+	}, 1000);*/
 	
 	// 파일 트리 생성
 	$('#jstree').on("select_node.jstree", function (e, data) { 
@@ -37,6 +37,13 @@ $(document).ready(function() {
 		} else if($('#filePath').val() !== selectID) {
 			$('#filePath').attr("value", selectID);
 		}
+	});
+	
+	$('#jstree').bind("dblclick.jstree", function(e, data) {
+		console.log(e.target);
+		let getPath = e.target.id.replace("_anchor", "");
+		getPath = getPath.substr(3);
+		console.log(getPath);
 	});
 	
 	// 삭제 버튼 클릭 이벤트
@@ -172,7 +179,9 @@ function renameFolderListener(obj) {
 //첫화면 파일트리 가져오기
 function init() {
 	console.log("1");
+	
 	axios.post("/axios/showFolderTree").then((res) => {
+		
 		if(res) {
 			console.log(res);
 			let treeData = res.data.folderList
@@ -542,20 +551,3 @@ function modalPopup() {
 	$("#modalParentPath").val(globalSelectFolder);
 	
 }
-
-function FunLoadingBarStart() {
-	let backHeight = $(document).height(); //뒷 배경의 상하 폭
-	let backWidth = window.document.body.clientWidth; //뒷 배경의 좌우 폭
-	let backGroundCover = "<div id='back'></div>"; //뒷 배경을 감쌀 커버
-	let loadingBarImage = ''; //가운데 띄워 줄 이미지
-	
-	loadingBarImage += "<div id='loadingBar'>";
-	loadingBarImage += " <img src='/images/loadingbar.gif'/>"; //로딩 바 이미지
-	loadingBarImage += "</div>";
-	
-	$('body').append(backGroundCover).append(loadingBarImage);
-	$('#back').css({ 'width': backWidth, 'height': backHeight, 'opacity': '0.3' });
-	$('#back').show();
-	$('#loadingBar').show();
-}
-
