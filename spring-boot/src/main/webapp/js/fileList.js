@@ -41,12 +41,32 @@ $(document).ready(function() {
 	
 	// 삭제 버튼 클릭 이벤트
 	$("#deleteBtn").on("click", function() {
-		confirm("삭제하시겠습니까?");
-		
 		let checked = $(".checkBox");
 		let filePath = $("#filePath").val();
 		let reqCnt = 0;
 		let checkList = [];
+		
+		Swal.fire({
+			title: '파일을 삭제하시겠습니까?',
+			text: "삭제하시면 다시 복구시킬 수 없습니다.",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: '삭제',
+			cancelButtonText: '취소'
+		}).then((result) => {
+			if (result.value) {
+				deleteFile().then((res) => {
+					console.log(res);
+					reqCnt = res;
+					alert(reqCnt + "개 파일을 삭제하였습니다.");
+					location.reload();
+				});
+			}
+		});
+		
+		
 		
 		async function deleteFile() {
 			
@@ -72,13 +92,6 @@ $(document).ready(function() {
 			
 			return reqCnt;
 		}
-		
-		deleteFile().then((res) => {
-			console.log(res);
-			reqCnt = res;
-			alert(reqCnt + "개 파일을 삭제하였습니다.");
-			location.reload();
-		});
 		
 	});
 	

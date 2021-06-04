@@ -17,18 +17,17 @@
     <script src="/js-lib/bootstrap.min.js"></script>
     <script src="/js-lib/jstree.min.js"></script> 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="/js/fileList.js"></script>
     <title>파일 드래그 드랍 테스트 화면</title>
 </head>
 <body>
-	<div id="container">
+	<div id="container" aria-hidden="true;">
 		<div id="sidebar">
-			<nav>
-				<div id="logo">
-					Logo
-				</div>
-		        <div id="jstree"></div>
-		    </nav>
+			<div id="logo">
+				Logo
+			</div>
+	        <div id="jstree"></div>
 		</div>
 		<div id="fileContainer">
 			<div id="fileTool">
@@ -44,17 +43,16 @@
 		                    	<th style="width:5%; font-size: 15px">
 		                    		<input type="checkbox" id="allCheck" onclick="checkAll()" style="cursor: pointer;">
 		                    	</th>
-		                        <th style="width:50%;">파일명</th>
-		                        <th style="width:14%;">파일크기</th>
-		                        <th style="width:8%;">파일형식</th>
-		                        <th style="width:18%;">수정된날짜</th>
-		                        <th style="width:10%;">게시자</th>
+		                        <th style="width:500px;">파일명</th>
+		                        <th style="width:200px;">파일크기</th>
+		                        <th style="width:200px;">파일형식</th>
+		                        <th style="width:200px;">수정된날짜</th>
+		                        <th style="width:200px;">게시자</th>
 		                    </tr>
 		                </thead>
 		                <tbody class="fileList"></tbody>
 		            </table>
 		        </div>
-		        
 		    </form>
 		</div>
 	
