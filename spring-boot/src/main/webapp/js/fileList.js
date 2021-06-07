@@ -10,6 +10,20 @@ let fileNameInput;
 let allFilePath;
 let globalSelectFolder;
 
+const loadingStart = () => {
+	setTimeout(() => {
+		$("#container").css("opacity", "0.3");
+		$("body").css("background", "no-repeat url('/images/loading.gif')");
+		$("body").css("background-position", "center center");
+		$("body").css("width", "100%");
+	}, 0);
+}
+
+const loadingEnd = () => {
+	$("#container").css("opacity", "1");
+}
+
+
 $(document).ready(function() {
 	let btn = document.getElementById("createFolderBtn");
 	
@@ -19,8 +33,8 @@ $(document).ready(function() {
 				$(".jstree-clicked").trigger("click");
 			},1000);
 		}
-		
 	});
+	
 	fileDropDown();
 	createFolder(btn);
 	
@@ -31,7 +45,9 @@ $(document).ready(function() {
 		globalSelectFolder = selectID;
 		selectID = selectID.replaceAll("\\", "\\\\");
 		console.log(selectID);
-		selectList(selectID);
+		selectList(selectID).then(() => {
+			loadingEnd();
+		});
 		if($('#filePath').length === 0) {
 			let html = "<input type='hidden' id='filePath' value='"+selectID+"' />";
 			$("#sidebar").append(html);
@@ -84,10 +100,7 @@ $(document).ready(function() {
 							confirmButtonColor: '#3085d6',
 							confirmButtonText: "확인"				
 						}).then(() => {
-							/*location.reload();*/
-							$("#jstree").jstree("destroy");
-							
-							init();
+							location.reload();
 						});
 					});
 				}
@@ -211,7 +224,7 @@ function renameFolderListener(obj) {
 
 //첫화면 파일트리 가져오기
 async function init() {
-	
+	loadingStart();
 	await axios.post("/axios/showFolderTree").then((res) => {
 		if(res) {
 			let treeData = res.data.folderList
@@ -276,28 +289,11 @@ async function init() {
 				},
 		    }).bind("rename_node.jstree", function (e, data) {    
 		    	renameFolderListener(data);
-					
-				
-				// 파일 트리 생성
-				$('#jstree').on("select_node.jstree", function (e, data) { 
-					let selectID = data.node.id;
-					selectID = selectID.substring(3);
-					globalSelectFolder = selectID;
-					console.log(selectID);
-					console.log($('#filePath').val());
-					selectList(selectID);
-					if($('#filePath').length === 0) {
-						let html = "<input type='hidden' id='filePath' value='"+selectID+"' />";
-						$("#sidebar").append(html);
-					} else if($('#filePath').val() === selectID) {
-						return;
-					} else if($('#filePath').val() !== selectID) {
-						$('#filePath').attr("value", selectID);
-					}
-				});
 			});
 			let firstDir = treeData[0].path;
-			selectList(firstDir);
+			selectList(firstDir).then(() => {
+				loadingEnd();
+			});
 			
 		}
 	}).catch((err) => {
@@ -308,9 +304,11 @@ async function init() {
 }
 
 // 선택된 폴더에 대한 자식요소 리스트 불러오기
-function selectList(firstDir) {
+async function selectList(firstDir) {
 	console.log("dir = " + firstDir);
-	$.ajax({
+	loadingStart();
+	
+	await $.ajax({
 		type : 'post',
 		url : '/ajax/selectFileList',
 		dataType : 'json',
@@ -654,8 +652,7 @@ function axiosCreateFolder(fldNm, fldPrt) {
 						confirmButtonText: "확인"
 					}).then((res) => {
 						if(res.value) {
-							$("#jstree").jstree("refresh");
-							/*location.reload();*/
+							location.reload();
 						}
 					});
 				} else {
