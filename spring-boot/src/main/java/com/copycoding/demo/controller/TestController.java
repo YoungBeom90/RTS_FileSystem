@@ -125,7 +125,7 @@ public class TestController {
 		fileListService.registFile(fl);
 	
 		if(folder.exists()) {
-			return "동일한 이름의 폴더가 존재합니다.";
+			return "0";
 		}
 		folder.mkdir();
 		
@@ -134,7 +134,7 @@ public class TestController {
 			return "-1";
 		}
 				
-		return "폴더 생성 완료.";
+		return "1";
 	}
 	
 	/**
