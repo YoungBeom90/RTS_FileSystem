@@ -27,4 +27,7 @@ public interface WriteFile {
 	//파일 복사
 	public String fileCopy(File prevFile, File nextFile);
 	
+	//파일 다운
+	public String donwloadFile(String filePath);
+	
 }

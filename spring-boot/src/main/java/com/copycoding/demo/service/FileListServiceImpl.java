@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.copycoding.demo.dao.FileListDao;
 import com.copycoding.demo.vo.FileListVO;
@@ -21,12 +22,18 @@ public class FileListServiceImpl implements FileListService{
 	}
 	
 	@Override
+	@Transactional
 	public String registFile(FileListVO fl) {
 		
 		//분기걸어서 fullPath확인후 일치하면 prevent
 		//select해서 존재하면 return -1
 		if(fileListDao.sameFileChk(fl)!=0) {
-			fileListDao.updateFile(fl);
+			try {
+				fileListDao.updateFile(fl);
+				fileListDao.updateFolderSizeUpdate(fl);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return "기존값";
 		}else {
 			UUID one = UUID.randomUUID();
@@ -35,14 +42,20 @@ public class FileListServiceImpl implements FileListService{
 			String pid = " ";
 			fl.setFid(fid);
 			fl.setPid(pid);
+
 			String result = fileListDao.addFile(fl);
+			fileListDao.addFolderSizeUpdate(fl);
 			return result;
 		}//if~else end
 	}
 	
 	@Override
+	@Transactional
 	public String removeFile(String fname, String fpath) {
 		
+		String ppath = fpath.substring(0, fpath.lastIndexOf("\\"));
+		
+		fileListDao.deleteFolderSizeUpdate(fname, ppath);
 		
 		return fileListDao.deleteFile(fname, fpath);
 	}
@@ -55,9 +68,13 @@ public class FileListServiceImpl implements FileListService{
 	}
 	
 	@Override
+	@Transactional
 	public String renameFile(String fname, String fpath, String rename) {
 
-		return fileListDao.renameFile(fname, fpath, rename);
+		String result = fileListDao.renameFile(fname, fpath, rename);
+		fileListDao.renameFolderPath(fname, fpath, rename);
+		
+		return result;
 	}
 	
 	@Override

@@ -332,4 +332,11 @@ public class FileList implements WriteFile {
 		return "복사 완료";
 	}
 
+	@Override
+	public String donwloadFile(String filePath) {
+		// TODO Auto-generated method stub
+		
+		return null;
+	}
+	
 }

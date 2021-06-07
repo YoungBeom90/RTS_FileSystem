@@ -122,7 +122,7 @@ public class TestController {
 		fl.setFpath(filePath);
 		fl.setPpath(filePath.substring(0,filePath.lastIndexOf("\\")));
 		fl.setFsize("0");
-		fileListService.registFile(fl);
+
 	
 		if(folder.exists()) {
 			return "동일한 이름의 폴더가 존재합니다.";
@@ -133,7 +133,7 @@ public class TestController {
 		if(!folder.exists()) {
 			return "-1";
 		}
-				
+		fileListService.registFile(fl);		
 		return "폴더 생성 완료.";
 	}
 	
@@ -292,6 +292,15 @@ public class TestController {
 //		System.out.println(result);
 		
 		wf.fileDelete(prevPathStr);
+		
+		return result;
+	}
+	
+	@RequestMapping("/ajax/downloadFile")
+	@ResponseBody
+	public String downloadFile() {
+		String result = null;
+		
 		
 		return result;
 	}

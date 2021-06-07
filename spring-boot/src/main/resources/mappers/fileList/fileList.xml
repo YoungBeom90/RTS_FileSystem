@@ -6,6 +6,11 @@
 		INSERT INTO filelist
 		VALUES(#{fid}, #{pid}, #{fname}, #{fpath}, #{ppath}, #{fsize}, #{fext}, #{fdate}, sysdate)
 	</select>
+	<select id="addFolderSizeUpdate" resultType="String" parameterType="com.copycoding.demo.vo.FileListVO">
+		UPDATE filelist
+		SET fsize = fsize + #{fsize}
+		WHERE fpath = #{ppath} AND fname != #{fname}
+	</select>
 	
 	<select id="sameFileChk" resultType="int" parameterType="com.copycoding.demo.vo.FileListVO">
 		SELECT COUNT(*)
@@ -19,14 +24,37 @@
 		WHERE fpath = #{fpath} AND fname=#{fname}
 	</select>
 	
+	<select id="updateFolderSizeUpdate" resultType="String" parameterType="com.copycoding.demo.vo.FileListVO">
+		UPDATE filelist a
+		SET a.fsize = a.fsize + #{fsize} - 
+			(
+				SELECT b.fsize
+				FROM filelist b
+				WHERE b.fname=#{fname}
+			)
+		WHERE a.fpath = #{ppath}
+	</select>
+	
+	
 	<select id="deleteFile" resultType="String" parameterType="String">
 		DELETE FROM filelist
 		WHERE fname = #{fname} AND fpath= #{fpath}
 	</select>
 	
+	<select id="deleteFolderSizeUpdate" resultType="String" parameterType="com.copycoding.demo.vo.FileListVO">
+		UPDATE filelist a
+		SET a.fsize = a.fsize - (
+			SELECT b.fsize
+			FROM filelist b
+			WHERE fname = #{fname}
+		)
+		WHERE fpath = #{ppath}
+	</select>
+	
+	
 	<select id="deleteDir" resultType="String" parameterType="String">
 		DELETE fileList
-		WHERE fname=#{fname} AND fpath=#{fpath} OR fpath like #{fpath}||'\%'
+		WHERE fname=#{fname} AND fpath=#{fpath} OR fpath like #{fpath}||'%'
 	</select>
 	
 	<select id="renameFile" resultType="String" parameterType="String">
@@ -34,6 +62,13 @@
 		SET fname = #{rename}
 		WHERE fpath = #{fpath} AND fname=#{fname}
 	</select>
+	
+	<select id="renameFolderPath" resultType="String" parameterType="String">
+		UPDATE filelist
+		SET fpath = REPLACE(fpath, #{fname}, #{rename}), ppath = REPLACE(ppath, #{fname}, #{rename})
+		WHERE ppath LIKE '%'||#{fname}||'%' OR fpath LIKE '%'||#{fname}||'%'
+	</select>	
+	
 	<select id="selectFileList" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
 		SELECT *
 		FROM filelist
