@@ -12,7 +12,7 @@ let globalSelectFolder;
 
 const loadingStart = () => {
 	setTimeout(() => {
-		$("#container").css("opacity", "0.3");
+		$("body").css("opacity", "0.8");
 		$("body").css("background", "no-repeat url('/images/loading.gif')");
 		$("body").css("background-position", "center center");
 		$("body").css("width", "100%");
@@ -20,7 +20,8 @@ const loadingStart = () => {
 }
 
 const loadingEnd = () => {
-	$("#container").css("opacity", "1");
+	$("#body").css("opacity", "1");
+	$("body").removeAttr("style");
 }
 
 
