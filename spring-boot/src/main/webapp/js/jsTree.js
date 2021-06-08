@@ -105,7 +105,6 @@ let tree_Common = {
 		});
 	},
 	doubleClick : function() {
-		
 		$('#jstree').bind("dblclick.jstree", function(e, data) {
 			console.log(e.target);
 			let getPath = e.target.id.replace("_anchor", "");

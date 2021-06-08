@@ -1,17 +1,14 @@
-let fileIndex = 0;
-let totalFileSize = 0;
-let fileList = new Array();
-let fileSizeList = new Array();
-let uploadSize = 50 * 1024 * 1024;
-let maxUploadSize = 500;
-let globalData;
+let totalFileSize = 0; // 업로드 총사이즈
+let uploadSize = 50 * 1024 * 1024; // 단일 업로드 사이즈
+let maxUploadSize = 500; // 최대 업로드 사이즈
+let globalData; // 선택된 노드 파일 리스트
 let selectParentPath;// 선택한 노드의 부모 경로
 let fileNameInput; // 선택된 체크박스의 파일 이름
 let allFilePath; // 백엔드에서 출력된 노드의 리스트 부모 경로
 let globalSelectFolder; // 선택된 노드;
+
 //로딩시작
 const loadingStart = () => {
-	console.log("loading Start...");
 	setTimeout(() => {
 		$("body").css("zIndex", "1000");
 		$("body").css("opacity", "0.5");
@@ -22,7 +19,6 @@ const loadingStart = () => {
 }
 // 로딩종료
 const loadingEnd = () => {
-	console.log("loading End!");
 	$("body").css("zIndex", "0");
 	$("body").css("opacity", "1");
 	$("body").removeAttr("style");
@@ -44,20 +40,22 @@ $(document).ready(function() {
 	let btn = document.getElementById("createFolderBtn");
 	createFolder(btn); 
 	
+	
 	// 삭제 버튼 클릭 이벤트
 	$("#deleteBtn").on("click", function() {	
-		let checked = $(".checkBox");
-		let filePath = $("#filePath").val();
-		let reqCnt = 0;
-		let checkList = [];
+		let checkBox = $(".checkBox");
+		let filePath = $("#filePath").val(); //삭제할 폴더 경로
+		let checkList = new Array;
 		let checkFlag = false;
 		
-		for(let i=0; i<checked.length; i++) {
-			if(checked[i].checked) {
+		
+		for(let i=0; i<checkBox.length; i++) {
+			if(checkBox[i].checked) {
+				checkList = checkBox[i];
 				checkFlag = true;
-				break;
 			}
 		}		
+		
 		if(checkFlag) {
 			Swal.fire({
 				title: '파일을 삭제하시겠습니까?',
@@ -70,8 +68,7 @@ $(document).ready(function() {
 				cancelButtonText: '취소'
 			}).then((result) => {
 				if (result.value) {
-					deleteFile().then((res) => {
-						console.log(res);
+					deleteFile(filePath).then((res) => {
 						reqCnt = res;
 						Swal.fire({
 							title: reqCnt + "개 파일을 삭제하였습니다.",
@@ -79,7 +76,7 @@ $(document).ready(function() {
 							confirmButtonColor: '#3085d6',
 							confirmButtonText: "확인"				
 						}).then(() => {
-							location.reload();
+							$(".jstree-clicked").trigger("click");
 						});
 					});
 				}
@@ -93,17 +90,26 @@ $(document).ready(function() {
 			});
 		}
 		
-		// 파일 삭제
-		async function deleteFile() {
+		
+		
+	});
+	
+	// 파일 삭제
+		async function deleteFile(filePath) {
+			let checkBox = $(".checkBox");
+			let fileNameList = $(".fileName");
+			let fileName;
+			let reqCnt = 0;
+			let fileIdx = 0;
 			
-			for await(let target of checked) {
+			for await(let target of checkBox) {
 				
-				if(target.checked === true) {
-					let fileName = target.offsetParent.nextSibling.innerHTML;
-				
+				if(target.checked) {
+					fileName = fileNameList[fileIdx].innerText; //파일명 가져오기 
+					
 					await axios.post("/axios/deleteFile", null, {params : {
-						parent : filePath,
-						fileName : fileName
+						'parent': filePath,
+						'fileName' : fileName.trim()
 					}}).then((res) => {
 						console.log(res);
 			        	if(res.data === "삭제 완료") {
@@ -114,12 +120,10 @@ $(document).ready(function() {
 			        	console.log(error);
 			    	});
 				}
+				fileIdx++;
 			}
-			
 			return reqCnt;
 		}
-		
-	});
 	
 	//모달창 저장 클릭 이벤트
 	$("#modalSubmit").on("click", function() {
@@ -147,17 +151,6 @@ function checkAll() {
 	}
 }
 
-function checkLine(node) {
-	let nodeId = $(node).attr("id");
-	let checkBox = $(node).children().eq(0).children();
-	console.log(checkBox[0].checked);
-	if(checkBox[0].checked === false) {
-		$("#" + nodeId).removeAttr("style");
-	} else {
-		$("#" + nodeId).attr("style", "background-color: #2257d4;");
-	}
-}
-
 // 폴더 추가시 실행
 function addFolderListener(parent, child) {
 	$("#"+ child).on("focusout", function() {		
@@ -165,7 +158,6 @@ function addFolderListener(parent, child) {
 		let addFolderPrt = parent.id.substring(3);
 		/*renameFolderListener(child);*/
 		axiosCreateFolder(addFolderNm, addFolderPrt);
-		console.log("폴더 생성.");
 	});
 }
 
@@ -175,9 +167,6 @@ function renameFolderListener(obj) {
 	let preNm = obj.old;
 	let afterNm = obj.text;
 	target = target.substr(3);
-	console.log(target);
-	console.log(preNm);
-	console.log(afterNm);
 	
 	if(obj) {
 		axios.post("/axios/renameFolder", null, {params: {
@@ -185,9 +174,7 @@ function renameFolderListener(obj) {
 			value : preNm,
 			rename : afterNm
 		}}).then((res) => {
-			if(res) {
-				console.log(res);
-				
+			if(res) {				
 				Swal.fire({
 					title: "이름 수정 완료",
 					icon: "success",
@@ -201,7 +188,6 @@ function renameFolderListener(obj) {
 
 // 선택된 폴더에 대한 자식요소 리스트 불러오기
 async function selectList(firstDir) {
-	console.log("dir = " + firstDir);
 	loadingStart();
 	
 	await $.ajax({
@@ -225,7 +211,7 @@ async function selectList(firstDir) {
 					let lastIdx = filePath.lastIndexOf("\\");
 					filePath = filePath.substr(0, lastIdx);
 					
-					addFileList(idx, fileName, fileSize, ext, mdfDate, filePath);	
+					addFileList(fileName, fileSize, ext, mdfDate, filePath);	
 				}
 				if($(".fileList").children().length === 0) {
 					let html = "<tr>";
@@ -235,7 +221,6 @@ async function selectList(firstDir) {
 					$(".fileList").append(html);
 				}
 			}
-			console.log(selectParentPath);
 		}
 	});
 }
@@ -245,7 +230,7 @@ async function selectList(firstDir) {
 // 파일 드롭다운 
 function fileDropDown() {
     let dropZone = $(".dropZone");
-
+	// 드랍하여 드랍존으로 옮겼을 경우
     dropZone.on('dragover',function(e){
         e.preventDefault();
         dropZone.css({
@@ -253,7 +238,7 @@ function fileDropDown() {
 			'opacity':'0.8'
     	});
 	});
-	
+	// 드랍후 마우스를 드랍존에서 벗어날 경우
     dropZone.on("dragleave", function(e) {
         e.preventDefault();
         dropZone.css({
@@ -262,7 +247,7 @@ function fileDropDown() {
 			'opacity':'1'
         });
     });
-
+	// 드랍 후 
     dropZone.on("drop", function(e) {
         e.preventDefault();
         dropZone.css({
@@ -280,12 +265,8 @@ function fileDropDown() {
 			
 			append할것 : fid, pid
 			*/
-			for(let i=0; i<fileIndex; i++){
+			for(let i=0; i<files.length; i++){
 				form.append('file', files[i]);
-				console.log(files[i]);
-				if(files[i].lastModified === undefined){
-					continue;
-				}
 				form.append('fdate', files[i].lastModified);
 			}
 			form.append('parent', selectParentPath);
@@ -299,11 +280,7 @@ function fileDropDown() {
 			for(let i=0; i<files.length; i++) {
 				
 				for(let j=0; j<globalData.length; j++) {
-					console.log(files[i].name +"==="+ globalData[j].text);
-					
 					if(files[i].name === globalData[j].text) {
-						console.log("dupCheck True!");
-						
 						dupCheck = true;
 						break;	
 					} 
@@ -324,8 +301,7 @@ function fileDropDown() {
 					cancelButtonText: '취소'
 				}).then((res) => {
 					if(res.value) {
-						
-						selectFile(files);
+						selectFile(files)
 						
 						$.ajax({
 							url: "/ajax/uploadFile.json",
@@ -336,18 +312,17 @@ function fileDropDown() {
 							data:form,
 							timeout:50000,
 							success : function(data){
-								console.log(data);
-								console.log("성공");
+								$(".jstree-clicked").trigger("click");
 							},
 							error : function(err){
 								console.log(err);
-								console.log("에러");
+								$(".jstree-clicked").trigger("click");
 							}
 						});
 					} 
 				});
 			} else {
-				selectFile(files);
+				selectFile(files)
 					
 				$.ajax({
 					url: "/ajax/uploadFile.json",
@@ -360,18 +335,18 @@ function fileDropDown() {
 					success : function(data){
 						console.log(data);
 						console.log("성공");
+						$(".jstree-clicked").trigger("click");
 					},
 					error : function(err){
 						console.log(err);
 						console.log("에러");
+						$(".jstree-clicked").trigger("click");
 					}
 				});
 			}
         } else {
             alert("Error");
         }
-		
-		/*location.reload();*/
     });
 }
 
@@ -381,6 +356,7 @@ function selectFile(files) {
     if(files) {
 		
         for(let i = 0; i < files.length; i++) {
+			console.log(files[i]);
             let fileName = files[i].name;
             let fileNameArr = fileName.split("\.");
             let ext = fileNameArr[fileNameArr.length - 1];
@@ -413,12 +389,8 @@ function selectFile(files) {
 				break;
             } else {
                 totalFileSize += fileSize;
-                fileList[fileIndex] = files[i];
                 fileSize = fileSize.toFixed(3);
-                fileSizeList[fileIndex] = fileSize;
-                addFileList(fileIndex, fileName, fileSize, ext);
-
-                fileIndex++;
+                addFileList(fileName, fileSize, ext);
             }
 			
         }
@@ -427,9 +399,8 @@ function selectFile(files) {
 
 
 // 파일리스트 조회, 추가 
-function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
+function addFileList(fileName, fileSize, ext, mdfDate) {
 	
-	/*console.log(fileIndex + "/" + fileName + "/" + fileSize + "/" + ext);*/
 	let udTime = new Date();
 	let year = udTime.getFullYear();
 	let month = udTime.getMonth() + 1;
@@ -448,11 +419,34 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 	}
 	
 	let html = "";
-	html += "<tr id='fileTr_" + fileIndex + "' name='"+fileIndex+"' class='fileTr' onclick='checkLine(this)'>";
+	html += "<tr id='fileTr_" + fileName + "' class='fileTr'>";
 	html += "<td>";
-	html += "<input type='checkbox' class='checkBox'/>"
+	html += "<input type='checkbox' class='checkBox'/>";
 	html += "</td>";
-	html += "<td class='fileName'>" + fileName + "</td>";
+	html += "<td class='fileName'>";
+	if(ext) {
+		switch(ext) {
+			case "폴더" :
+				html += "<i class='far fa-folder''></i>";
+				break;
+			case "xls" || "xlsx" : 
+				html += "<i class='far fa-file-excel'></i>";
+				break;
+			case "jpg" || "gif" || "png" || "bmp" :
+				html += "<i class='far fa-file-image'></i>";
+				break;
+			case "zip" || "7z" || "war" || "jar" || "tar" || "iso" :
+				html += "<i class='far fa-file-archive'></i>";
+				break;
+			case "mp3" || "mp4" || "avi" || "wma" :
+				html += "<i class='far fa-file-video'></i>";
+				break;
+			default : 
+				html += "<i class='far fa-file'></i>";
+				break;
+		}
+	}
+	html += "&nbsp;&nbsp;&nbsp;" + fileName + "</td>";
 	html += "<td class='fileSize'>" + fileSize + "MB</td>";
 	html += "<td class='fileExt'>" + ext + "</td>"; 
 	html += "<td class='udTime'>" + fileDate + "</td>";
@@ -461,29 +455,6 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 	
 	$('.fileList').append(html);
 }
-
-// 파일 삭제
-/*function deleteBtn(fileIndex){
-    axios.post("/axios/deleteFile", null, 
-	{
-		params : {
-			parent : selectParentPath,
-			fileName : globalData[fileIndex].text
-			}
-		}).then(function(res) {
-			console.log(res);
-        if(res) {
-            alert(res.data);
-        }
-    }).catch(function(error) {
-        console.log(error);
-    });
-    totalFileSize -1;
-    delete fileList[fileIndex];
-    delete fileSizeList[fileIndex];
-    $("#fileTr_" + fileIndex).remove();
-	console.log(globalData[fileIndex].parent+"/"+globalData[fileIndex].text);
-};*/
 
 // 폴더 생성
 function createFolder(btn) {
@@ -574,7 +545,7 @@ function axiosCreateFolder(fldNm, fldPrt) {
 						confirmButtonText: "확인"
 					}).then((res) => {
 						if(res.value) {
-							location.reload();
+							$(".jstree-clicked").trigger("click");
 						}
 					});
 				} else {
@@ -585,9 +556,7 @@ function axiosCreateFolder(fldNm, fldPrt) {
 						confirmButtonText: "확인"
 					});
 				}
-				
 	        }
-			
 	    });
 	}
 	

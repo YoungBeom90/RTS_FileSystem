@@ -106,6 +106,10 @@ th:last-child {
 	border-top-right-radius: 10px; 
 }
 
+tr {
+	cursor: pointer;
+}
+
 td:last-child {
 	border-right: none;
 }
