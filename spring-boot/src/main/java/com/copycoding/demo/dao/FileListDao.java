@@ -29,15 +29,6 @@ public interface FileListDao {
 	
 	//삭제시 부모폴더 사이즈 수정
 	public String deleteFolderSizeUpdate(String fname, String ppath);
-
-	//폴더삭제
-	public String deleteDir(String fname, String fpath);
-	
-	//해당 경로의 파일 이름수정
-	public String renameFile(String fname, String fpath, String rename);
-	
-	//이름수정시 DB의 부모경로, 내경로 경로명 수정
-	public String renameFolderPath(String fname, String fpath, String rename);
 	
 	//JTree 폴더 목록 불러오기
 	public List<FileListVO> showFolderTree(String fpath);

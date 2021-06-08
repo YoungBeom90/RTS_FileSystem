@@ -9,13 +9,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.copycoding.demo.dao.FileListDao;
+import com.copycoding.demo.dao.FolderListDao;
 import com.copycoding.demo.vo.FileListVO;
+import com.copycoding.demo.vo.FolderListVO;
 
 @Service
 public class FileListServiceImpl implements FileListService{
 
 	@Autowired
 	private FileListDao fileListDao;
+	@Autowired
+	private FolderListDao folderListDao;
 	
 	public void setFileListDao(FileListDao fileListDao) {
 		this.fileListDao = fileListDao;
@@ -50,6 +54,32 @@ public class FileListServiceImpl implements FileListService{
 	}
 	
 	@Override
+	public String createFolder(FolderListVO fl) {
+		
+		System.out.println(fl.getFname());
+		System.out.println(fl.getFpath());
+		System.out.println(fl.getPpath());
+		System.out.println(fl.getFsize());
+		System.out.println(fl.getFdate());
+		
+		if(folderListDao.sameFolderChk(fl)!=0) {
+			
+			return "동일 폴더명이 존재";
+		}else {
+			
+			UUID key = UUID.randomUUID();
+			String fid = key.toString();
+			fl.setFid(fid);
+			System.out.println(fl.getFid());
+			
+			String result = folderListDao.addFolder(fl);
+			return result;
+		}//if~else end
+		
+	}
+	
+	
+	@Override
 	@Transactional
 	public String removeFile(String fname, String fpath) {
 		
@@ -64,18 +94,18 @@ public class FileListServiceImpl implements FileListService{
 	@Override
 	public String removeDir(String fname, String fpath) {
 
-		return fileListDao.deleteDir(fname, fpath);
+		return folderListDao.deleteDir(fname, fpath);
 	}
 	
 	@Override
 	@Transactional
 	public String renameFile(String fname, String fpath, String rename) {
 
-		String result = fileListDao.renameFile(fname, fpath, rename);
+		String result = folderListDao.renameFolder(fname, fpath, rename);
 		System.out.println(rename);
 		System.out.println(fname);
 		System.out.println(fpath);
-		fileListDao.renameFolderPath(fname, fpath, rename);
+		folderListDao.renameFolderPath(fname, fpath, rename);
 		
 		return result;
 	}

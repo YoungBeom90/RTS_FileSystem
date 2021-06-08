@@ -51,24 +51,6 @@
 		WHERE fpath = #{ppath}
 	</select>
 	
-	
-	<select id="deleteDir" resultType="String" parameterType="String">
-		DELETE fileList
-		WHERE fname=#{fname} AND fpath=#{fpath} OR fpath like #{fpath}||'%'
-	</select>
-	
-	<select id="renameFile" resultType="String" parameterType="String">
-		UPDATE filelist
-		SET fname = #{rename}
-		WHERE fpath = #{fpath} AND fname=#{fname}
-	</select>
-	
-	<select id="renameFolderPath" resultType="String" parameterType="String">
-		UPDATE filelist
-		SET fpath = REPLACE(fpath, #{fname}, #{rename}), ppath = REPLACE(ppath, #{fname}, #{rename})
-		WHERE ppath LIKE #{fpath}||'%' AND fpath LIKE #{fpath}||'%'
-	</select>	
-	
 	<select id="selectFileList" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
 		SELECT *
 		FROM filelist

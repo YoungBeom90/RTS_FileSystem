@@ -280,7 +280,7 @@ function fileDropDown() {
 			
 			append할것 : fid, pid
 			*/
-			for(let i=0; i<fileIndex; i++){
+			for(let i=0; i<files.length; i++){
 				form.append('file', files[i]);
 				console.log(files[i]);
 				if(files[i].lastModified === undefined){

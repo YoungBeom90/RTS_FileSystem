@@ -25,6 +25,7 @@ import com.copycoding.demo.common.WriteFile;
 import com.copycoding.demo.service.FileListService;
 import com.copycoding.demo.service.UserInfoService;
 import com.copycoding.demo.vo.FileListVO;
+import com.copycoding.demo.vo.FolderListVO;
 import com.copycoding.demo.vo.UserInfoVO;
 
 @Component
@@ -111,36 +112,33 @@ public class TestController {
 	public String createFolder(@RequestParam(value="value", required=true) String value, String path) throws Exception {
 		String filePath = path;
 		String fileName = value;
-		File folder = new File(filePath + "\\" + fileName);
+		File folder = new File(filePath + "\\\\" + fileName);
 		
-		FileListVO fl = new FileListVO();
+		FolderListVO fl = new FolderListVO();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 	
 		fl.setFname(fileName);
-		fl.setFext("폴더");
 		fl.setFdate(timestamp);
 		fl.setFpath(filePath);
 		fl.setPpath(filePath.substring(0,filePath.lastIndexOf("\\\\")));
-		fl.setFsize("0");
-		System.out.println(filePath);
-		System.out.println(fl.getPpath());
+		fl.setFsize(0);
 	
+
+		
 		if(folder.exists()) {
 			return "0";
 		}
 		folder.mkdir();
+
 		
 		// 생성여부 확인
 		if(!folder.exists()) {
 			return "-1";
 		}
-//<<<<<<< HEAD
-		fileListService.registFile(fl);		
-		return "폴더 생성 완료.";
-//=======
-				
-//		return "1";
-//>>>>>>> branch 'master' of http://192.168.1.20:90/r/RTS_TEST.git
+		
+		fileListService.createFolder(fl);	
+		
+		return "1";
 	}
 	
 	/**
@@ -156,7 +154,7 @@ public class TestController {
 	public String renameFolder(@RequestParam(value="value", required=true) String value, String path, String rename) throws Exception{
 		
 		WriteFile wf = new FileList();
-		String parent = path.substring(0, path.lastIndexOf("\\"));
+		String parent = path.substring(0, path.lastIndexOf("\\\\"));
 		String result = wf.fileModify(path, rename);
 		if(result.equals("-1")) {
 			fileListService.renameFile(value, parent, rename);
@@ -203,7 +201,7 @@ public class TestController {
 	public void addFile(
 			@RequestParam (value="file", required=true) List<MultipartFile> list,
 			@RequestParam (value="fdate", required=true) Long fdate,
-			@RequestParam (value="parent", required=false) String parent)
+			@RequestParam (value="parent", required=true) String parent)
 			
 	{
 		FileListVO fl = new FileListVO();

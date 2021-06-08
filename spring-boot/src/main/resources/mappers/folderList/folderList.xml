@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.copycoding.demo.dao.FolderListDao">
+	
+	<select id="addFolder" resultType="String" parameterType="com.copycoding.demo.vo.FolderListVO">
+		INSERT INTO folderlist
+		VALUES(#{fid}, #{fname}, #{fpath}, #{ppath}, #{fsize}, #{fdate}, systimestamp)
+	</select>
+	
+	<select id="sameFolderChk" resultType="int" parameterType="com.copycoding.demo.vo.FolderListVO">
+		SELECT COUNT(*)
+		FROM folderlist
+		WHERE fpath = #{fpath} AND fname=#{fname}
+	</select>
+	
+	<select id="deleteDir" resultType="String" parameterType="String">
+		DELETE folderList
+		WHERE fname=#{fname} AND fpath=#{fpath} OR fpath like #{fpath}||'\\'||#{fname}||'%'
+	</select>
+	
+	<select id="renameFolder" resultType="String" parameterType="String">
+		UPDATE folderList
+		SET fname = #{rename}
+		WHERE fpath = #{fpath} AND fname=#{fname}
+	</select>
+	
+	<select id="renameFolderPath" resultType="String" parameterType="String">
+		UPDATE folderList
+		SET fpath = REPLACE(fpath, #{fname}, #{rename}), ppath = REPLACE(ppath, #{fname}, #{rename})
+		WHERE ppath LIKE #{fpath}||'%' AND fpath LIKE #{fpath}||'%'
+	</select>	
+	
+</mapper>

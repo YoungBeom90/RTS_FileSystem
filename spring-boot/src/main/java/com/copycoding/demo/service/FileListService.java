@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.copycoding.demo.vo.FileListVO;
+import com.copycoding.demo.vo.FolderListVO;
 
 public interface FileListService {
-	//파일,폴더 등록
+	//파일 등록
 	public String registFile(FileListVO fl);
+	//폴더 생성
+	public String createFolder(FolderListVO fl);
 	//파일삭제
 	public String removeFile(String fname, String fpath);
 	//폴더삭제
