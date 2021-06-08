@@ -72,6 +72,9 @@ public class FileListServiceImpl implements FileListService{
 	public String renameFile(String fname, String fpath, String rename) {
 
 		String result = fileListDao.renameFile(fname, fpath, rename);
+		System.out.println(rename);
+		System.out.println(fname);
+		System.out.println(fpath);
 		fileListDao.renameFolderPath(fname, fpath, rename);
 		
 		return result;

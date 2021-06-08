@@ -10,25 +10,45 @@ let fileNameInput;
 let allFilePath;
 let globalSelectFolder;
 
+const loadingStart = () => {
+	setTimeout(() => {
+		$("body").css("opacity", "0.8");
+		$("body").css("background", "no-repeat url('/images/loading.gif')");
+		$("body").css("background-position", "center center");
+		$("body").css("width", "100%");
+	}, 0);
+}
+
+const loadingEnd = () => {
+	$("#body").css("opacity", "1");
+	$("body").removeAttr("style");
+}
+
+
 $(document).ready(function() {
 	let btn = document.getElementById("createFolderBtn");
-
-	init();
+	
+	init().then((res) => {
+		if(res === "1") {
+			setTimeout(function() {
+				$(".jstree-clicked").trigger("click");
+			},1000);
+		}
+	});
+	
 	fileDropDown();
 	createFolder(btn);
-	
-	/*setTimeout(function() {
-		$(".jstree-clicked").trigger("click");
-	}, 1000);*/
 	
 	// 파일 트리 생성
 	$('#jstree').on("select_node.jstree", function (e, data) { 
 		let selectID = data.node.id;
 		selectID = selectID.substring(3);
 		globalSelectFolder = selectID;
+		selectID = selectID.replaceAll("\\", "\\\\");
 		console.log(selectID);
-		console.log($('#filePath').val());
-		selectList(selectID);
+		selectList(selectID).then(() => {
+			loadingEnd();
+		});
 		if($('#filePath').length === 0) {
 			let html = "<input type='hidden' id='filePath' value='"+selectID+"' />";
 			$("#sidebar").append(html);
@@ -47,34 +67,55 @@ $(document).ready(function() {
 	});
 	
 	// 삭제 버튼 클릭 이벤트
-	$("#deleteBtn").on("click", function() {
+	$("#deleteBtn").on("click", function() {	
 		let checked = $(".checkBox");
 		let filePath = $("#filePath").val();
 		let reqCnt = 0;
 		let checkList = [];
+		let checkFlag = false;
 		
-		Swal.fire({
-			title: '파일을 삭제하시겠습니까?',
-			text: "삭제하시면 다시 복구시킬 수 없습니다.",
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			confirmButtonText: '삭제',
-			cancelButtonText: '취소'
-		}).then((result) => {
-			if (result.value) {
-				deleteFile().then((res) => {
-					console.log(res);
-					reqCnt = res;
-					alert(reqCnt + "개 파일을 삭제하였습니다.");
-					location.reload();
-				});
+		for(let i=0; i<checked.length; i++) {
+			if(checked[i].checked) {
+				checkFlag = true;
+				break;
 			}
-		});
+		}		
+		if(checkFlag) {
+			Swal.fire({
+				title: '파일을 삭제하시겠습니까?',
+				text: "삭제하시면 다시 복구시킬 수 없습니다.",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: '삭제',
+				cancelButtonText: '취소'
+			}).then((result) => {
+				if (result.value) {
+					deleteFile().then((res) => {
+						console.log(res);
+						reqCnt = res;
+						Swal.fire({
+							title: reqCnt + "개 파일을 삭제하였습니다.",
+							icon: "success",
+							confirmButtonColor: '#3085d6',
+							confirmButtonText: "확인"				
+						}).then(() => {
+							location.reload();
+						});
+					});
+				}
+			});
+		} else {
+			Swal.fire({
+				title: "파일을 선택해주세요.",
+				icon: "info",
+				confirmButtonColor: '#3085d6',
+				confirmButtonText: "확인"				
+			});
+		}
 		
-		
-		
+		// 파일 삭제
 		async function deleteFile() {
 			
 			for await(let target of checked) {
@@ -168,7 +209,13 @@ function renameFolderListener(obj) {
 		}}).then((res) => {
 			if(res) {
 				console.log(res);
-				alert("이름 수정 완료");
+				
+				Swal.fire({
+					title: "이름 수정 완료",
+					icon: "success",
+					confirmButtonColor: '#3085d6',
+					confirmButtonText: "확인"
+				});
 			}
 		});
 	}
@@ -177,15 +224,13 @@ function renameFolderListener(obj) {
 
 
 //첫화면 파일트리 가져오기
-function init() {
-	console.log("1");
-	
-	axios.post("/axios/showFolderTree").then((res) => {
-		
+async function init() {
+	loadingStart();
+	await axios.post("/axios/showFolderTree").then((res) => {
 		if(res) {
-			console.log(res);
 			let treeData = res.data.folderList
 			globalFolderData = treeData;
+			
 			$('#jstree').jstree({
        			plugins: ["contextmenu"],
 		        core: {
@@ -246,35 +291,37 @@ function init() {
 		    }).bind("rename_node.jstree", function (e, data) {    
 		    	renameFolderListener(data);
 			});
-			console.log(treeData);
 			let firstDir = treeData[0].path;
-			selectList(firstDir);
+			selectList(firstDir).then(() => {
+				loadingEnd();
+			});
 			
 		}
 	}).catch((err) => {
 		console.log(err);
 	});
 	
+	return "1";
 }
 
 // 선택된 폴더에 대한 자식요소 리스트 불러오기
-function selectList(firstDir) {
-	$.ajax({
+async function selectList(firstDir) {
+	console.log("dir = " + firstDir);
+	loadingStart();
+	
+	await $.ajax({
 		type : 'post',
 		url : '/ajax/selectFileList',
 		dataType : 'json',
-		data : "isDir=" + firstDir,
+		data : "isDir=" + encodeURIComponent(firstDir),
 		success : function(res) {
-			console.log(res);
 			if(res) {
 				let data = res.filePath;
 				globalData = data;
 				allFilePath=firstDir;
 				$(".fileList > tr").remove();
 				for(idx in data) {
-					console.log(idx);
 					let fileName = data[idx].text;
-					console.log(fileName);
 					let ext = data[idx].ext;
 					let fileSize = data[idx].size / 1024 / 1024;
 					fileSize = fileSize.toFixed(3);
@@ -302,70 +349,107 @@ function selectList(firstDir) {
 	
 // 파일 드롭다운 
 function fileDropDown() {
-    var dropZone = $(".dropZone");
+    let dropZone = $(".dropZone");
 
     dropZone.on('dragover',function(e){
         e.preventDefault();
-        dropZone.css('background-color','#e3f2fC');
-    });
-
+        dropZone.css({
+			'background-color':'#dbccff',
+			'opacity':'0.8'
+    	});
+	});
+	
     dropZone.on("dragleave", function(e) {
         e.preventDefault();
         dropZone.css({
-            "border" : "1px solid black",
-            "background-color" : "#fff"
+            "border" : "none",
+            "background-color" : "rgb(227,242,253)",
+			'opacity':'1'
         });
     });
 
     dropZone.on("drop", function(e) {
         e.preventDefault();
         dropZone.css({
-            "border" : "1px solid #802791",
-            "background-color" : "#dbccff"
+            "background-color" : "rgb(227,242,253)",
+			'opacity':'1'
         });
-		var files = e.originalEvent.dataTransfer.files;
+		let files = e.originalEvent.dataTransfer.files;
 
         if(files != null) {
-            selectFile(files);
-			var form = new FormData();
+            
+			let form = new FormData();
 			
 			/** 
 			fname, fext, fdate, size, parent 까지 넘어감
 			
 			append할것 : fid, pid
 			*/
-			for(var i=0; i<fileIndex; i++){
+			for(let i=0; i<fileIndex; i++){
 				form.append('file', files[i]);
+				console.log(files[i]);
+				if(files[i].lastModified === undefined){
+					continue;
+				}
 				form.append('fdate', files[i].lastModified);
 			}
 			form.append('parent', allFilePath);
 			
-			for (var pair of form.entries()) { 
+			for (let pair of form.entries()) { 
 				console.log(pair[0]+ ', ' + pair[1]); 
+			}
+			
+			let dupCheck = false;
+			
+			for(let i=0; i<files.length; i++) {
+				for(let j=0; j<files.length; j++) {
+					console.log(globalData[j]);
+					if(files[i].text = globalData[j].text) {
+						dupCheck = true;
+						break;	
+					} 
 				}
-
-			$.ajax({
-				url: "/ajax/uploadFile.json",
-				type : "post",
-				enctype : "multipart/form-data",
-				processData :false,
-				contentType :false,
-				data:form,
-				timeout:50000,
-				success : function(data){
-					console.log(data);
-					console.log("성공");
-				},
-				error : function(err){
-					console.log(err);
-					console.log("에러");
-				}
-			})
-
+			}
+			
+			if(dupCheck) {
+				Swal.fire({
+					title: "이미 저장되어 있는 파일 이름이 존재합니다. ",
+					text: "덮어 씌우겠습니까?",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: '덮어쓰기',
+					cancelButtonText: '취소'
+				}).then((res) => {
+					if(res.value) {
+						
+						selectFile(files);
+						
+						$.ajax({
+							url: "/ajax/uploadFile.json",
+							type : "post",
+							enctype : "multipart/form-data",
+							processData :false,
+							contentType :false,
+							data:form,
+							timeout:50000,
+							success : function(data){
+								console.log(data);
+								console.log("성공");
+							},
+							error : function(err){
+								console.log(err);
+								console.log("에러");
+							}
+						});
+					} 
+				});
+			}
         } else {
             alert("Error");
         }
-
+		
 		/*location.reload();*/
     });
 }
@@ -380,15 +464,32 @@ function selectFile(files) {
             let fileNameArr = fileName.split("\.");
             let ext = fileNameArr[fileNameArr.length - 1];
             let fileSize = files[i].size / 1024 / 1024; // MB
-
+			
+			
             if($.inArray(ext, ['exe', 'bat']) >= 0) {
-                alert("등록 불가 확장자 입니다.");
+                Swal.fire({
+					title: "등록불가 확장자 입니다.",
+					icon: "warning",
+					confirmButtonColor: '#3085d6',
+					confirmButtonText: "확인"
+				});
                 break;
             } else if(fileSize > uploadSize) {
-                alert("용량 초과!\n(업로드 가능용량: " + uploadSize + "MB");
+				Swal.fire({
+					title: "용량 초과!\n(업로드 가능용량: " + uploadSize + "MB",
+					icon: "warning",
+					confirmButtonColor: '#3085d6',
+					confirmButtonText: "확인"
+				});
                 break;
             } else if(files[i].type === "") {
-                alert("폴더를 업로드 할 수 없습니다.");
+				Swal.fire({
+					title: "폴더를 업로드 할 수 없습니다.",
+					icon: "warning",
+					confirmButtonColor: '#3085d6',
+					confirmButtonText: "확인"
+				});
+				break;
             } else {
                 totalFileSize += fileSize;
                 fileList[fileIndex] = files[i];
@@ -398,9 +499,8 @@ function selectFile(files) {
 
                 fileIndex++;
             }
-		
+			
         }
-		
     }
 }
 
@@ -468,6 +568,17 @@ function addFileList(fileIndex, fileName, fileSize, ext, mdfDate) {
 function createFolder(btn) {
     btn.addEventListener("click", function() {
 		let newFolder = $("#fileNameInput").html();
+		let prtPath = $("#filePath").val();
+	
+		if(prtPath === undefined) {
+			Swal.fire({
+				title: "상위 폴더를 선택하세요.",
+				icon: "info",
+				confirmButtonColor: '#3085d6',
+				confirmButtonText: "확인"
+			})
+			return;
+		}
 		
 		if(newFolder === "") {
 			return;
@@ -482,11 +593,11 @@ function createFolder(btn) {
 			lastNode.hide();
 		}
 		
-		let addTr =  "<tr class='fileTr' onclick='checkLine(this)'>";
+		let addTr =  "<tr class='fileTr'>";
 		addTr += "<td class='checkBox'>";
 		addTr += "</td>";
 		addTr += "<td class='fileName'>";
-		addTr += "<input type='text' id='fileNameInput' class='folderInput' value='새 폴더' onsubmit='return false' />";
+		addTr += "<input type='text' id='fileNameInput' class='folderInput form-control form-control-sm' value='새 폴더' onsubmit='return false' />";
 		addTr += "<input type='button' id='fileNmSubmit' class='btn btn-success btn-sm' value='저장' />";
 		addTr += "<input type='button' class='btn btn-danger btn-sm' value='취소' onclick='createCancel();'/>";
 		addTr += "</td>";
@@ -519,20 +630,43 @@ function axiosCreateFolder(fldNm, fldPrt) {
 	let oriPath = $("#filePath").val();
 	
 	if(oriPath === fldPrt) {
+		console.log(fldPrt);
 		axios.post("/axios/createFolder", null, {params : {
 			value : fldNm,
 			path : fldPrt
 		}}).then(function(res) {
 	        if(res) {
 				if(res.data === -1) {
-					alert("폴더경로를 읽어오지 못했습니다. 폴더 클릭 후 재시도 해주세요.");
-					return;
+					Swal.fire({
+						title: "폴더경로를 읽어오지 못했습니다. 폴더 클릭 후 재시도 해주세요.",
+						icon: "error",
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: "확인"
+					}).then((res) => {
+						return;
+					});
+				} else if(res.data === 1){
+					Swal.fire({
+						title: "폴더 생성 완료.",
+						icon: "success",
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: "확인"
+					}).then((res) => {
+						if(res.value) {
+							location.reload();
+						}
+					});
 				} else {
-					alert(res.data);
+					Swal.fire({
+						title: "동일한 폴더 이름이 존재합니다.",
+						icon: "warning",
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: "확인"
+					});
 				}
+				
 	        }
-			init();
-			location.reload();
+			
 	    });
 	}
 	
