@@ -18,6 +18,7 @@
     <script src="/js-lib/jstree.min.js"></script> 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="/js/jsTree.js"></script>
     <script src="/js/fileList.js"></script>
     <title>파일 드래그 드랍 테스트 화면</title>
 </head>
