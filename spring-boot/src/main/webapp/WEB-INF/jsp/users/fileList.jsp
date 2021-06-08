@@ -11,13 +11,14 @@
   	<link rel="stylesheet" href="/css/fileList.css" />
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/buttons.css" />
-    <link rel="stylesheet" href="/css/themes/default/style.css" /> 
-     
+    <link rel="stylesheet" href="/css/themes/default/style.css" />
+    
     <script src="/js-lib/jquery-3.3.1.min.js"></script>
     <script src="/js-lib/bootstrap.min.js"></script>
     <script src="/js-lib/jstree.min.js"></script> 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="https://kit.fontawesome.com/d983714281.js" crossorigin="anonymous"></script>
     <script src="/js/jsTree.js"></script>
     <script src="/js/fileList.js"></script>
     <title>파일 드래그 드랍 테스트 화면</title>
