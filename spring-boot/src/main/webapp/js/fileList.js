@@ -5,66 +5,44 @@ let fileSizeList = new Array();
 let uploadSize = 50 * 1024 * 1024;
 let maxUploadSize = 500;
 let globalData;
-let selectParentPath;
-let fileNameInput;
-let allFilePath;
-let globalSelectFolder;
-
+let selectParentPath;// 선택한 노드의 부모 경로
+let fileNameInput; // 선택된 체크박스의 파일 이름
+let allFilePath; // 백엔드에서 출력된 노드의 리스트 부모 경로
+let globalSelectFolder; // 선택된 노드;
+//로딩시작
 const loadingStart = () => {
+	console.log("loading Start...");
 	setTimeout(() => {
-		$("body").css("opacity", "0.8");
+		$("body").css("zIndex", "1000");
+		$("body").css("opacity", "0.5");
 		$("body").css("background", "no-repeat url('/images/loading.gif')");
 		$("body").css("background-position", "center center");
 		$("body").css("width", "100%");
 	}, 0);
 }
-
+// 로딩종료
 const loadingEnd = () => {
-	$("#body").css("opacity", "1");
+	console.log("loading End!");
+	$("body").css("zIndex", "0");
+	$("body").css("opacity", "1");
 	$("body").removeAttr("style");
 }
 
 
 $(document).ready(function() {
+	
+	
+	tree_Common.init(); // 트리 초기렌더링 시작
+	tree_Common.loadedTree(); // 트리 렌더링 이후 이벤트
+	tree_Common.selectNode(); // 선택 된 노드 파일 리스트 생성
+	tree_Common.doubleClick(); // 트리 더블클릭 이벤트
+	
+	// 파일 드롭다운 기능 활성화
+	fileDropDown(); 
+	
+	// 폴더 생성기능 활성화 
 	let btn = document.getElementById("createFolderBtn");
-	
-	init().then((res) => {
-		if(res === "1") {
-			setTimeout(function() {
-				$(".jstree-clicked").trigger("click");
-			},1000);
-		}
-	});
-	
-	fileDropDown();
-	createFolder(btn);
-	
-	// 파일 트리 생성
-	$('#jstree').on("select_node.jstree", function (e, data) { 
-		let selectID = data.node.id;
-		selectID = selectID.substring(3);
-		globalSelectFolder = selectID;
-		selectID = selectID.replaceAll("\\", "\\\\");
-		console.log(selectID);
-		selectList(selectID).then(() => {
-			loadingEnd();
-		});
-		if($('#filePath').length === 0) {
-			let html = "<input type='hidden' id='filePath' value='"+selectID+"' />";
-			$("#sidebar").append(html);
-		} else if($('#filePath').val() === selectID) {
-			return;
-		} else if($('#filePath').val() !== selectID) {
-			$('#filePath').attr("value", selectID);
-		}
-	});
-	
-	$('#jstree').bind("dblclick.jstree", function(e, data) {
-		console.log(e.target);
-		let getPath = e.target.id.replace("_anchor", "");
-		getPath = getPath.substr(3);
-		console.log(getPath);
-	});
+	createFolder(btn); 
 	
 	// 삭제 버튼 클릭 이벤트
 	$("#deleteBtn").on("click", function() {	
@@ -221,89 +199,6 @@ function renameFolderListener(obj) {
 	}
 }
 
-
-
-//첫화면 파일트리 가져오기
-async function init() {
-	loadingStart();
-	await axios.post("/axios/showFolderTree").then((res) => {
-		if(res) {
-			let treeData = res.data.folderList
-			globalFolderData = treeData;
-			
-			$('#jstree').jstree({
-       			plugins: ["contextmenu"],
-		        core: {
-					check_callback :  true,
-					data : treeData,
-					themes: {
-                        name: "default",
-                        dots: false,
-                        icons: false,
-                        responsive:true
-					}
-        		},
-				contextmenu : {		
-					items : function(o, cb) {
-						return {
-							create : {
-								seperator_before : false,
-								seperator_after : true,
-								label : "폴더생성",
-								action : function(data) {
-									let inst = $.jstree.reference(data.reference);
-									obj = inst.get_node(data.reference);
-									inst.create_node(obj, data, "last", function (new_node) {
-										try {
-											new_node.text = "새 폴더";
-											inst.edit(new_node);
-											addFolderListener(o,new_node.id);
-										} catch(ex) {
-											alert(ex);
-										}
-									});
-								},
-								
-							},
-							rename : {
-								seperator_before : false,
-								seperator_after : true,
-								label : "이름수정",
-								action : function(data) {
-									let temp;
-									let inst = $.jstree.reference(data.reference);
-									obj = inst.get_node(data.reference);
-									
-									try {
-										inst.edit(obj)
-										console.log(obj);
-										
-									} catch(ex) {
-										alert(ex);
-									}
-									
-									/*data.jstree("edit", obj);*/
-								}
-							}
-						}
-					}			
-				},
-		    }).bind("rename_node.jstree", function (e, data) {    
-		    	renameFolderListener(data);
-			});
-			let firstDir = treeData[0].path;
-			selectList(firstDir).then(() => {
-				loadingEnd();
-			});
-			
-		}
-	}).catch((err) => {
-		console.log(err);
-	});
-	
-	return "1";
-}
-
 // 선택된 폴더에 대한 자식요소 리스트 불러오기
 async function selectList(firstDir) {
 	console.log("dir = " + firstDir);
@@ -318,7 +213,7 @@ async function selectList(firstDir) {
 			if(res) {
 				let data = res.filePath;
 				globalData = data;
-				allFilePath=firstDir;
+				selectParentPath=firstDir;
 				$(".fileList > tr").remove();
 				for(idx in data) {
 					let fileName = data[idx].text;
@@ -329,7 +224,6 @@ async function selectList(firstDir) {
 					let filePath = data[idx].url;
 					let lastIdx = filePath.lastIndexOf("\\");
 					filePath = filePath.substr(0, lastIdx);
-					selectParentPath = filePath;
 					
 					addFileList(idx, fileName, fileSize, ext, mdfDate, filePath);	
 				}
@@ -341,6 +235,7 @@ async function selectList(firstDir) {
 					$(".fileList").append(html);
 				}
 			}
+			console.log(selectParentPath);
 		}
 	});
 }
@@ -393,7 +288,7 @@ function fileDropDown() {
 				}
 				form.append('fdate', files[i].lastModified);
 			}
-			form.append('parent', allFilePath);
+			form.append('parent', selectParentPath);
 			
 			for (let pair of form.entries()) { 
 				console.log(pair[0]+ ', ' + pair[1]); 
@@ -402,18 +297,24 @@ function fileDropDown() {
 			let dupCheck = false;
 			
 			for(let i=0; i<files.length; i++) {
-				for(let j=0; j<files.length; j++) {
-					console.log(globalData[j]);
-					if(files[i].text = globalData[j].text) {
+				
+				for(let j=0; j<globalData.length; j++) {
+					console.log(files[i].name +"==="+ globalData[j].text);
+					
+					if(files[i].name === globalData[j].text) {
+						console.log("dupCheck True!");
+						
 						dupCheck = true;
 						break;	
 					} 
+					
 				}
+				
 			}
 			
 			if(dupCheck) {
 				Swal.fire({
-					title: "이미 저장되어 있는 파일 이름이 존재합니다. ",
+					title: "이미 저장되어 있는 파일 이름이 존재합니다.",
 					text: "덮어 씌우겠습니까?",
 					icon: 'warning',
 					showCancelButton: true,
@@ -444,6 +345,26 @@ function fileDropDown() {
 							}
 						});
 					} 
+				});
+			} else {
+				selectFile(files);
+					
+				$.ajax({
+					url: "/ajax/uploadFile.json",
+					type : "post",
+					enctype : "multipart/form-data",
+					processData :false,
+					contentType :false,
+					data:form,
+					timeout:50000,
+					success : function(data){
+						console.log(data);
+						console.log("성공");
+					},
+					error : function(err){
+						console.log(err);
+						console.log("에러");
+					}
 				});
 			}
         } else {
