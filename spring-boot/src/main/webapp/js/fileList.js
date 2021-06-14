@@ -24,7 +24,6 @@ const loadingEnd = () => {
 	$("body").removeAttr("style");
 }
 
-
 $(document).ready(function() {
 	
 	
@@ -47,6 +46,8 @@ $(document).ready(function() {
 		let filePath = $("#filePath").val(); //삭제할 폴더 경로
 		let checkList = new Array;
 		let checkFlag = false;
+		console.log("나야나");
+		console.log(filePath);
 		
 		
 		for(let i=0; i<checkBox.length; i++) {
@@ -98,7 +99,9 @@ $(document).ready(function() {
 		async function deleteFile(filePath) {
 			let checkBox = $(".checkBox");
 			let fileNameList = $(".fileName");
+			let fileExtList = $(".fileExt");
 			let fileName;
+			let fileExt;
 			let reqCnt = 0;
 			let fileIdx = 0;
 			
@@ -106,10 +109,11 @@ $(document).ready(function() {
 				
 				if(target.checked) {
 					fileName = fileNameList[fileIdx].innerText; //파일명 가져오기 
-					
+					fileExt = fileExtList[fileIdx].innerText;//확장자명 가져오기
 					await axios.post("/axios/deleteFile", null, {params : {
 						'parent': filePath,
-						'fileName' : fileName.trim()
+						'fileName' : fileName.trim(),
+						'fileExt' : fileExt.trim()
 					}}).then((res) => {
 						console.log(res);
 			        	if(res.data === "삭제 완료") {
@@ -189,7 +193,6 @@ function renameFolderListener(obj) {
 // 선택된 폴더에 대한 자식요소 리스트 불러오기
 async function selectList(firstDir) {
 	loadingStart();
-	
 	await $.ajax({
 		type : 'post',
 		url : '/ajax/selectFileList',
@@ -198,16 +201,39 @@ async function selectList(firstDir) {
 		success : function(res) {
 			if(res) {
 				let data = res.filePath;
+				console.log(data);
 				globalData = data;
 				selectParentPath=firstDir;
 				$(".fileList > tr").remove();
 				for(idx in data) {
+					/* 로컬 경로내에서 스캔
 					let fileName = data[idx].text;
 					let ext = data[idx].ext;
 					let fileSize = data[idx].size / 1024 / 1024;
 					fileSize = fileSize.toFixed(3);
 					let mdfDate = data[idx].date;
 					let filePath = data[idx].url;
+					*/
+					
+					/** DB 내에서 스캔 */
+					let fileName = data[idx].fname;
+					let ext = data[idx].fext;
+					if(ext===undefined)
+						ext = "폴더";
+					let fileSize = data[idx].fsize / 1024 / 1024;
+					fileSize = fileSize.toFixed(3);
+					let date= new Date(data[idx].fdate);
+					let year = date.getFullYear();
+					let month = date.getMonth()+1>=10?date.getMonth():"0"+date.getMonth();
+					let day = date.getDate()>=10?date.getDate():"0"+date.getDate();
+					let hour = date.getHours()>=10?date.getHours():"0"+date.getHours();
+					let minutes = date.getMinutes()>=10?date.getMinutes():"0"+date.getMinutes();
+					let seconds = date.getSeconds()>=10?date.getSeconds():"0"+date.getSeconds();
+					let mdfDate = year+"-"+month+"-"+day+" "+hour+":"+minutes+":"+seconds;
+					let filePath = data[idx].fpath;
+					console.log(ext);
+					/**여기까지 주석처리하면 됨 */
+					
 					let lastIdx = filePath.lastIndexOf("\\");
 					filePath = filePath.substr(0, lastIdx);
 					
@@ -520,9 +546,10 @@ function createCancel() {
 // 폴더생성 aiox 호출
 function axiosCreateFolder(fldNm, fldPrt) {
 	let oriPath = $("#filePath").val();
+		console.log("oriPath : "+oriPath);
+		console.log("fldPath : "+fldPrt);
 	
 	if(oriPath === fldPrt) {
-		console.log(fldPrt);
 		axios.post("/axios/createFolder", null, {params : {
 			value : fldNm,
 			path : fldPrt

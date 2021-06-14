@@ -2,14 +2,11 @@ package com.copycoding.demo.controller;
 
 import java.io.File;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.copycoding.demo.common.FileList;
 import com.copycoding.demo.common.WriteFile;
 import com.copycoding.demo.service.FileListService;
@@ -63,13 +59,35 @@ public class TestController {
 	@RequestMapping("/axios/showFolderTree")
 	public ModelAndView showFolderTree() {
 		ModelAndView mv = new ModelAndView("jsonView");
-		FileList fl = new FileList();
-		String isDir = "z:\\";
+		String isDir = "z:";
 		
-		List<Map<String, Object>> folderList = fl.showFolderTree(isDir);
-		List<FileListVO> folderList2  = fileListService.showFolderTree(isDir);
+		//경로에 있는 목록 불러오기
+		//FileList fl = new FileList();
+		//List<Map<String, Object>> folderList = fl.showFolderTree(isDir);
+
+		//DB에 있는 목록 불러오기
+		List<FolderListVO> folderList  = fileListService.showFolderTree(isDir);
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		
-		mv.addObject("folderList", folderList);
+		for (FolderListVO folderListVO : folderList) {
+			Map<String, Object> map = new LinkedHashMap<String, Object>();
+			System.out.println("-------------------------");
+			System.out.println("DB폴더 목록 : "+folderListVO.getFname());
+			System.out.println("내경로 : "+folderListVO.getFpath());
+			System.out.println("부모경로 : "+folderListVO.getPpath());
+			map.put("id", folderListVO.getFpath());
+			map.put("parent", folderListVO.getPpath());
+			map.put("text", folderListVO.getFname());
+			map.put("path", folderListVO.getFpath().substring(3));
+			System.out.println(map.get("id"));
+			System.out.println(map.get("parent"));
+			System.out.println(map.get("text"));
+			System.out.println(map.get("path"));
+			System.out.println("-------------------------");
+			list.add(map);
+		}
+		
+		mv.addObject("folderList", list);
 		return mv;
 	}
 	
@@ -83,22 +101,30 @@ public class TestController {
 	public ModelAndView selectFileList(@RequestParam(value="isDir", required=true) String isDir) throws Exception {
 		System.out.println("isDir: " + isDir);
 		ModelAndView mv = new ModelAndView("jsonView");
+		/*
+		경로에 저장된 파일 스캔
 		WriteFile wf = new FileList();
 		List<Map<String, Object>> filePath = wf.showFilesInDir(isDir);
 		for(Map<String, Object> i : filePath) {
 			System.out.println("=======[ 리스트 출력 ]========");
 			for(String key : i.keySet()) {
 				Object result = i.get(key);
-				
 				System.out.println(result);
 			}
 			System.out.println("==============================");
 		}
+		*/
+		
 		//DB에 저장된 값
 		List<FileListVO> fp = fileListService.selectFileList(isDir);
-		
-		mv.addObject("filePath", filePath);
-
+		List<FolderListVO> fo = fileListService.selectFolderList(isDir);
+		List<Object> all = new ArrayList<Object>();
+		all.addAll(fo);
+		all.addAll(fp);
+		for(int i =0; i<all.size(); i++) {
+			System.out.println("gd : "+all.get(i));
+		}
+		mv.addObject("filePath", all);
 		return mv;
 	}
 	
@@ -110,9 +136,11 @@ public class TestController {
 	@RequestMapping("/axios/createFolder")
 	@ResponseBody
 	public String createFolder(@RequestParam(value="value", required=true) String value, String path) throws Exception {
-		String filePath = path;
+		
+		String filePath = path+"\\\\"+value;
 		String fileName = value;
-		File folder = new File(filePath + "\\\\" + fileName);
+
+		File folder = new File(filePath);
 		
 		FolderListVO fl = new FolderListVO();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -122,27 +150,23 @@ public class TestController {
 		fl.setFpath(filePath);
 		fl.setPpath(filePath.substring(0,filePath.lastIndexOf("\\\\")));
 		fl.setFsize(0);
-	
-
 		
 		if(folder.exists()) {
 			return "0";
 		}
 		folder.mkdir();
-
-		
 		// 생성여부 확인
 		if(!folder.exists()) {
 			return "-1";
 		}
 		
 		fileListService.createFolder(fl);	
+
 		
 		return "1";
 	}
 	
 	/**
-	 * 
 	 * @param value 현재 파일이름
 	 * @param path 현재 파일경로
 	 * @param rename 바꿀이름
@@ -156,8 +180,12 @@ public class TestController {
 		WriteFile wf = new FileList();
 		String parent = path.substring(0, path.lastIndexOf("\\\\"));
 		String result = wf.fileModify(path, rename);
+		System.out.println("value : "+value);
+		System.out.println("parent : "+parent);
+		System.out.println("rename : "+rename);
+		
 		if(result.equals("-1")) {
-			fileListService.renameFile(value, parent, rename);
+			fileListService.renameFile(value, path, rename, parent);
 		}
 		
 		return result;
@@ -212,7 +240,7 @@ public class TestController {
 			//파일확장자
 			fl.setFext(list.get(i).getOriginalFilename().substring(list.get(i).getOriginalFilename().lastIndexOf(".")));
 			//부모경로
-			fl.setPpath(parent.substring(0, parent.lastIndexOf("\\")));
+			fl.setPpath(parent.substring(0, parent.lastIndexOf("\\\\")));
 			//해당 파일 경로
 			fl.setFpath(parent);
 			//파일 크기
@@ -220,7 +248,6 @@ public class TestController {
 			
 			//업데이트 시간
 			try {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date date = new Date();
 				date.setTime(fdate);
 				Timestamp timestamp = new Timestamp(date.getTime());
@@ -248,25 +275,25 @@ public class TestController {
 	public String deleteFile(
 			@RequestParam(value="parent", required=false) String parent,
 			@RequestParam(value="fileName", required=false) String fileName,
+			@RequestParam(value="fileExt", required=false) String fileExt,
 			@RequestParam(value="fileList", required=false) String[] fileList)
 	{
 		String filePath = parent+"/"+fileName;
 		FileListVO fl = new FileListVO();
+		System.out.println("이게나야 빠둠빠 두비두바 : "+fileExt);
+		System.out.println(fileName);
+		System.out.println(parent);
 		
 		WriteFile wf = new FileList();
 		
-//		for (String fileName : fileList) {
-			
-			if(fileName.lastIndexOf(".")==-1)	{
-				fileListService.removeDir(fileName, parent.toLowerCase());
+			if(fileExt.equals("폴더"))	{
+				fileListService.removeDir(fileName, parent);
 				wf.fileDelete(filePath);
 			}else {
-				String fname = fileName.substring(0, fileName.lastIndexOf("."));
-				fileListService.removeFile(fname, parent.toLowerCase());
+				fileListService.removeFile(fileName, parent);
 				wf.fileDelete(filePath);
 			}//if~else end
 			
-//		}//for each end
 		return "삭제 완료";
 	}
 	
@@ -284,19 +311,9 @@ public class TestController {
 			@RequestParam(value="allFilePath", required = true) String prevPathStr,
 			@RequestParam(value="selectParentPath")String nextPathStr) {
 		
-		WriteFile wf = new FileList();
-		File prevPath = new File(prevPathStr);
-		String fileName = prevPath.getName();
-		File nextPath = new File(nextPathStr+fileName);
+		fileListService.moveFile(prevPathStr, nextPathStr);
 		
-		fileListService.moveFile(prevPathStr, nextPathStr, fileName);
-
-		String result=wf.fileCopy(prevPath, nextPath);
-//		System.out.println(result);
-		
-		wf.fileDelete(prevPathStr);
-		
-		return result;
+		return "파일 이동";
 	}
 	
 	@RequestMapping("/ajax/downloadFile")

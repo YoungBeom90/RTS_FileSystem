@@ -7,15 +7,31 @@
 		VALUES(#{fid}, #{fname}, #{fpath}, #{ppath}, #{fsize}, #{fdate}, systimestamp)
 	</select>
 	
+	<select id="getPpath" resultType="String" parameterType="String">
+		SELECT fid
+		FROM folderlist
+		WHERE fpath	= #{ppath}	
+	</select>
+	
 	<select id="sameFolderChk" resultType="int" parameterType="com.copycoding.demo.vo.FolderListVO">
 		SELECT COUNT(*)
 		FROM folderlist
 		WHERE fpath = #{fpath} AND fname=#{fname}
 	</select>
 	
+	<select id="folderSizeUpdate" resultType="int" parameterType="String">
+		UPDATE folderlist
+		SET fsize = (
+				SELECT SUM(fi.fsize)
+				FROM filelist fi, folderlist fo
+				WHERE fi.pid = fo.fid AND fi.pid = #{pid}
+		)
+		WHERE fid = #{pid}
+	</select>
+	
 	<select id="deleteDir" resultType="String" parameterType="String">
 		DELETE folderList
-		WHERE fname=#{fname} AND fpath=#{fpath} OR fpath like #{fpath}||'\\'||#{fname}||'%'
+		WHERE fname=#{fname} AND fpath=#{fpath}
 	</select>
 	
 	<select id="renameFolder" resultType="String" parameterType="String">
@@ -29,5 +45,22 @@
 		SET fpath = REPLACE(fpath, #{fname}, #{rename}), ppath = REPLACE(ppath, #{fname}, #{rename})
 		WHERE ppath LIKE #{fpath}||'%' AND fpath LIKE #{fpath}||'%'
 	</select>	
+	
+	<select id="selectFolderList" resultType="com.copycoding.demo.vo.FolderListVO" parameterType="String">
+		SELECT fid, fname, fpath, ppath, fdate,
+		(SELECT SUM(fsize)
+		FROM filelist
+		WHERE fpath LIKE #{fpath}||'%') fsize 
+		FROM folderlist
+		WHERE ppath=#{fpath}
+		ORDER BY 2
+	</select>
+	
+	<select id="showFolderTree" resultType="com.copycoding.demo.vo.FolderListVO" parameterType="String">
+		SELECT *
+		FROM folderlist
+		WHERE fpath LIKE #{fpath}||'%'
+		ORDER BY 3
+	</select>
 	
 </mapper>

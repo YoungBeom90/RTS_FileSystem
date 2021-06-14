@@ -14,21 +14,14 @@ public interface FileListDao {
 	
 	//파일 업로드시 폴더 size 증가
 	public String addFolderSizeUpdate(FileListVO fl);
-	
 	//업로드시 같은파일이 DB에 있나 확인
 	public Integer sameFileChk(FileListVO fl);
 	
 	//업로드시 같은파일이 존재할 경우 update
 	public Integer updateFile(FileListVO fl);
 	
-	//업데이트시 부모 폴더 사이즈 수정
-	public Integer updateFolderSizeUpdate(FileListVO fl);
-	
 	//파일삭제
 	public String deleteFile(String fname, String fpath);
-	
-	//삭제시 부모폴더 사이즈 수정
-	public String deleteFolderSizeUpdate(String fname, String ppath);
 	
 	//JTree 폴더 목록 불러오기
 	public List<FileListVO> showFolderTree(String fpath);

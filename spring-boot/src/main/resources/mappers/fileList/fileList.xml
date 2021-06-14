@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.copycoding.demo.dao.FileListDao">
-	<!-- 유저정보 가져오기 테스트 -->
+
+
 	<select id="addFile" resultType="String" parameterType="com.copycoding.demo.vo.FileListVO">
-		INSERT INTO filelist
-		VALUES(#{fid}, #{pid}, #{fname}, #{fpath}, #{ppath}, #{fsize}, #{fext}, #{fdate}, sysdate)
+		INSERT INTO filelist(fid, pid, fname, fpath, fsize, fext, fdate, udate)
+		VALUES(#{fid}, #{pid}, #{fname}, #{fpath}, #{fsize}, #{fext}, #{fdate}, systimestamp)
 	</select>
+
 	<select id="addFolderSizeUpdate" resultType="String" parameterType="com.copycoding.demo.vo.FileListVO">
 		UPDATE filelist
 		SET fsize = fsize + #{fsize}
@@ -24,43 +26,16 @@
 		WHERE fpath = #{fpath} AND fname=#{fname}
 	</select>
 	
-	<select id="updateFolderSizeUpdate" resultType="String" parameterType="com.copycoding.demo.vo.FileListVO">
-		UPDATE filelist a
-		SET a.fsize = a.fsize + #{fsize} - 
-			(
-				SELECT b.fsize
-				FROM filelist b
-				WHERE b.fname=#{fname}
-			)
-		WHERE a.fpath = #{ppath}
-	</select>
-	
-	
 	<select id="deleteFile" resultType="String" parameterType="String">
 		DELETE FROM filelist
 		WHERE fname = #{fname} AND fpath= #{fpath}
 	</select>
 	
-	<select id="deleteFolderSizeUpdate" resultType="String" parameterType="com.copycoding.demo.vo.FileListVO">
-		UPDATE filelist a
-		SET a.fsize = a.fsize - (
-			SELECT b.fsize
-			FROM filelist b
-			WHERE fname = #{fname}
-		)
-		WHERE fpath = #{ppath}
-	</select>
-	
 	<select id="selectFileList" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
-		SELECT *
-		FROM filelist
-		WHERE fpath=#{ppath}
-		ORDER BY fext desc
-	</select>
-	<select id="showFolderTree" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
-		SELECT *
-		FROM filelist
-		WHERE fpath LIKE #{fpath}||'%' AND fext='폴더'
+		SELECT fi.fid, fi.pid,  fi.fpath, fo.fpath ppath, fi.fname, fi.fsize, fi.fext, fi.fdate
+		FROM filelist fi, folderlist fo
+		WHERE fi.pid = fo.fid AND fi.fpath = #{ppath}
+		ORDER BY fi.fname
 	</select>
 	
 	<select id="moveFile" resultType="String" parameterType="String">

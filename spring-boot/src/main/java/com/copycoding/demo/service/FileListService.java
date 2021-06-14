@@ -16,12 +16,15 @@ public interface FileListService {
 	//폴더삭제
 	public String removeDir(String fname, String fpath);
 	//파일, 폴더 이름 수정
-	public String renameFile(String fname, String fpath, String rename);
-	//파일목록
+	public String renameFile(String fname, String fpath, String rename, String parent);
+	//파일목록, 폴더목록 불러오기
 	public List<FileListVO> selectFileList(String ppath);
-	//폴더트리목록
-	public List<FileListVO> showFolderTree(String fpath);
+	public List<FolderListVO> selectFolderList(String fpath);
+	//폴더트리목록(경로)
+	//public List<FileListVO> showFolderTree(String fpath);
+	//폴더트리목록(DB)
+	public List<FolderListVO> showFolderTree(String fpath);
 	//파일 이동
-	public int moveFile(String prevPath, String nextPath, String fname);
+	public int moveFile(String prevPath, String nextPath);
 	
 }

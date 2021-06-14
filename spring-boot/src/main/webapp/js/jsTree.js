@@ -6,11 +6,10 @@ let tree_Common = {
 		await axios.post("/axios/showFolderTree").then((res) => {
 			if(res) {
 				let treeData = res.data.folderList
-				console.log(treeData);
 				for(let i in treeData){
-					treeData[i].id = treeData[i].id.replaceAll("\\", "\\\\");
-					treeData[i].parent = treeData[i].parent.replaceAll("\\", "\\\\");
+					treeData[i].path = treeData[i].path.replaceAll("\\\\", "\\")
 				}
+				console.log(treeData);
 				
 				globalFolderData = treeData;
 				
@@ -38,7 +37,7 @@ let tree_Common = {
 										obj = inst.get_node(data.reference);
 										inst.create_node(obj, data, "last", function (new_node) {
 											try {
-												new_node.text = "새 폴더";
+												new_node.fname = "새 폴더";
 												inst.edit(new_node);
 												addFolderListener(o,new_node.id);
 											} catch(ex) {
@@ -67,14 +66,51 @@ let tree_Common = {
 										
 										/*data.jstree("edit", obj);*/
 									}
-								}
+								},//rename end
+								edit : {
+									seperator_befor : false,
+									seperator_after : true,
+									label : "이동 및 복사",
+									submenu : {
+										copy : {
+											seperator_befor : false,
+											seperator_after : true,
+											label : "복사",
+											action : function(data) {
+												let inst = $.jstree.reference(data.reference);
+												obj = inst.get_node(data.reference);
+												console.log(obj);
+											}
+										},//copy end
+										move : {
+											seperator_befor : false,
+											seperator_after : true,
+											label : "이동",
+											action : function(data) {
+												let inst = $.jstree.reference(data.reference);
+												obj = inst.get_node(data.reference);
+												console.log(inst);
+											}
+										},//move end
+										paste : {
+											seperator_befor : false,
+											seperator_after : true,
+											label : "붙여넣기",
+											action : function(data) {
+												let inst = $.jstree.reference(data.reference);
+												obj = inst.get_node(data.reference);
+											},
+											_disabled : true
+										}//paste end
+									}//submenu end 
+								}//edit end
 							}
 						}			
 					},
 			    }).bind("rename_node.jstree", function (e, data) {    
 			    	renameFolderListener(data);
 				});
-				let firstDir = treeData[0].path;
+				let firstDir = treeData[0].path.replaceAll("\\","\\\\");
 				selectList(firstDir).then(() => {
 					loadingEnd();
 				});
@@ -109,6 +145,7 @@ let tree_Common = {
 			console.log(e.target);
 			let getPath = e.target.id.replace("_anchor", "");
 			getPath = getPath.substr(3);
+			console.log("경로");
 			console.log(getPath);
 		});
 	},
