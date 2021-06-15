@@ -37,6 +37,7 @@
 				<div id="fileTool">
 					<button type="button" id="uploadFileBtn" data-toggle="modal" data-target="#uploadModal" onclick="modalPopup()" class="btn btn-primary btn-sm">업로드</button>
 			    	<button type="button" id="createFolderBtn" class="btn btn-primary btn-sm">폴더생성</button>
+			    	<button type="button" id="donwloadBtn" class="btn btn-primary btn-sm">다운로드</button>
 			    	<button type="button" id="deleteBtn" class="btn btn-danger btn-sm">삭제</button>
 				</div>
 		        <div class="dropZone" style="overflow-x:hidden">

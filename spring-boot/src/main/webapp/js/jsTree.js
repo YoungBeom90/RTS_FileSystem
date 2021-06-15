@@ -9,6 +9,7 @@ let tree_Common = {
 				for(let i in treeData){
 					treeData[i].path = treeData[i].path.replaceAll("\\\\", "\\")
 				}
+				console.log("나는 treeData");
 				console.log(treeData);
 				
 				globalFolderData = treeData;
@@ -76,10 +77,13 @@ let tree_Common = {
 											seperator_befor : false,
 											seperator_after : true,
 											label : "복사",
+											_disabled : false,
 											action : function(data) {
 												let inst = $.jstree.reference(data.reference);
 												obj = inst.get_node(data.reference);
 												console.log(obj);
+												console.log(inst);
+												console.log($.jstree.defaults.contextmenu.items[0]);
 											}
 										},//copy end
 										move : {
@@ -100,7 +104,7 @@ let tree_Common = {
 												let inst = $.jstree.reference(data.reference);
 												obj = inst.get_node(data.reference);
 											},
-											_disabled : true
+											_disabled : false
 										}//paste end
 									}//submenu end 
 								}//edit end
@@ -109,10 +113,11 @@ let tree_Common = {
 					},
 			    }).bind("rename_node.jstree", function (e, data) {    
 			    	renameFolderListener(data);
-				});
+				})
 				let firstDir = treeData[0].path.replaceAll("\\","\\\\");
 				selectList(firstDir).then(() => {
 					loadingEnd();
+					console.log($("#jstree").jstree(true));
 				});
 			}
 		}).catch((err) => {

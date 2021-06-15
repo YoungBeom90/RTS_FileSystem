@@ -38,6 +38,12 @@
 		ORDER BY fi.fname
 	</select>
 	
+	<select id="renameFolderPath" resultType="String" parameterType="String">
+		UPDATE fileList
+		SET fpath = REPLACE(fpath, #{fname}, #{rename})
+		WHERE fpath LIKE #{fpath}||'%'
+	</select>	
+	
 	<select id="moveFile" resultType="String" parameterType="String">
 		UPDATE filelist
 		SET fpath = #{nextPath}, ppath=#{ppath} 

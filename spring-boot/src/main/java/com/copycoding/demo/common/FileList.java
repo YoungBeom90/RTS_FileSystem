@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,6 +17,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -332,10 +338,33 @@ public class FileList implements WriteFile {
 	}
 
 	@Override
-	public String donwloadFile(String filePath) {
-		// TODO Auto-generated method stub
+	public String donwloadFile(HttpServletResponse response, String fname, String fpath) throws Exception {
 		
-		return null;
+		File downloadFile = new File(fpath+"\\\\"+fname);
+		response.setContentLength((int)downloadFile.length());
+				
+		response.setContentType("application/donwload; charset=UTF-8");
+		response.setHeader("Content-Disposition", "attachment; filename="
+				+ new String(fname.getBytes(), "iso-8859-1"));
+		response.setHeader("Content-Transfer-Encoding","binary");
+		try {
+			ServletOutputStream sos=response.getOutputStream();
+			FileInputStream fis = new FileInputStream(downloadFile);
+			
+			int count=-1;
+			byte[] bytes = new byte[1024];
+			
+			while((count=fis.read(bytes,0,bytes.length))!=-1) {
+				sos.write(bytes,0,count);
+			}//while end
+			//fis.close();
+			//sos.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "다운로드 완료";
 	}
 	
 }

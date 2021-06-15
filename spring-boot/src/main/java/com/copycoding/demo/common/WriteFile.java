@@ -3,6 +3,10 @@ package com.copycoding.demo.common;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -28,6 +32,6 @@ public interface WriteFile {
 	public String fileCopy(File prevFile, File nextFile);
 	
 	//파일 다운
-	public String donwloadFile(String filePath);
+	public String donwloadFile(HttpServletResponse response, String fname, String fpath) throws Exception;
 	
 }

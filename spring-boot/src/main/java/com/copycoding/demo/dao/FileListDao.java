@@ -29,6 +29,9 @@ public interface FileListDao {
 	//해당파일경로의 파일목록 불러오기
 	public List<FileListVO> selectFileList(String ppath);
 	
+	//폴더명 변경시 해당하위파일 경로변경
+	public String renameFolderPath(String fname, String fpath, String rename);
+	
 	//파일 이동
 	public int moveFile(String prevPath, String nextPath, String fname);
 }

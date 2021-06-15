@@ -135,9 +135,68 @@ $(document).ready(function() {
 			
 		}
 	});
+		// 다운로드 버튼 클릭 이벤트
+	$("#donwloadBtn").on("click", function() {	
+		let checkBox = $(".checkBox");
+		let filePath = $("#filePath").val(); //삭제할 폴더 경로
+		let checkList = new Array;
+		let checkFlag = false;
+		console.log(filePath);
+		
+		
+		for(let i=0; i<checkBox.length; i++) {
+			if(checkBox[i].checked) {
+				checkList = checkBox[i];
+				checkFlag = true;
+			}
+		}	
+		
+		downloadFile(filePath).then(() => {
+			reqCnt = res;
+			Swal.fire({
+				title: reqCnt + "개 파일을 다운로드하였습니다.",
+				icon: "success",
+				confirmButtonColor: '#3085d6',
+				confirmButtonText: "확인"				
+			}).then(() => {
+				$(".jstree-clicked").trigger("click");
+			});
+		});	
+		
+	});//파일다운로드 이벤트 end
 	
+
+	//파일 다운로드
+	 function downloadFile(filePath) {
+		let checkBox = $(".checkBox");
+		let fileNameList = $(".fileName");
+		let fileExtList = $(".fileExt");
+		let fileName;
+		let fileExt;
+		let encodeUri;
+		let reqCnt = 0;
+		let fileIdx = 0;
+		
+		for (let target of checkBox) {
+			
+			if(target.checked) {
+				fileName = fileNameList[fileIdx].innerText; //파일명 가져오기 
+				fileExt = fileExtList[fileIdx].innerText;//확장자명 가져오기
+				console.log(fileName);
+				console.log(fileExt);
+				encodeUri = encodeURI(filePath);
+				
+				window.location =`/axios/downloadFile?fileName=${fileName.trim()}&fileExt=${fileExt.trim()}&parent=${encodeUri}`
+				reqCnt++;
+			}
+			fileIdx++;
+		}
+		return reqCnt;
+	}//파일 다운로드 end
 	
 });//$(document).ready 종료
+
+
 
 function checkAll() {
 	let trigger = $("#allCheck");
@@ -171,7 +230,8 @@ function renameFolderListener(obj) {
 	let preNm = obj.old;
 	let afterNm = obj.text;
 	target = target.substr(3);
-	
+	console.log("나는 obj");
+	console.log(obj);
 	if(obj) {
 		axios.post("/axios/renameFolder", null, {params: {
 			path : target,
@@ -231,13 +291,13 @@ async function selectList(firstDir) {
 					let seconds = date.getSeconds()>=10?date.getSeconds():"0"+date.getSeconds();
 					let mdfDate = year+"-"+month+"-"+day+" "+hour+":"+minutes+":"+seconds;
 					let filePath = data[idx].fpath;
-					console.log(ext);
 					/**여기까지 주석처리하면 됨 */
 					
 					let lastIdx = filePath.lastIndexOf("\\");
 					filePath = filePath.substr(0, lastIdx);
+					let fullPath = filePath;
+					addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath);	
 					
-					addFileList(fileName, fileSize, ext, mdfDate, filePath);	
 				}
 				if($(".fileList").children().length === 0) {
 					let html = "<tr>";
@@ -423,10 +483,9 @@ function selectFile(files) {
     }
 }
 
-
 // 파일리스트 조회, 추가 
-function addFileList(fileName, fileSize, ext, mdfDate) {
-	
+function addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath) {
+
 	let udTime = new Date();
 	let year = udTime.getFullYear();
 	let month = udTime.getMonth() + 1;
@@ -480,6 +539,7 @@ function addFileList(fileName, fileSize, ext, mdfDate) {
 	html += "</tr>";
 	
 	$('.fileList').append(html);
+
 }
 
 // 폴더 생성
