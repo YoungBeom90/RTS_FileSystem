@@ -46,7 +46,6 @@ $(document).ready(function() {
 		let filePath = $("#filePath").val(); //삭제할 폴더 경로
 		let checkList = new Array;
 		let checkFlag = false;
-		console.log("나야나");
 		console.log(filePath);
 		
 		
@@ -117,7 +116,6 @@ $(document).ready(function() {
 					}}).then((res) => {
 						console.log(res);
 			        	if(res.data === "삭제 완료") {
-							console.log(res.data);
 							reqCnt++;
 			        	}
 			    	}).catch(function(error) {
@@ -135,14 +133,14 @@ $(document).ready(function() {
 			
 		}
 	});
-		// 다운로드 버튼 클릭 이벤트
+	
+	// 다운로드 버튼 클릭 이벤트
 	$("#donwloadBtn").on("click", function() {	
 		let checkBox = $(".checkBox");
-		let filePath = $("#filePath").val(); //삭제할 폴더 경로
+		let filePath = $("#filePath").val(); //다운받을 폴더 경로
 		let checkList = new Array;
 		let checkFlag = false;
 		console.log(filePath);
-		
 		
 		for(let i=0; i<checkBox.length; i++) {
 			if(checkBox[i].checked) {
@@ -151,23 +149,13 @@ $(document).ready(function() {
 			}
 		}	
 		
-		downloadFile(filePath).then(() => {
-			reqCnt = res;
-			Swal.fire({
-				title: reqCnt + "개 파일을 다운로드하였습니다.",
-				icon: "success",
-				confirmButtonColor: '#3085d6',
-				confirmButtonText: "확인"				
-			}).then(() => {
-				$(".jstree-clicked").trigger("click");
-			});
-		});	
+		downloadFile(filePath);
 		
 	});//파일다운로드 이벤트 end
 	
 
 	//파일 다운로드
-	 function downloadFile(filePath) {
+	async function downloadFile(filePath) {
 		let checkBox = $(".checkBox");
 		let fileNameList = $(".fileName");
 		let fileExtList = $(".fileExt");
@@ -176,21 +164,48 @@ $(document).ready(function() {
 		let encodeUri;
 		let reqCnt = 0;
 		let fileIdx = 0;
-		
-		for (let target of checkBox) {
+		let fileInfo = [];
+		for await (let target of checkBox) {
 			
 			if(target.checked) {
 				fileName = fileNameList[fileIdx].innerText; //파일명 가져오기 
 				fileExt = fileExtList[fileIdx].innerText;//확장자명 가져오기
-				console.log(fileName);
-				console.log(fileExt);
-				encodeUri = encodeURI(filePath);
-				
-				window.location =`/axios/downloadFile?fileName=${fileName.trim()}&fileExt=${fileExt.trim()}&parent=${encodeUri}`
-				reqCnt++;
-			}
+				fileInfo.push(fileName.trim()+fileExt.trim());
+			}//if end
 			fileIdx++;
-		}
+		}//for end
+
+		await axios.get("/axios/downloadFile", {params : {
+					'parent' : filePath,	
+					'fileName' : encodeURI(fileInfo)
+				}}).then((res) => {
+					console.log(res);
+					encodeUri = encodeURI(filePath);
+					for(let i = 0; i<res.config.params.fileName.split(",").length;i++){
+						console.log(res.config.params.fileName.split(",").length);
+						//setTimeout(function(){
+
+							if(res.config.params.fileName.split(",")[i].lastIndexOf(".")!=-1){
+								if(res.config.params.fileName.split(",").length==1)
+									window.location =`/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[i]}&parent=${encodeUri}`
+								else
+									window.location = `/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[0].substring(0,res.config.params.fileName.split(",")[0].lastIndexOf("."))+".zip"}&parent=${encodeUri}`
+								}//if end
+								
+							reqCnt++;
+							
+						//},1000)//setTimeout end
+						console.log("다운")
+					}//for end
+					
+				}).then((res)=>{
+					//만든 zip파일 삭제
+					console.log("다운후")
+				
+				}).catch( function(error) {
+					console.log(error);
+				})//axios end
+		
 		return reqCnt;
 	}//파일 다운로드 end
 	
@@ -266,16 +281,6 @@ async function selectList(firstDir) {
 				selectParentPath=firstDir;
 				$(".fileList > tr").remove();
 				for(idx in data) {
-					/* 로컬 경로내에서 스캔
-					let fileName = data[idx].text;
-					let ext = data[idx].ext;
-					let fileSize = data[idx].size / 1024 / 1024;
-					fileSize = fileSize.toFixed(3);
-					let mdfDate = data[idx].date;
-					let filePath = data[idx].url;
-					*/
-					
-					/** DB 내에서 스캔 */
 					let fileName = data[idx].fname;
 					let ext = data[idx].fext;
 					if(ext===undefined)
@@ -291,7 +296,6 @@ async function selectList(firstDir) {
 					let seconds = date.getSeconds()>=10?date.getSeconds():"0"+date.getSeconds();
 					let mdfDate = year+"-"+month+"-"+day+" "+hour+":"+minutes+":"+seconds;
 					let filePath = data[idx].fpath;
-					/**여기까지 주석처리하면 됨 */
 					
 					let lastIdx = filePath.lastIndexOf("\\");
 					filePath = filePath.substr(0, lastIdx);
@@ -305,7 +309,17 @@ async function selectList(firstDir) {
 						html += "</tr>";
 						
 					$(".fileList").append(html);
-				}
+				}//if end
+				/*
+				$(".fileTr").dblclick(function(){
+					let fileName = $(this).attr("id").substring(7).trim();
+					
+					for(fileName in data.text){
+						
+					}
+					alert(fileName);
+				});//버튼클릭 하나씩 다운로드
+				*/
 			}
 		}
 	});
@@ -346,20 +360,11 @@ function fileDropDown() {
             
 			let form = new FormData();
 			
-			/** 
-			fname, fext, fdate, size, parent 까지 넘어감
-			
-			append할것 : fid, pid
-			*/
 			for(let i=0; i<files.length; i++){
 				form.append('file', files[i]);
 				form.append('fdate', files[i].lastModified);
 			}
 			form.append('parent', selectParentPath);
-			
-			for (let pair of form.entries()) { 
-				console.log(pair[0]+ ', ' + pair[1]); 
-			}
 			
 			let dupCheck = false;
 			
@@ -532,9 +537,13 @@ function addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath) {
 		}
 	}
 	html += "&nbsp;&nbsp;&nbsp;" + fileName + "</td>";
-	html += "<td class='fileSize'>" + fileSize + "MB</td>";
 	html += "<td class='fileExt'>" + ext + "</td>"; 
 	html += "<td class='udTime'>" + fileDate + "</td>";
+	if(ext!='폴더'){
+		html += "<td class='fileSize'>" + fileSize + "MB</td>";
+	}else{
+		html += "<td class='fileSize'></td>";
+	}
 	html += "<td class='fileAuth'>admin</td>";
 	html += "</tr>";
 	

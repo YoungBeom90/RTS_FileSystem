@@ -1,6 +1,7 @@
 package com.copycoding.demo.common;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,6 @@ public interface WriteFile {
 	public String fileCopy(File prevFile, File nextFile);
 	
 	//파일 다운
-	public String donwloadFile(HttpServletResponse response, String fname, String fpath) throws Exception;
+	public void donwloadFile(HttpServletResponse response, String[] fname, String fpath) throws IOException;
 	
 }

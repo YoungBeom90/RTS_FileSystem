@@ -1,5 +1,7 @@
 package com.copycoding.demo.common;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,6 +19,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -167,9 +171,6 @@ public class FileList implements WriteFile {
 
 	@Override
 	public String fileUpload(List<MultipartFile> mf, String parent) {
-		for(int i =0; i<mf.size(); i++) {
-			System.out.println(mf.get(i).getOriginalFilename());
-		}
 	
 		for (MultipartFile multipartFile : mf) {
 			
@@ -338,33 +339,87 @@ public class FileList implements WriteFile {
 	}
 
 	@Override
-	public String donwloadFile(HttpServletResponse response, String fname, String fpath) throws Exception {
-		
-		File downloadFile = new File(fpath+"\\\\"+fname);
-		response.setContentLength((int)downloadFile.length());
-				
-		response.setContentType("application/donwload; charset=UTF-8");
-		response.setHeader("Content-Disposition", "attachment; filename="
-				+ new String(fname.getBytes(), "iso-8859-1"));
-		response.setHeader("Content-Transfer-Encoding","binary");
-		try {
-			ServletOutputStream sos=response.getOutputStream();
-			FileInputStream fis = new FileInputStream(downloadFile);
-			
-			int count=-1;
-			byte[] bytes = new byte[1024];
-			
-			while((count=fis.read(bytes,0,bytes.length))!=-1) {
-				sos.write(bytes,0,count);
-			}//while end
-			//fis.close();
-			//sos.close();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return "다운로드 완료";
-	}
+	public void donwloadFile(HttpServletResponse response, String[] fname, String fpath) throws IOException {
 	
+		if(fname.length==1) {
+			System.out.println("파일을 다운받습니다.");
+			for (String fileName : fname) {
+				if(fileName.lastIndexOf(".") != -1) {
+					File downloadFile = new File(fpath+"\\\\"+fileName);
+					response.setContentLength((int)downloadFile.length());
+							
+					response.setContentType("application/donwload; charset=UTF-8");
+					response.setHeader("Content-Disposition", "attachment; filename="
+							+ new String(fileName.getBytes(), "iso-8859-1"));
+					response.setHeader("Content-Transfer-Encoding","binary");
+			
+					try {
+						ServletOutputStream sos =response.getOutputStream();
+						FileInputStream fis = new FileInputStream(downloadFile);
+						
+						int count=-1;
+						byte[] bytes = new byte[1024];
+						
+						while((count=fis.read(bytes,0,bytes.length))!=-1) {
+							sos.write(bytes,0,count);
+						}//while end
+						fis.close();
+						sos.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}//try~catch end
+				}//if end
+			}//for each end
+		}else{
+			System.out.println("zip을 만듭니다.");
+			ZipOutputStream zout = null;
+			String zipName = fname[0].substring(0,fname[0].lastIndexOf("."))+".zip";
+			
+				try {
+					zout = new ZipOutputStream(new FileOutputStream(fpath+"\\\\"+zipName));
+					byte[] buffer = new byte[1024];
+					FileInputStream in = null;
+					
+					for(int i=0; i<fname.length; i++) {
+						in = new FileInputStream(fpath+"\\\\"+fname[i]);
+						zout.putNextEntry(new ZipEntry(fname[i]));
+						
+						int len;
+						while((len = in.read(buffer))>0) {
+							zout.write(buffer, 0, len);
+						}//while end
+						
+						zout.closeEntry();
+						in.close();
+					}//for end
+					
+					zout.close();
+					
+					response.setContentType("application/zip;charset=UTF-8");
+					response.addHeader("Content-Disposition","attachment; filename="+zipName);
+					
+					FileInputStream fis = new FileInputStream(fpath+"\\\\"+zipName);
+					BufferedInputStream bis = new BufferedInputStream(fis);
+					ServletOutputStream sos = response.getOutputStream();
+					BufferedOutputStream bos = new BufferedOutputStream(sos);
+					
+					int n = 0;
+					while((n=bis.read(buffer))>0) {
+						bos.write(buffer, 0, n);
+						bos.flush();
+					}
+
+					if(bos!=null) bos.close();
+					if(bis!=null) bis.close();
+					if(sos!=null) sos.close();
+					if(fis!=null) fis.close();
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}finally {
+					if(zout!=null) zout = null;
+				}//try~catch~finally end
+				
+		}//if~else end
+	}
 }
