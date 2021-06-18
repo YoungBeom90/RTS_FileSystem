@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ServerProperties.Tomcat.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class FileListServiceImpl implements FileListService{
 	private FileListDao fileListDao;
 	@Autowired
 	private FolderListDao folderListDao;
+	
+	@Value("${file.upload.directory}")
+	public String filePath;
 	
 	public void setFileListDao(FileListDao fileListDao) {
 		this.fileListDao = fileListDao;
@@ -85,15 +89,16 @@ public class FileListServiceImpl implements FileListService{
 
 				UUID one = UUID.randomUUID();
 				String fid = one.toString();
-				String pid = null;
-//				if(folderListDao.getPpath(fl.getPpath())!="#")
+				String pid =null;
+				if(fl.getPpath().equals(filePath)) {
+					pid = folderListDao.getPpath(fl.getFpath());
+					System.out.println("1"+pid);
+				}else {
 					pid = folderListDao.getPpath(fl.getPpath());
-					System.out.println(pid);
-//				else 
-//					pid = "z:\\\\09.Test";
-				
+					System.out.println("2"+pid);
+				}
 				fl.setFid(fid);
-				fl.setPid("pid : " +pid);
+				fl.setPid(pid);
 
 				String result = fileListDao.addFile(fl);
 			} // if~else end
