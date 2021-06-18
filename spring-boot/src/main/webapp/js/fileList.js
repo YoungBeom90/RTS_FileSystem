@@ -132,6 +132,10 @@ $(document).ready(function() {
 		if($("#modalParentPath").val() === "") {
 			
 		}
+		
+		let files = document.getElementById("modalUpload").files;
+		doUpload(files);
+		
 	});
 	
 	// 다운로드 버튼 클릭 이벤트
@@ -355,7 +359,8 @@ function fileDropDown() {
 			'opacity':'1'
         });
 		let files = e.originalEvent.dataTransfer.files;
-
+		doUpload(files);
+/*		
         if(files != null) {
             
 			let form = new FormData();
@@ -438,6 +443,8 @@ function fileDropDown() {
         } else {
             alert("Error");
         }
+
+*/
     });
 }
 
@@ -669,5 +676,98 @@ function modalPopup() {
 	$('#uploadModal').modal();
 	console.log($("#modalParentPath"));
 	$("#modalParentPath").val(globalSelectFolder);
-	
+
+	let agent = navigator.userAgent.toLowerCase();
+	if ( (navigator.appName == 'Netscape' && navigator.userAgent.search('Trident') != -1) || (agent.indexOf("msie") != -1) ){
+	    // ie 일때 input[type=file] init.
+	    $("#modalUpload").replaceWith( $("#modalUpload").clone(true) );
+	} else {
+	    //other browser 일때 input[type=file] init.
+	    $("#modalUpload").val("");
+	}
+}
+
+function doUpload(files){
+	if(files != null) {
+            
+		let form = new FormData();
+		
+		for(let i=0; i<files.length; i++){
+			form.append('file', files[i]);
+			form.append('fdate', files[i].lastModified);
+		}
+		form.append('parent', selectParentPath);
+		
+		let dupCheck = false;
+		
+		for(let i=0; i<files.length; i++) {
+			
+			for(let j=0; j<globalData.length; j++) {
+				if(files[i].name === globalData[j].text) {
+					dupCheck = true;
+					break;	
+				} 
+				
+			}
+			
+		}
+		
+		if(dupCheck) {
+			Swal.fire({
+				title: "이미 저장되어 있는 파일 이름이 존재합니다.",
+				text: "덮어 씌우겠습니까?",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: '덮어쓰기',
+				cancelButtonText: '취소'
+			}).then((res) => {
+				if(res.value) {
+					selectFile(files)
+					
+					$.ajax({
+						url: "/ajax/uploadFile.json",
+						type : "post",
+						enctype : "multipart/form-data",
+						processData :false,
+						contentType :false,
+						data:form,
+						timeout:50000,
+						success : function(data){
+							$(".jstree-clicked").trigger("click");
+						},
+						error : function(err){
+							console.log(err);
+							$(".jstree-clicked").trigger("click");
+						}
+					});
+				} 
+			});
+		} else {
+			selectFile(files)
+				
+			$.ajax({
+				url: "/ajax/uploadFile.json",
+				type : "post",
+				enctype : "multipart/form-data",
+				processData :false,
+				contentType :false,
+				data:form,
+				timeout:50000,
+				success : function(data){
+					console.log(data);
+					console.log("성공");
+					$(".jstree-clicked").trigger("click");
+				},
+				error : function(err){
+					console.log(err);
+					console.log("에러");
+					$(".jstree-clicked").trigger("click");
+				}
+			});
+		}
+    } else {
+        alert("Error");
+    }
 }
