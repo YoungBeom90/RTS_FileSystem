@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -192,7 +194,8 @@ public class TestController {
 	public String deleteFile(
 			@RequestParam(value="parent", required=false) String fpath,
 			@RequestParam(value="fileName", required=false) String fname,
-			@RequestParam(value="fileExt", required=false) String fileExt)
+			@RequestParam(value="fileExt", required=false) String fileExt
+)
 	{
 		if(fileExt.equals("폴더"))	{
 			fileListService.removeDir(fname, fpath);
@@ -229,19 +232,15 @@ public class TestController {
 	 */
 	@RequestMapping("/axios/downloadFile")
 	@ResponseBody
-	public String downloadFile(HttpServletResponse response,
-			@RequestParam(value = "fileName") String fname, 
-			@RequestParam(value = "fileExt") String fext,
-			@RequestParam(value = "parent") String fpath) throws Exception {
-		
-		System.out.println(fname);
-		System.out.println(fext);
-		System.out.println(fpath);
-		if(!fext.equals("폴더")) {
-			WriteFile wf = new FileList();
-			return wf.donwloadFile(response, fname+fext, fpath);
-		}else {
-			return "폴더는 다운받을 수 없습니다.";
-		}
-	}
+	public void downloadFile(HttpServletResponse response,
+			@RequestParam(value = "fileName") String[] fname, 
+			//@RequestParam(value = "fileExt") String[] fextList,
+			@RequestParam(value = "parent") String fpath) throws IOException {
+		for (String string : fname) {
+			System.out.println(string);
+		}	
+				WriteFile wf = new FileList();
+				wf.donwloadFile(response, fname, fpath);
+				//wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
+	}//downloadFile end
 }

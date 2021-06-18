@@ -48,9 +48,9 @@
 		                    		<input type="checkbox" id="allCheck" onclick="checkAll()" style="cursor: pointer;">
 		                    	</th>
 		                        <th style="width:500px;">파일명</th>
-		                        <th style="width:200px;">파일크기</th>
 		                        <th style="width:200px;">파일형식</th>
 		                        <th style="width:200px;">수정된날짜</th>
+		                        <th style="width:200px;">파일크기</th>
 		                        <th style="width:200px;">게시자</th>
 		                    </tr>
 		                </thead>

@@ -43,13 +43,11 @@ public class FileListServiceImpl implements FileListService{
 	public String registFile(List<MultipartFile> list, Long fdate, String parent) {
 		
 		FileListVO fl = new FileListVO();
-		WriteFile wf = new FileList();
-		wf.fileUpload(list, parent);
-
+		
 		for (int i = 0; i < list.size(); i++) {
+
 			// 파일이름
-			fl.setFname(
-					list.get(i).getOriginalFilename().substring(0, list.get(i).getOriginalFilename().lastIndexOf(".")));
+			fl.setFname(list.get(i).getOriginalFilename().substring(0, list.get(i).getOriginalFilename().lastIndexOf(".")));
 			// 파일확장자
 			fl.setFext(list.get(i).getOriginalFilename().substring(list.get(i).getOriginalFilename().lastIndexOf(".")));
 			// 부모경로
@@ -58,7 +56,6 @@ public class FileListServiceImpl implements FileListService{
 			fl.setFpath(parent);
 			// 파일 크기
 			fl.setFsize(Long.toString(list.get(i).getSize()));
-
 			// 업데이트 시간
 			try {
 				Date date = new Date();
@@ -68,7 +65,7 @@ public class FileListServiceImpl implements FileListService{
 			} catch (Exception e) {
 				e.printStackTrace();
 			} // try~catch end
-
+			
 			// 분기걸어서 fullPath확인후 일치하면 prevent
 			// select해서 존재하면 return -1
 			if (fileListDao.sameFileChk(fl) != 0) {
@@ -77,7 +74,6 @@ public class FileListServiceImpl implements FileListService{
 				} catch (Exception e) {
 					e.printStackTrace();
 				} // try~catch end
-				return "기존값";
 			} else {
 
 				UUID one = UUID.randomUUID();
@@ -87,13 +83,15 @@ public class FileListServiceImpl implements FileListService{
 				fl.setPid(pid);
 
 				String result = fileListDao.addFile(fl);
-				folderListDao.folderSizeUpdate(pid);
-				return result;
 			} // if~else end
-
+			
 		} // for end
-
-		return "파일등록";
+		
+		//경로에 파일생성
+		WriteFile wf = new FileList();
+		wf.fileUpload(list, parent);
+		
+		return "";
 	}
 	
 	/**
