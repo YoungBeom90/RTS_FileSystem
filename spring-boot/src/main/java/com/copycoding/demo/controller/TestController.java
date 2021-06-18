@@ -199,6 +199,8 @@ public class TestController {
 	{
 		if(fileExt.equals("폴더"))	{
 			fileListService.removeDir(fname, fpath);
+			//해당경로에 있는 파일도 삭제
+			
 		}else {
 			fileListService.removeFile(fname, fpath, fileExt);
 		}//if~else end

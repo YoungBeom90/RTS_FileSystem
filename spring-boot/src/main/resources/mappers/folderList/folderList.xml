@@ -31,7 +31,11 @@
 	
 	<select id="deleteDir" resultType="String" parameterType="String">
 		DELETE folderList
-		WHERE fname=#{fname} AND fpath=#{fpath}
+		WHERE fname=#{fname} AND fpath=#{fpath} OR fpath LIKE #{fpath}||'%'
+	</select>
+	<select id="deleteDirsFile">
+		DELETE fileList
+		WHERE fpath LIKE #{fpath}||'%'
 	</select>
 	
 	<select id="renameFolder" resultType="String" parameterType="String">

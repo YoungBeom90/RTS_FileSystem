@@ -154,13 +154,14 @@ public class FileListServiceImpl implements FileListService{
 	 * 경로에 폴더삭제 및 해당 DB삭제
 	 */
 	@Override
+	@Transactional
 	public String removeDir(String fname, String fpath) {
 
 		String filePath = fpath+"/"+fname;
 		WriteFile wf = new FileList();
 		wf.fileDelete(filePath);
+		folderListDao.deleteDirsFile(fpath);
 		String result = folderListDao.deleteDir(fname, fpath + "\\\\" + fname);
-		
 		return result;
 	}
 	

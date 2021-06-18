@@ -209,6 +209,25 @@ $(document).ready(function() {
 		return reqCnt;
 	}//파일 다운로드 end
 	
+	$("#modalUpload").chage(function(evt){
+		fileList = $(this)[0].files;
+		for(var i=0; i<fileList.length; i++){
+			var files = fileList[i];
+			const formData = new FormData();
+			formData.append('file', files)
+			formData.append('fdate', files)			
+			for(let i=0; i<files.length; i++){
+				form.append('file', files[i]);
+				form.append('fdate', files[i].lastModified);
+			}
+			form.append('parent', selectParentPath);
+		}
+		
+	})
+	
+
+
+	
 });//$(document).ready 종료
 
 
@@ -230,7 +249,7 @@ function checkAll() {
 }
 
 // 폴더 추가시 실행
-function addFolderListener(parent, child) {
+async function addFolderListener(parent, child) {
 	$("#"+ child).on("focusout", function() {		
 		let addFolderNm = $("#"+ child).children().children().eq(1).val();
 		let addFolderPrt = parent.id.substring(3);
@@ -310,16 +329,6 @@ async function selectList(firstDir) {
 						
 					$(".fileList").append(html);
 				}//if end
-				/*
-				$(".fileTr").dblclick(function(){
-					let fileName = $(this).attr("id").substring(7).trim();
-					
-					for(fileName in data.text){
-						
-					}
-					alert(fileName);
-				});//버튼클릭 하나씩 다운로드
-				*/
 			}
 		}
 	});
