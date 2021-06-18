@@ -43,9 +43,8 @@ public class FileListServiceImpl implements FileListService{
 	public String registFile(List<MultipartFile> list, Long fdate, String parent) {
 		
 		FileListVO fl = new FileListVO();
-		
 		for (int i = 0; i < list.size(); i++) {
-
+			
 			// 파일이름
 			fl.setFname(list.get(i).getOriginalFilename().substring(0, list.get(i).getOriginalFilename().lastIndexOf(".")));
 			// 파일확장자
@@ -56,6 +55,7 @@ public class FileListServiceImpl implements FileListService{
 			fl.setFpath(parent);
 			// 파일 크기
 			fl.setFsize(Long.toString(list.get(i).getSize()));
+			
 			// 업데이트 시간
 			try {
 				Date date = new Date();
@@ -65,6 +65,13 @@ public class FileListServiceImpl implements FileListService{
 			} catch (Exception e) {
 				e.printStackTrace();
 			} // try~catch end
+			
+			System.out.println(fl.getFname());
+			System.out.println(fl.getFext());
+			System.out.println(fl.getPpath());
+			System.out.println(fl.getFpath());
+			System.out.println(fl.getFsize());
+			System.out.println(fl.getFdate());
 			
 			// 분기걸어서 fullPath확인후 일치하면 prevent
 			// select해서 존재하면 return -1
@@ -78,9 +85,15 @@ public class FileListServiceImpl implements FileListService{
 
 				UUID one = UUID.randomUUID();
 				String fid = one.toString();
-				String pid = folderListDao.getPpath(fl.getPpath());
+				String pid = null;
+//				if(folderListDao.getPpath(fl.getPpath())!="#")
+					pid = folderListDao.getPpath(fl.getPpath());
+					System.out.println(pid);
+//				else 
+//					pid = "z:\\\\09.Test";
+				
 				fl.setFid(fid);
-				fl.setPid(pid);
+				fl.setPid("pid : " +pid);
 
 				String result = fileListDao.addFile(fl);
 			} // if~else end
@@ -154,13 +167,14 @@ public class FileListServiceImpl implements FileListService{
 	 * 경로에 폴더삭제 및 해당 DB삭제
 	 */
 	@Override
+	@Transactional
 	public String removeDir(String fname, String fpath) {
 
 		String filePath = fpath+"/"+fname;
 		WriteFile wf = new FileList();
 		wf.fileDelete(filePath);
+		folderListDao.deleteDirsFile(fpath);
 		String result = folderListDao.deleteDir(fname, fpath + "\\\\" + fname);
-		
 		return result;
 	}
 	

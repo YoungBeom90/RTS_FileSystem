@@ -19,6 +19,8 @@ public interface FolderListDao {
 	public Integer folderSizeUpdate(String pid);
 	//폴더 삭제
 	public String deleteDir(String fname, String fpath);
+	//폴더 하위 파일 삭제
+	public String deleteDirsFile(String fpath);
 	//폴더명 수정
 	public String renameFolder(String fname, String fpath, String rename);
 	//이름수정시 DB의 부모경로, 내경로 경로명 수정

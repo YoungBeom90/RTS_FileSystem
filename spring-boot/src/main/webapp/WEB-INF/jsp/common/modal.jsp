@@ -9,14 +9,14 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
-				<form id="modalForm">
+				<form id="modalForm" method="post" enctype="multipart/form-data" >
 					<div class="form-group">
 						<label for="recipient-name" class="control-label">현재 경로 :</label>
 						<input type="text" class="form-control" id="modalParentPath">
 					</div>
 					<div class="form-group">
 						<label for="message-text" class="control-label">파일 :</label>
-						<input type="file" id="modalUpload" name="modalUpload" multiple required >
+						<input type="file" id="modalUpload" name="modalUpload" multiple required />
 						<p style="font-size: 9px; margin-top: 5px; color: red;">* 폴더는 업로드 할 수 없습니다.</p>
 					</div>
 				</form>

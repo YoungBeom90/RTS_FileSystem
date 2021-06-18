@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -43,6 +44,9 @@ public class TestController {
 	@Autowired
 	private UserInfoService userInfoService;
 	private FileListService fileListService;
+	
+	@Value("${file.upload.directory}")
+	public String filePath;
 	
 	@Autowired
 	public void setRtsService(FileListService fileListService) {
@@ -71,7 +75,7 @@ public class TestController {
 	@RequestMapping("/axios/showFolderTree")
 	public ModelAndView showFolderTree() {
 		ModelAndView mv = new ModelAndView("jsonView");
-		String isDir = "z:";
+		String isDir = filePath;
 		List<FolderListVO> folderList  = fileListService.showFolderTree(isDir);
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		
@@ -199,6 +203,8 @@ public class TestController {
 	{
 		if(fileExt.equals("폴더"))	{
 			fileListService.removeDir(fname, fpath);
+			//해당경로에 있는 파일도 삭제
+			
 		}else {
 			fileListService.removeFile(fname, fpath, fileExt);
 		}//if~else end

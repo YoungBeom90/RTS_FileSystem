@@ -77,6 +77,7 @@ $(document).ready(function() {
 							confirmButtonText: "확인"				
 						}).then(() => {
 							$(".jstree-clicked").trigger("click");
+							tree_Common.treeRefresh();
 						});
 					});
 				}
@@ -212,6 +213,28 @@ $(document).ready(function() {
 		
 		return reqCnt;
 	}//파일 다운로드 end
+	/*
+	$("#modalUpload").change(function(evt){
+		fileList = $(this)[0].files;
+		console.log(fileList);
+		for(var i=0; i<fileList.length; i++){
+			let files = fileList[i];
+			let formData = new FormData();
+			formData.append('file', files)
+			formData.append('fdate', files)			
+			for(let i=0; i<files.length; i++){
+				form.append('file', files[i]);
+				form.append('fdate', files[i].lastModified);
+			}
+			formData.append('parent', selectParentPath);
+			console.log(formData);
+		}
+		
+	})
+	*/
+	
+
+
 	
 });//$(document).ready 종료
 
@@ -234,7 +257,7 @@ function checkAll() {
 }
 
 // 폴더 추가시 실행
-function addFolderListener(parent, child) {
+async function addFolderListener(parent, child) {
 	$("#"+ child).on("focusout", function() {		
 		let addFolderNm = $("#"+ child).children().children().eq(1).val();
 		let addFolderPrt = parent.id.substring(3);
@@ -314,16 +337,6 @@ async function selectList(firstDir) {
 						
 					$(".fileList").append(html);
 				}//if end
-				/*
-				$(".fileTr").dblclick(function(){
-					let fileName = $(this).attr("id").substring(7).trim();
-					
-					for(fileName in data.text){
-						
-					}
-					alert(fileName);
-				});//버튼클릭 하나씩 다운로드
-				*/
 			}
 		}
 	});
@@ -648,7 +661,7 @@ function axiosCreateFolder(fldNm, fldPrt) {
 						confirmButtonText: "확인"
 					}).then((res) => {
 						if(res.value) {
-							$(".jstree-clicked").trigger("click");
+							tree_Common.treeRefresh();
 						}
 					});
 				} else {
