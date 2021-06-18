@@ -758,7 +758,7 @@ function doUpload(files){
 				} 
 			});
 		} else {
-			selectFile(files)
+			selectFile(files);
 				
 			$.ajax({
 				url: "/ajax/uploadFile.json",
