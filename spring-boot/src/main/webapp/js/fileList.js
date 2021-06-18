@@ -783,4 +783,5 @@ function doUpload(files){
     } else {
         alert("Error");
     }
+	$("#uploadModal").modal('hide');
 }
