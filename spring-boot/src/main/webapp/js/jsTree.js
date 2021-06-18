@@ -1,3 +1,4 @@
+let treeData;
 
 let tree_Common = {
 	init : async function init() { 
@@ -5,7 +6,7 @@ let tree_Common = {
 		loadingStart();
 		await axios.post("/axios/showFolderTree").then((res) => {
 			if(res) {
-				let treeData = res.data.folderList
+				treeData = res.data.folderList
 				for(let i in treeData){
 					treeData[i].path = treeData[i].path.replaceAll("\\\\", "\\")
 				}
@@ -13,6 +14,9 @@ let tree_Common = {
 				console.log(treeData);
 				
 				globalFolderData = treeData;
+				
+				
+				
 				
 				$('#jstree').jstree({
 	       			plugins: ["contextmenu"],
@@ -157,6 +161,19 @@ let tree_Common = {
 	loadedTree : function() {
 		$("#jstree").on("loaded.jstree", function() {
 			$(".jstree-clicked").trigger("click");
+		});
+	}
+	,
+	treeRefresh : function() {
+		axios.post("/axios/showFolderTree").then((res) => {
+			if(res) {
+				
+				$('#jstree').jstree(true).settings.core.data = res.data.folderList;
+				$('#jstree').jstree(true).refresh();
+				console.log("완료");
+			}
+			
+			
 		});
 	}
 }
