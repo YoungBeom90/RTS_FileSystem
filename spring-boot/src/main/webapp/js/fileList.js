@@ -77,6 +77,7 @@ $(document).ready(function() {
 							confirmButtonText: "확인"				
 						}).then(() => {
 							$(".jstree-clicked").trigger("click");
+							tree_Common.treeRefresh();
 						});
 					});
 				}
@@ -653,7 +654,7 @@ function axiosCreateFolder(fldNm, fldPrt) {
 						confirmButtonText: "확인"
 					}).then((res) => {
 						if(res.value) {
-							$(".jstree-clicked").trigger("click");
+							tree_Common.treeRefresh();
 						}
 					});
 				} else {

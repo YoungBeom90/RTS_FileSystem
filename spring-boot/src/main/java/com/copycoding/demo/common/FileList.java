@@ -266,9 +266,9 @@ public class FileList implements WriteFile {
 		if(folder.exists()) {
 			folder.renameTo(new File(parent+"\\"+fileName));
 			result =  "-1";
-		}else 
+		}else { 
 			result =  "동일한 이름의 폴더가 존재합니다.";
-		
+		}
 		return result;
 	}
 
