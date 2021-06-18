@@ -75,7 +75,6 @@ public class TestController {
 	@RequestMapping("/axios/showFolderTree")
 	public ModelAndView showFolderTree() {
 		ModelAndView mv = new ModelAndView("jsonView");
-		System.out.println("filePath입니다. "+filePath);
 		String isDir = filePath;
 		List<FolderListVO> folderList  = fileListService.showFolderTree(isDir);
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();

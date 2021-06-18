@@ -70,13 +70,6 @@ public class FileListServiceImpl implements FileListService{
 				e.printStackTrace();
 			} // try~catch end
 			
-			System.out.println(fl.getFname());
-			System.out.println(fl.getFext());
-			System.out.println(fl.getPpath());
-			System.out.println(fl.getFpath());
-			System.out.println(fl.getFsize());
-			System.out.println(fl.getFdate());
-			
 			// 분기걸어서 fullPath확인후 일치하면 prevent
 			// select해서 존재하면 return -1
 			if (fileListDao.sameFileChk(fl) != 0) {
@@ -92,10 +85,8 @@ public class FileListServiceImpl implements FileListService{
 				String pid =null;
 				if(fl.getPpath().equals(filePath)) {
 					pid = folderListDao.getPpath(fl.getFpath());
-					System.out.println("1"+pid);
 				}else {
 					pid = folderListDao.getPpath(fl.getPpath());
-					System.out.println("2"+pid);
 				}
 				fl.setFid(fid);
 				fl.setPid(pid);
@@ -121,7 +112,7 @@ public class FileListServiceImpl implements FileListService{
 		
 		String filePath = path+"\\\\"+value;
 		String fileName = value;
-
+		
 		File folder = new File(filePath);
 		
 		FolderListVO fl = new FolderListVO();

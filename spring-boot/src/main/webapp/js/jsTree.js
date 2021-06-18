@@ -16,8 +16,6 @@ let tree_Common = {
 				globalFolderData = treeData;
 				
 				
-				
-				
 				$('#jstree').jstree({
 	       			plugins: ["contextmenu"],
 			        core: {
@@ -72,6 +70,7 @@ let tree_Common = {
 										/*data.jstree("edit", obj);*/
 									}
 								},//rename end
+								/*
 								edit : {
 									seperator_befor : false,
 									seperator_after : true,
@@ -112,6 +111,7 @@ let tree_Common = {
 										}//paste end
 									}//submenu end 
 								}//edit end
+							*/
 							}
 						}			
 					},

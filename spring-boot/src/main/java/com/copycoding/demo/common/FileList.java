@@ -262,6 +262,7 @@ public class FileList implements WriteFile {
 		File folder = new File(filePath);
 		String result = null;
 		String parent = filePath.substring(0, filePath.lastIndexOf("\\"));
+
 		// 생성여부 확인
 		if(folder.exists()) {
 			folder.renameTo(new File(parent+"\\"+fileName));
