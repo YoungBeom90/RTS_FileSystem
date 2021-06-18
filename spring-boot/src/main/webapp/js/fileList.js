@@ -208,22 +208,25 @@ $(document).ready(function() {
 		
 		return reqCnt;
 	}//파일 다운로드 end
-	
-	$("#modalUpload").chage(function(evt){
+	/*
+	$("#modalUpload").change(function(evt){
 		fileList = $(this)[0].files;
+		console.log(fileList);
 		for(var i=0; i<fileList.length; i++){
-			var files = fileList[i];
-			const formData = new FormData();
+			let files = fileList[i];
+			let formData = new FormData();
 			formData.append('file', files)
 			formData.append('fdate', files)			
 			for(let i=0; i<files.length; i++){
 				form.append('file', files[i]);
 				form.append('fdate', files[i].lastModified);
 			}
-			form.append('parent', selectParentPath);
+			formData.append('parent', selectParentPath);
+			console.log(formData);
 		}
 		
 	})
+	*/
 	
 
 
