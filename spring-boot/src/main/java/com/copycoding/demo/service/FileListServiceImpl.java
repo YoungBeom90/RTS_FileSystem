@@ -167,7 +167,7 @@ public class FileListServiceImpl implements FileListService{
 	@Transactional
 	public String removeDir(String fname, String fpath) {
 
-		String filePath = fpath+"/"+fname;
+		String filePath = fpath+"\\\\"+fname;
 		WriteFile wf = new FileList();
 		wf.fileDelete(filePath);
 		folderListDao.deleteDirsFile(fpath);

@@ -128,7 +128,7 @@ $(document).ready(function() {
 			return reqCnt;
 		}
 	
-	//모달창 저장 클릭 이벤트
+	//업로드 모달창 저장 클릭 이벤트
 	$("#modalSubmit").on("click", function() {
 		if($("#modalParentPath").val() === "") {
 			
@@ -179,6 +179,7 @@ $(document).ready(function() {
 			}//if end
 			fileIdx++;
 		}//for end
+					
 		await axios.get("/axios/downloadFile", {
 				params : {
 					'parent' : filePath,	
@@ -186,31 +187,26 @@ $(document).ready(function() {
 				},
 			    paramsSerializer : function(params){
 			      return jQuery.param(params)
-			    }
-				}).then((res) => {
+			    }}).then((res) => {
 					console.log(res);
 					encodeUri = encodeURI(filePath);
 					for(let i = 0; i<res.config.params.fileName.split(",").length;i++){
 						console.log(res.config.params.fileName.split(",").length);
-						//setTimeout(function(){
 
 							if(res.config.params.fileName.split(",")[i].lastIndexOf(".")!=-1){
-								if(res.config.params.fileName.split(",").length==1)
+								if(res.config.params.fileName.split(",").length==1) {
 									window.location =`/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[i]}&parent=${encodeUri}`
-								else
+								} else {
 									window.location = `/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[0].substring(0,res.config.params.fileName.split(",")[0].lastIndexOf("."))+".zip"}&parent=${encodeUri}`
-								}//if end
+								}//if~else end
 								
 							reqCnt++;
-							
-						//},1000)//setTimeout end
+							}//if end
 						console.log("다운")
-					}//for enddhdl124
-					
-					
+					}//for 
 				}).catch( function(error) {
 					console.log(error);
-				})//axios end
+			})//axios end
 		
 		return reqCnt;
 	}//파일 다운로드 end
@@ -561,7 +557,7 @@ function addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath) {
 				break;
 		}
 	}
-	html += "&nbsp;&nbsp;&nbsp;" + fileName + "</td>";
+	html += "<pre style='display: inline;'>&nbsp;&nbsp;&nbsp;" + fileName + "</pre></td>";
 	html += "<td class='fileExt'>" + ext + "</td>"; 
 	html += "<td class='udTime'>" + fileDate + "</td>";
 	if(ext!='폴더'){
@@ -703,6 +699,21 @@ function modalPopup() {
 	    //other browser 일때 input[type=file] init.
 	    $("#modalUpload").val("");
 	}
+}
+
+function searchModalPopup() {
+	console.log(`searchModal On`);
+	$("#searchModal").modal();
+	
+	let agent = navigator.userAgent.toLowerCase();
+	if ( (navigator.appName == 'Netscape' && navigator.userAgent.search('Trident') != -1) || (agent.indexOf("msie") != -1) ){
+	    // ie 일때 input[type=file] init.
+	    $("#searchModal").replaceWith( $("#searchModal").clone(true) );
+	} else {
+	    //other browser 일때 input[type=file] init.
+	    $("#searchModal").val("");
+	}
+	
 }
 
 function doUpload(files){

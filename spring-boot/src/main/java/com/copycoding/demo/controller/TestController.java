@@ -201,10 +201,7 @@ public class TestController {
 			@RequestParam(value="fileName", required=false) String fname,
 			@RequestParam(value="fileExt", required=false) String fileExt
 )
-	{	
-		System.out.println(fpath);
-		System.out.println(fname);
-		System.out.println(fileExt);
+	{
 		if(fileExt.equals("폴더"))	{
 			fileListService.removeDir(fname, fpath);
 			//해당경로에 있는 파일도 삭제
@@ -214,7 +211,7 @@ public class TestController {
 		}//if~else end
 		
 	return "삭제 완료";
-	}
+	} 
 	
 	/**
 	 * 파일 이동
@@ -246,13 +243,13 @@ public class TestController {
 			@RequestParam(value = "fileName") String[] fname, 
 			@RequestParam(value = "parent") String fpath) throws IOException {
 		for (String string : fname) {
+			System.out.println("fname is :" + string);
 			System.out.println("파일명 : "+ URLDecoder.decode(string,"utf-8"));
 		}	
 		System.out.println(fname.length);
 				WriteFile wf = new FileList();
 				wf.donwloadFile(response, fname, fpath);
-				//스레드를 이용하던 다른걸 이용하던 전후처리 해줘야 에러 발생 x
-				//wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
+//				wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
 	}//downloadFile end
 	
 	

@@ -36,15 +36,11 @@
 			<form name="uploadForm" id="uploadForm" enctype="multipart/form-data" method="POST">
 				<div id="fileTool">
 					<button type="button" id="uploadFileBtn" data-toggle="modal" data-target="#uploadModal" onclick="modalPopup()" class="btn btn-primary btn-sm">업로드</button>
+					<button type="button" id="searchBtn" data-toggle="modal" data-target="#searchModal" onclick="searchModalPopup()" class="btn btn-primary btn-sm">검색</button>
 			    	<button type="button" id="createFolderBtn" class="btn btn-primary btn-sm">폴더생성</button>
 			    	<button type="button" id="donwloadBtn" class="btn btn-primary btn-sm">다운로드</button>
 			    	<button type="button" id="deleteBtn" class="btn btn-danger btn-sm">삭제</button>
 				</div>
-			<form name="searchForm" id="searchForm" method="post">
-				<div id="searchTool">
-						<input id="searchInput" type="text" name="search" maxlength=100 value="" autocomplete="off"/>
-				</div>
-			</form>
 		        <div class="dropZone" style="overflow-x:hidden">
 		            <table id="fileTable" class="table table-hover table-sm">
 		                <thead>
@@ -66,7 +62,9 @@
 		    </form>
 		</div>
 	
-		<jsp:include page="/WEB-INF/jsp/common/modal.jsp" />
+		
 	</div>
+	<jsp:include page="/WEB-INF/jsp/common/modal.jsp" />
+	<jsp:include page="/WEB-INF/jsp/common/search.jsp" />
 </body>
 </html>
