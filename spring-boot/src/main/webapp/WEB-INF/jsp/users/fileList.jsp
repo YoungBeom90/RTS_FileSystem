@@ -62,7 +62,9 @@
 		    </form>
 		</div>
 	
-		<jsp:include page="/WEB-INF/jsp/common/modal.jsp" />
+		
 	</div>
+	<jsp:include page="/WEB-INF/jsp/common/modal.jsp" />
+	<jsp:include page="/WEB-INF/jsp/common/search.jsp" />
 </body>
 </html>

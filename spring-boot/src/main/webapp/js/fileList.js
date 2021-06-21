@@ -714,8 +714,18 @@ function modalPopup() {
 }
 
 function searchModalPopup() {
-	
+	console.log(`searchModal On`);
 	$("#searchModal").modal();
+	
+	let agent = navigator.userAgent.toLowerCase();
+	if ( (navigator.appName == 'Netscape' && navigator.userAgent.search('Trident') != -1) || (agent.indexOf("msie") != -1) ){
+	    // ie 일때 input[type=file] init.
+	    $("#searchModal").replaceWith( $("#searchModal").clone(true) );
+	} else {
+	    //other browser 일때 input[type=file] init.
+	    $("#searchModal").val("");
+	}
+	
 }
 
 function doUpload(files){
