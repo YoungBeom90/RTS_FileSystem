@@ -248,8 +248,8 @@ public class TestController {
 		}	
 		System.out.println(fname.length);
 				WriteFile wf = new FileList();
-//				wf.donwloadFile(response, fname, fpath);
-				//wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
+				wf.donwloadFile(response, fname, fpath);
+//				wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
 	}//downloadFile end
 	
 	
