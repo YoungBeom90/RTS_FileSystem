@@ -310,8 +310,7 @@ async function selectList(firstDir) {
 				for(idx in data) {
 					let fileName = data[idx].fname;
 					let ext = data[idx].fext;
-					if(ext===undefined)
-						ext = "폴더";
+					if(ext===undefined) ext = "폴더";
 					let fileSize = data[idx].fsize / 1024 / 1024;
 					fileSize = fileSize.toFixed(3);
 					let date= new Date(data[idx].fdate);
@@ -472,16 +471,17 @@ function selectFile(files) {
             let fileNameArr = fileName.split("\.");
             let ext = fileNameArr[fileNameArr.length - 1];
             let fileSize = files[i].size / 1024 / 1024; // MB
+			console.log(fileNameArr);
+			console.log("ext:" +ext);
 			
-			
-            if($.inArray(ext, ['exe', 'bat']) >= 0) {
+            if($.inArray(ext, ['exe', 'bat', 'lnk']) >= 0) {
                 Swal.fire({
 					title: "등록불가 확장자 입니다.",
 					icon: "warning",
 					confirmButtonColor: '#3085d6',
 					confirmButtonText: "확인"
-				});
-                break;
+				})
+                return -1;
             } else if(fileSize > uploadSize) {
 				Swal.fire({
 					title: "용량 초과!\n(업로드 가능용량: " + uploadSize + "MB",
@@ -489,26 +489,28 @@ function selectFile(files) {
 					confirmButtonColor: '#3085d6',
 					confirmButtonText: "확인"
 				});
-                break;
-            } else if(files[i].type === "") {
+                return -1;
+            } else if(fileNameArr.length <= 1) {
 				Swal.fire({
 					title: "폴더를 업로드 할 수 없습니다.",
 					icon: "warning",
 					confirmButtonColor: '#3085d6',
 					confirmButtonText: "확인"
 				});
-				break;
-            } else {
-                totalFileSize += fileSize;
-                fileSize = fileSize.toFixed(3);
-                addFileList(fileName, fileSize, ext);
-            }
-			
+				return -1;
+            } 
+			console.log(i);
+			totalFileSize += fileSize;
+            fileSize = fileSize.toFixed(3);
+			// client화면에 드롭된 파일리스트 추가
+            addFileList(fileName, fileSize, ext);
+
+			return 1;
         }
     }
 }
 
-// 파일리스트 조회, 추가 
+// client화면 파일리스트 조회, 추가 
 function addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath) {
 
 	let udTime = new Date();
@@ -737,48 +739,51 @@ function doUpload(files){
 				cancelButtonText: '취소'
 			}).then((res) => {
 				if(res.value) {
-					selectFile(files)
-					
-					$.ajax({
-						url: "/ajax/uploadFile.json",
-						type : "post",
-						enctype : "multipart/form-data",
-						processData :false,
-						contentType :false,
-						data:form,
-						timeout:50000,
-						success : function(data){
-							$(".jstree-clicked").trigger("click");
-						},
-						error : function(err){
-							console.log(err);
-							$(".jstree-clicked").trigger("click");
-						}
-					});
+					let result = selectFile(files)
+					if(result === -1) {
+						return;
+					} else if(result === 1) {
+						$.ajax({
+							url: "/ajax/uploadFile.json",
+							type : "post",
+							enctype : "multipart/form-data",
+							processData :false,
+							contentType :false,
+							data:form,
+							timeout:50000,
+							success : function(data){
+								$(".jstree-clicked").trigger("click");
+							},
+							error : function(err){
+								console.log(err);
+								$(".jstree-clicked").trigger("click");
+							}
+						});
+					}
 				} 
 			});
 		} else {
-			selectFile(files);
-				
-			$.ajax({
-				url: "/ajax/uploadFile.json",
-				type : "post",
-				enctype : "multipart/form-data",
-				processData :false,
-				contentType :false,
-				data:form,
-				timeout:50000,
-				success : function(data){
-					console.log(data);
-					console.log("성공");
-					$(".jstree-clicked").trigger("click");
-				},
-				error : function(err){
-					console.log(err);
-					console.log("에러");
-					$(".jstree-clicked").trigger("click");
-				}
-			});
+			let result = selectFile(files)
+			if(result === -1) {
+				return;
+			} else if(result === 1) {
+				$.ajax({
+					url: "/ajax/uploadFile.json",
+					type : "post",
+					enctype : "multipart/form-data",
+					processData :false,
+					contentType :false,
+					data:form,
+					timeout:50000,
+					success : function(data){
+						$(".jstree-clicked").trigger("click");
+					},
+					error : function(err){
+						console.log(err);
+						$(".jstree-clicked").trigger("click");
+					}
+				});
+			}
 		}
     } else {
         alert("Error");
