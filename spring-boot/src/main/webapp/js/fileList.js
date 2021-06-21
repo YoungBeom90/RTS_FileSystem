@@ -128,7 +128,7 @@ $(document).ready(function() {
 			return reqCnt;
 		}
 	
-	//모달창 저장 클릭 이벤트
+	//업로드 모달창 저장 클릭 이벤트
 	$("#modalSubmit").on("click", function() {
 		if($("#modalParentPath").val() === "") {
 			
@@ -172,44 +172,71 @@ $(document).ready(function() {
 		let fileInfo = [];
 		for await (let target of checkBox) {
 			
-			if(target.checked) {
+			/*if(target.checked) {
 				fileName = fileNameList[fileIdx].innerText; //파일명 가져오기 
 				fileExt = fileExtList[fileIdx].innerText;//확장자명 가져오기
-				fileInfo.push(fileName.trim()+fileExt.trim());
-			}//if end
+				fileInfo.push(["fileName" : {}]{
+					"fileName" : fileName.trim()+fileExt.trim()
+					});
+			}//if end*/
 			fileIdx++;
 		}//for end
+		console.log(JSON.stringify(fileInfo));
+		const headers = {
+		  'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+		  'Accept': '*/*'
+		}
+		await $.ajax({
+			type: 'POST',
+			url: '/ajax/downloadFile',
+			header: {
+				"Content-Type" : 'application/text; charset=utf-8',
+				"X-HTTP-Method-Override":"POST"
+			},
+			data: JSON.stringify(fileInfo),
+			dataType: 'text',
+			success: function(res) {
+				console.log("다운로드 완료");
+			},
+			error: function(err) {
+				console.log(err);
+			}
+		})
+		/*await axios({
+			method: 'post',
+			url: "/axios/downloadFile",
+			params: {
+				'parent' : "asdfasdfasdfasdf",
+				'fileName' : "{0: {fileName:'하하하하'}}, {1 : { fileName: 'dfdfdfdf'}}"
+			},
+		})*/
+		/*.then((res) => {
+			console.log(res);
+			encodeUri = encodeURI(filePath); 
+			for(let i = 0; i<res.config.params.fileName.split(",").length;i++){
+				console.log(res.config.params.fileName.split(",").length);
+				//setTimeout(function(){
 
-		await axios.get("/axios/downloadFile", {params : {
-					'parent' : filePath,	
-					'fileName' : encodeURI(fileInfo)
-				}}).then((res) => {
-					console.log(res);
-					encodeUri = encodeURI(filePath);
-					for(let i = 0; i<res.config.params.fileName.split(",").length;i++){
-						console.log(res.config.params.fileName.split(",").length);
-						//setTimeout(function(){
-
-							if(res.config.params.fileName.split(",")[i].lastIndexOf(".")!=-1){
-								if(res.config.params.fileName.split(",").length==1)
-									window.location =`/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[i]}&parent=${encodeUri}`
-								else
-									window.location = `/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[0].substring(0,res.config.params.fileName.split(",")[0].lastIndexOf("."))+".zip"}&parent=${encodeUri}`
-								}//if end
-								
-							reqCnt++;
-							
-						//},1000)//setTimeout end
-						console.log("다운")
-					}//for end
+					if(res.config.params.fileName.split(",")[i].lastIndexOf(".")!=-1){
+						if(res.config.params.fileName.split(",").length==1)
+							window.location =`/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[i]}&parent=${encodeUri}`
+						else
+							window.location = `/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[0].substring(0,res.config.params.fileName.split(",")[0].lastIndexOf("."))+".zip"}&parent=${encodeUri}`
+						}//if end
+						
+					reqCnt++;
 					
-				}).then((res)=>{
-					//만든 zip파일 삭제
-					console.log("다운후")
-				
-				}).catch( function(error) {
-					console.log(error);
-				})//axios end
+				//},1000)//setTimeout end
+				console.log("다운");
+			}
+		})*/
+		.then((res)=>{
+			//만든 zip파일 삭제
+			console.log("다운후");
+		
+		}).catch( function(error) {
+			console.log(error);
+		})//axios end
 		
 		return reqCnt;
 	}//파일 다운로드 end
@@ -700,6 +727,11 @@ function modalPopup() {
 	    //other browser 일때 input[type=file] init.
 	    $("#modalUpload").val("");
 	}
+}
+
+function searchModalPopup() {
+	
+	$("#searchModal").modal();
 }
 
 function doUpload(files){

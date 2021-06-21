@@ -211,7 +211,7 @@ public class TestController {
 		}//if~else end
 		
 	return "삭제 완료";
-	}
+	} 
 	
 	/**
 	 * 파일 이동
@@ -237,17 +237,17 @@ public class TestController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping("/axios/downloadFile")
+	@RequestMapping(value="/ajax/downloadFile", produces="application/text; charset=UTF-8")
 	@ResponseBody
 	public void downloadFile(HttpServletResponse response,
 			@RequestParam(value = "fileName") String[] fname, 
 			//@RequestParam(value = "fileExt") String[] fextList,
 			@RequestParam(value = "parent") String fpath) throws IOException {
 		for (String string : fname) {
-			System.out.println(string);
+			System.out.println("fname is :" + string);
 		}	
 				WriteFile wf = new FileList();
-				wf.donwloadFile(response, fname, fpath);
+//				wf.donwloadFile(response, fname, fpath);
 				//wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
 	}//downloadFile end
 }
