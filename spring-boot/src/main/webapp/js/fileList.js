@@ -225,6 +225,35 @@ $(document).ready(function() {
 						}//if end
 						
 					reqCnt++;
+=======
+		await axios.get("/axios/downloadFile", {
+				params : {
+					'parent' : filePath,	
+					'fileName' : encodeURI(fileInfo)
+				},
+			    paramsSerializer : function(params){
+			      return jQuery.param(params)
+			    }
+				}).then((res) => {
+					console.log(res);
+					encodeUri = encodeURI(filePath);
+					for(let i = 0; i<res.config.params.fileName.split(",").length;i++){
+						console.log(res.config.params.fileName.split(",").length);
+						//setTimeout(function(){
+
+							if(res.config.params.fileName.split(",")[i].lastIndexOf(".")!=-1){
+								if(res.config.params.fileName.split(",").length==1)
+									window.location =`/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[i]}&parent=${encodeUri}`
+								else
+									window.location = `/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[0].substring(0,res.config.params.fileName.split(",")[0].lastIndexOf("."))+".zip"}&parent=${encodeUri}`
+								}//if end
+								
+							reqCnt++;
+							
+						//},1000)//setTimeout end
+						console.log("다운")
+					}//for end
+>>>>>>> branch 'master' of http://192.168.1.20:90/r/RTS_TEST.git
 					
 				//},1000)//setTimeout end
 				console.log("다운");
@@ -240,28 +269,30 @@ $(document).ready(function() {
 		
 		return reqCnt;
 	}//파일 다운로드 end
-	/*
-	$("#modalUpload").change(function(evt){
-		fileList = $(this)[0].files;
-		console.log(fileList);
-		for(var i=0; i<fileList.length; i++){
-			let files = fileList[i];
-			let formData = new FormData();
-			formData.append('file', files)
-			formData.append('fdate', files)			
-			for(let i=0; i<files.length; i++){
-				form.append('file', files[i]);
-				form.append('fdate', files[i].lastModified);
-			}
-			formData.append('parent', selectParentPath);
-			console.log(formData);
-		}
-		
-	})
-	*/
 	
-
-
+	//파일검색 ajax test중... DB에서 값 받아와서 검색 버튼눌러서넘어갈지 아니면
+	//즉시 해당경로 띄울지 생각
+	$('#searchInput').on("keyup", function(){
+		const searchData = $("#searchInput").val();
+		
+		$.ajax({
+			url : "/ajax/searchFile",
+			data : {"fileName" : searchData},
+			dataType : "json",
+			success : function(json){
+				console.log(json);
+				if(json.result)
+					selectList(json.fpath);
+				//else
+					//alert("검색결과가 없습니다.");
+			},
+			error : function(xhr, error){
+				console.log(err)
+			}
+			
+		})
+	})// searchFile end
+	
 	
 });//$(document).ready 종료
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,7 +76,6 @@ public class TestController {
 	@RequestMapping("/axios/showFolderTree")
 	public ModelAndView showFolderTree() {
 		ModelAndView mv = new ModelAndView("jsonView");
-		System.out.println("filePath입니다. "+filePath);
 		String isDir = filePath;
 		List<FolderListVO> folderList  = fileListService.showFolderTree(isDir);
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
@@ -237,17 +237,30 @@ public class TestController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping(value="/ajax/downloadFile", produces="application/text; charset=UTF-8")
+	@RequestMapping(value = "/axios/downloadFile")
 	@ResponseBody
 	public void downloadFile(HttpServletResponse response,
 			@RequestParam(value = "fileName") String[] fname, 
-			//@RequestParam(value = "fileExt") String[] fextList,
 			@RequestParam(value = "parent") String fpath) throws IOException {
 		for (String string : fname) {
 			System.out.println("fname is :" + string);
+			System.out.println("파일명 : "+ URLDecoder.decode(string,"utf-8"));
 		}	
+		System.out.println(fname.length);
 				WriteFile wf = new FileList();
 //				wf.donwloadFile(response, fname, fpath);
 				//wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
 	}//downloadFile end
+	
+	
+	@RequestMapping("/ajax/searchFile")
+	@ResponseBody
+	public List<FileListVO> searchFile(@RequestParam(value ="fileName") String fileName) {
+		
+		List<FileListVO> list = new ArrayList<FileListVO>();
+		list = fileListService.searchFileList(fileName);
+		
+		return list;
+	}
+	
 }

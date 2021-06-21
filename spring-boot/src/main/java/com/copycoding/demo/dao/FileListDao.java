@@ -34,4 +34,7 @@ public interface FileListDao {
 	
 	//파일 이동
 	public int moveFile(String prevPath, String nextPath, String fname);
+	
+	//파일 검색
+	public List<FileListVO> searchFile(String fileName);
 }
