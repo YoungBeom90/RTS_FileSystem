@@ -30,5 +30,7 @@ public interface FileListService {
 	public List<FolderListVO> showFolderTree(String fpath);
 	//파일 이동
 	public int moveFile(String prevPath, String nextPath);
+	//파일 검색
+	public List<FileListVO> searchFileList(String fname);
 	
 }

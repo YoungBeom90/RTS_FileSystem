@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -236,17 +237,29 @@ public class TestController {
 	 * @return
 	 * @throws Exception 
 	 */
-	@RequestMapping("/axios/downloadFile")
+	@RequestMapping(value = "/axios/downloadFile")
 	@ResponseBody
 	public void downloadFile(HttpServletResponse response,
 			@RequestParam(value = "fileName") String[] fname, 
-			//@RequestParam(value = "fileExt") String[] fextList,
 			@RequestParam(value = "parent") String fpath) throws IOException {
 		for (String string : fname) {
-			System.out.println(string);
+			System.out.println("파일명 : "+ URLDecoder.decode(string,"utf-8"));
 		}	
+		System.out.println(fname.length);
 				WriteFile wf = new FileList();
 				wf.donwloadFile(response, fname, fpath);
 				//wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
 	}//downloadFile end
+	
+	
+	@RequestMapping("/ajax/searchFile")
+	@ResponseBody
+	public List<FileListVO> searchFile(@RequestParam(value ="fileName") String fileName) {
+		
+		List<FileListVO> list = new ArrayList<FileListVO>();
+		list = fileListService.searchFileList(fileName);
+		
+		return list;
+	}
+	
 }

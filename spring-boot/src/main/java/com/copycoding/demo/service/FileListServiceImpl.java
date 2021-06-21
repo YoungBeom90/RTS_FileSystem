@@ -250,4 +250,11 @@ public class FileListServiceImpl implements FileListService{
 		return fileListDao.moveFile(prevPath, nextPath, fileName);
 	}
 	
+	@Override
+	public List<FileListVO> searchFileList(String fname) {
+
+		
+		return fileListDao.searchFile(fname);
+	}
+	
 }

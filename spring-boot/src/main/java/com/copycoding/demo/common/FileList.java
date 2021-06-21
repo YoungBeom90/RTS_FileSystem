@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -341,17 +342,19 @@ public class FileList implements WriteFile {
 
 	@Override
 	public void donwloadFile(HttpServletResponse response, String[] fname, String fpath) throws IOException {
-	
+		
 		if(fname.length==1) {
 			System.out.println("파일을 다운받습니다.");
 			for (String fileName : fname) {
+				System.out.println("common 파일명 : "+ URLDecoder.decode(fileName,"utf-8"));
+				System.out.println("디코딩후 파일명 : "+URLDecoder.decode(fileName,"utf-8"));
 				if(fileName.lastIndexOf(".") != -1) {
-					File downloadFile = new File(fpath+"\\\\"+fileName);
+					File downloadFile = new File(fpath+"\\\\"+URLDecoder.decode(fileName,"utf-8"));
+					response.setContentType("application/download; charset=utf-8");
 					response.setContentLength((int)downloadFile.length());
-							
-					response.setContentType("application/donwload; charset=UTF-8");
 					response.setHeader("Content-Disposition", "attachment; filename="
-							+ new String(fileName.getBytes(), "iso-8859-1"));
+							+ new String(URLDecoder.decode(fileName,"utf-8").getBytes("utf-8"),"iso-8859-1"));
+					
 					response.setHeader("Content-Transfer-Encoding","binary");
 			
 					try {
@@ -374,16 +377,17 @@ public class FileList implements WriteFile {
 		}else{
 			System.out.println("zip을 만듭니다.");
 			ZipOutputStream zout = null;
-			String zipName = fname[0].substring(0,fname[0].lastIndexOf("."))+".zip";
-			
+			String zn = URLDecoder.decode(fname[0],"utf-8");
+			String zipName = zn.substring(0,zn.lastIndexOf("."))+".zip";
+			System.out.println(zipName);
 				try {
 					zout = new ZipOutputStream(new FileOutputStream(fpath+"\\\\"+zipName));
 					byte[] buffer = new byte[1024];
 					FileInputStream in = null;
 					
 					for(int i=0; i<fname.length; i++) {
-						in = new FileInputStream(fpath+"\\\\"+fname[i]);
-						zout.putNextEntry(new ZipEntry(fname[i]));
+						in = new FileInputStream(fpath+"\\\\"+URLDecoder.decode(fname[i],"utf-8"));
+						zout.putNextEntry(new ZipEntry(URLDecoder.decode(fname[i],"utf-8")));
 						
 						int len;
 						while((len = in.read(buffer))>0) {
@@ -396,7 +400,7 @@ public class FileList implements WriteFile {
 					
 					zout.close();
 					
-					response.setContentType("application/zip;charset=UTF-8");
+					response.setContentType("application/zip; charset=UTF-8");
 					response.addHeader("Content-Disposition","attachment; filename="+zipName);
 					
 					FileInputStream fis = new FileInputStream(fpath+"\\\\"+zipName);

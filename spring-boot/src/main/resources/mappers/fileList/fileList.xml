@@ -49,4 +49,10 @@
 		SET fpath = #{nextPath}, ppath=#{ppath} 
 		WHERE fpath =#{prevPath} AND fname=#{fname}
 	</select>
+	
+	<select id="searchFile" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
+		SELECT *
+		FROM filelist fi, folderlist fo
+		WHERE fi.pid = fo.fid AND fi.fname LIKE '%'||#{fname}||'%' OR fo.fname LIKE '%'||#{fname}||'%'
+	</select>
 </mapper>

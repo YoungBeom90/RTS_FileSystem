@@ -8,7 +8,7 @@ let tree_Common = {
 			if(res) {
 				treeData = res.data.folderList
 				for(let i in treeData){
-					treeData[i].path = treeData[i].path.replaceAll("\\\\", "\\")
+					treeData[i].path = treeData[i].path.replaceAll("\\\\", "\\");
 				}
 				console.log("나는 treeData");
 				console.log(treeData);
@@ -118,10 +118,12 @@ let tree_Common = {
 			    }).bind("rename_node.jstree", function (e, data) {    
 			    	renameFolderListener(data);
 				})
+				
+				
 				let firstDir = treeData[0].path.replaceAll("\\","\\\\");
 				selectList(firstDir).then(() => {
 					loadingEnd();
-					console.log($("#jstree").jstree(true));
+					
 				});
 			}
 		}).catch((err) => {
@@ -148,6 +150,7 @@ let tree_Common = {
 				$('#filePath').attr("value", selectID);
 			}
 		});
+		
 	},
 	doubleClick : function() {
 		$('#jstree').bind("dblclick.jstree", function(e, data) {
@@ -160,6 +163,7 @@ let tree_Common = {
 	},
 	loadedTree : function() {
 		$("#jstree").on("loaded.jstree", function() {
+			$(".jstree-anchor").addClass('jstree-clicked');
 			$(".jstree-clicked").trigger("click");
 		});
 	}

@@ -40,6 +40,11 @@
 			    	<button type="button" id="donwloadBtn" class="btn btn-primary btn-sm">다운로드</button>
 			    	<button type="button" id="deleteBtn" class="btn btn-danger btn-sm">삭제</button>
 				</div>
+			<form name="searchForm" id="searchForm" method="post">
+				<div id="searchTool">
+						<input id="searchInput" type="text" name="search" maxlength=100 value="" autocomplete="off"/>
+				</div>
+			</form>
 		        <div class="dropZone" style="overflow-x:hidden">
 		            <table id="fileTable" class="table table-hover table-sm">
 		                <thead>
