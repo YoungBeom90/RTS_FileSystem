@@ -346,8 +346,6 @@ public class FileList implements WriteFile {
 		if(fname.length==1) {
 			System.out.println("파일을 다운받습니다.");
 			for (String fileName : fname) {
-				System.out.println("common 파일명 : "+ URLDecoder.decode(fileName,"utf-8"));
-				System.out.println("디코딩후 파일명 : "+URLDecoder.decode(fileName,"utf-8"));
 				if(fileName.lastIndexOf(".") != -1) {
 					File downloadFile = new File(fpath+"\\\\"+URLDecoder.decode(fileName,"utf-8"));
 					response.setContentType("application/download; charset=utf-8");
