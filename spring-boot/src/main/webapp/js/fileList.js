@@ -213,9 +213,8 @@ $(document).ready(function() {
 	
 	//파일검색 ajax test중... DB에서 값 받아와서 검색 버튼눌러서넘어갈지 아니면
 	//즉시 해당경로 띄울지 생각
-	$('#searchInput').on("keyup", function(){
-		const searchData = $("#searchInput").val();
-		
+	$('#searchFileName').on("keyup", function(){
+		const searchData = $("#searchFileName").val();
 		$.ajax({
 			url : "/ajax/searchFile",
 			data : {"fileName" : searchData},
@@ -228,7 +227,7 @@ $(document).ready(function() {
 					//alert("검색결과가 없습니다.");
 			},
 			error : function(xhr, error){
-				console.log(err)
+				console.log(error)
 			}
 			
 		})

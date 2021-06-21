@@ -52,7 +52,7 @@
 	
 	<select id="searchFile" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
 		SELECT *
-		FROM filelist fi full outer join folderlist fo on fi.pid = fo.fid
-		WHERE fi.fname LIKE '%'||#{fname}||'%' OR fo.fname LIKE '%'||#{fname}||'%'
+		FROM filelist fi, folderlist fo
+		WHERE fi.pid = fo.fid AND fi.fname LIKE '%'||#{fname}||'%' OR fo.fname LIKE '%'||#{fname}||'%'
 	</select>
 </mapper>
