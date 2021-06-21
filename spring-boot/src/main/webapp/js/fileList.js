@@ -104,7 +104,7 @@ $(document).ready(function() {
 			let fileExt;
 			let reqCnt = 0;
 			let fileIdx = 0;
-			
+			console.log(filePath);
 			for await(let target of checkBox) {
 				
 				if(target.checked) {
@@ -205,12 +205,9 @@ $(document).ready(function() {
 							
 						//},1000)//setTimeout end
 						console.log("다운")
-					}//for end
+					}//for enddhdl124
 					
-				}).then((res)=>{
-					//만든 zip파일 삭제
-					console.log("다운후")
-				
+					
 				}).catch( function(error) {
 					console.log(error);
 				})//axios end
