@@ -196,18 +196,15 @@ $(document).ready(function() {
 		let checkBox = $(".checkBox");
 		let fileNameList = $(".fileName");
 		let fileExtList = $(".fileExt");
-		//let pathList = $(".filePath");
 		let fileName;
 		let fileExt;
 		let encodeUri;
 		let reqCnt = 0;
 		let fileIdx = 0;
 		let fileInfo = [];
-		//let path;
 		for await (let target of checkBox) {
 			
 			if(target.checked) {
-				//path = pathList[fileIdx].innerText;
 				fileName = fileNameList[fileIdx].innerText; //파일명 가져오기 
 				fileExt = fileExtList[fileIdx].innerText;//확장자명 가져오기
 				fileInfo.push(fileName.trim()+fileExt.trim());
@@ -245,7 +242,7 @@ $(document).ready(function() {
 		
 		return reqCnt;
 	}//파일 다운로드 end
-	
+	/*
 	$('#searchText').on("keyup", function(){
 		const searchData = $("#searchText").val();
 		$.ajax({
@@ -269,10 +266,12 @@ $(document).ready(function() {
 			
 		})
 	})// searchFile end
+	*/
 	
 	$("#searchBtn").on("click", function() {
 		console.log("clicked : " + $("#searchText").val());
 		let name = $("#searchText").val();
+		let pathList=[];
 		console.log(name);
 		console.log(selectParentPath);
 /*
@@ -280,7 +279,7 @@ $(document).ready(function() {
 			fileName: name
 		}
 		console.log(json);
-*/		
+*/		if(name!=""){
 		$.ajax({
 			url: '/ajax/searchFile',
 			async: true,
@@ -295,13 +294,23 @@ $(document).ready(function() {
 					$(".fileList").empty();
 					for(let i = 0; i<json.length;i++){
 					let fileName = json[i].fname;
-					let fileSize = json[i].fsize;
 					let ext = json[i].fext;
-					let mdfDate = json[i].fdate;
 					let fullPath = json[i].fpath;
-					console.log(json[i].fpath);
+
+					let fileSize = json[i].fsize / 1024 / 1024;
+					fileSize = fileSize.toFixed(3);
+					let date= new Date(json[i].fdate);
+					let year = date.getFullYear();
+					let month = date.getMonth()+1>=10?date.getMonth():"0"+date.getMonth();
+					let day = date.getDate()>=10?date.getDate():"0"+date.getDate();
+					let hour = date.getHours()>=10?date.getHours():"0"+date.getHours();
+					let minutes = date.getMinutes()>=10?date.getMinutes():"0"+date.getMinutes();
+					let seconds = date.getSeconds()>=10?date.getSeconds():"0"+date.getSeconds();
+					let mdfDate = year+"-"+month+"-"+day+" "+hour+":"+minutes+":"+seconds;
+					pathList.push(json[i].fpath);
 					addFileList(fileName, fileSize, ext, mdfDate, null, fullPath);
 					}
+					console.log(pathList);
 					//downloadFile(json[i].fpath);
 				}else{
 					alert("검색결과가 없습니다.");
@@ -311,6 +320,7 @@ $(document).ready(function() {
 				console.log(err);
 			}
 		})
+		}
 	})
 	
 	
