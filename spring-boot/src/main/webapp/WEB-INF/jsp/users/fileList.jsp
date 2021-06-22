@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
   	<link rel="stylesheet" href="/css/fileList.css" />
-  	<link rel="stylesheet" href="/css/bootstrap.css" />
+  	<!-- <link rel="stylesheet" href="/css/bootstrap.css" /> -->
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/buttons.css" />
     <link rel="stylesheet" href="/css/themes/default/style.css" />
@@ -43,7 +43,7 @@
 			    	<button type="button" id="deleteBtn" class="btn btn-danger btn-sm">삭제</button>
 				</div>
 				<div id="search">
-					<select id="searchSelect" class="form-control">
+					<select id="searchSelect" class="form-control select-sm">
 						<option value="file">파일</option>
 						<option value="folder">폴더</option>
 					</select>
