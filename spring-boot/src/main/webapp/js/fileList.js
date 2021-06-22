@@ -233,6 +233,31 @@ $(document).ready(function() {
 		})
 	})// searchFile end
 	
+	$("#searchSubmit").on("click", function() {
+		console.log("clicked : " + $("#searchFileName").val());
+		let name = $("#searchFileName").val();
+		
+		let json = {
+			fileName: name
+		}
+		
+		$.ajax({
+			url: '/ajax/searchSubmit',
+			async: true,
+			type: "POST",
+			data: JSON.stringify(json)
+			,
+			dataType: 'json',
+			contentType: "application/json; charset=UTF-8",  
+			success: function(res) {
+				console.log(res);
+			},
+			error: function(err) {
+				console.log(err);
+			}
+		})
+	})
+	
 	
 });//$(document).ready 종료
 

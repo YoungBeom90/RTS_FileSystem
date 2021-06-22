@@ -17,7 +17,7 @@
 							<!-- <option class="form-control" value="folder">폴더</option> -->
 						</select>
 						<input type="text" class="form-control" id="searchFileName" placeholder="검색" style="width: 77%; display: inline;">
-						<button type="button" id="seatchSubmit" class="btn btn-success btn-sm" style="display: inline; margin:10px 0px 16px 10px;">확인</button>
+						<button type="button" id="searchSubmit" class="btn btn-success btn-sm" style="display: inline; margin:10px 0px 16px 10px;">확인</button>
 					</div>
 					<div class="form-group" style="min-height: 300px;">
 						<table class="table" style="overflow-y: auto;">

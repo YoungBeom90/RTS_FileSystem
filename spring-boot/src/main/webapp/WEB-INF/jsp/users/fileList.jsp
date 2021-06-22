@@ -36,16 +36,24 @@
 			<form name="uploadForm" id="uploadForm" enctype="multipart/form-data" method="POST">
 				<div id="fileTool">
 					<button type="button" id="uploadFileBtn" data-toggle="modal" data-target="#uploadModal" onclick="modalPopup()" class="btn btn-primary btn-sm">업로드</button>
-					<button type="button" id="searchBtn" data-toggle="modal" data-target="#searchModal" onclick="searchModalPopup()" class="btn btn-primary btn-sm">검색</button>
+					<!-- <button type="button" id="searchBtn" data-toggle="modal" data-target="#searchModal" onclick="searchModalPopup()" class="btn btn-primary btn-sm">검색</button> -->
 			    	<button type="button" id="createFolderBtn" class="btn btn-primary btn-sm">폴더생성</button>
 			    	<button type="button" id="donwloadBtn" class="btn btn-primary btn-sm">다운로드</button>
 			    	<button type="button" id="deleteBtn" class="btn btn-danger btn-sm">삭제</button>
+				</div>
+				<div id="search">
+					<select id="searchSelect" class="form-control">
+						<option value="file">파일</option>
+						<option value="folder">폴더</option>
+					</select>
+					<input type="text" id="searchText" class="form-control input-sm" placeholder="검색"/>
+					<button type="button" id="searchBtn" class="btn btn-warning btn-sm">확인</button>
 				</div>
 		        <div class="dropZone" style="overflow-x:hidden">
 		            <table id="fileTable" class="table table-hover table-sm">
 		                <thead>
 		                    <tr>
-		                    	<th style="width:5%; font-size: 15px">
+		                    	<th style="width:5%; font-size: 15px; text-align: center;">
 		                    		<input type="checkbox" id="allCheck" onclick="checkAll()" style="cursor: pointer;">
 		                    	</th>
 		                        <th style="width:500px;">파일명</th>
@@ -58,11 +66,8 @@
 		                <tbody class="fileList"></tbody>
 		            </table>
 		        </div>
-		        
 		    </form>
 		</div>
-	
-		
 	</div>
 	<jsp:include page="/WEB-INF/jsp/common/modal.jsp" />
 	<jsp:include page="/WEB-INF/jsp/common/search.jsp" />
