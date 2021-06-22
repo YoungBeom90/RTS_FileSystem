@@ -646,6 +646,8 @@ function addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath) {
 	}else{
 		html += "<td class='fileSize'></td>";
 	}
+	html += "<td class='filePath''>";
+	html += fullPath + "</td>";
 	html += "<td class='fileAuth'>admin</td>";
 	html += "</tr>";
 	

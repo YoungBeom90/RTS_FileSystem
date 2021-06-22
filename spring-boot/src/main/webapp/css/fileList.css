@@ -112,6 +112,16 @@ th:last-child {
 	text-align: center;
 }
 
+.fullPath {
+	max-width: 200px;
+ 	overflow: auto;
+ 	white-space: nowrap;
+}
+
+.fullPath::-webkit-scrollbar {
+	display: none;
+}
+
 td:last-child {
 	border-right: none;
 }
