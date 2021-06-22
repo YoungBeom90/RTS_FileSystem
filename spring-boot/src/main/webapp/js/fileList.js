@@ -158,6 +158,38 @@ $(document).ready(function() {
 		
 	});//파일다운로드 이벤트 end
 	
+	
+	
+	$(document).dblclick((e) => {
+		let selectFolder = e.target.innerText.trim();
+		let clicked = document.querySelector(".jstree-clicked");
+		
+		if(clicked===null) {
+			if(confirm("트리에서 해당 폴더를 찾지 못했습니다.\n 모든 트리를 확장시킵니다.")) {
+				$("#jstree").jstree("open_all");
+			}
+			return;
+		}
+		
+		let isStatus = clicked.parentElement.getAttribute('aria-expanded');
+		if(isStatus === "false") {
+			clicked.previousSibling.click();
+		}
+		
+		let el = clicked.nextSibling.childNodes;
+		for(let i in el) {
+			if(el[i].id){
+				let substrIdx = el[i].id.lastIndexOf("\\")
+				let childList = el[i].id.substr(substrIdx);
+				childList = childList.replaceAll("\\", "");
+				if(selectFolder === childList) {
+					el[i].childNodes[1].click();
+					return;
+				}
+			}
+		}
+		
+	})
 
 	//파일 다운로드
 	async function downloadFile(filePath) {
@@ -578,7 +610,12 @@ function addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath) {
 	html += "<td>";
 	html += "<input type='checkbox' class='checkBox'/>";
 	html += "</td>";
-	html += "<td class='fileName'>";
+	
+	if(ext === '폴더') {
+		html += "<td class='fileName' style='cursor:pointer;'>";
+	} else {
+		html += "<td class='fileName'>";
+	}
 	if(ext) {
 		switch(ext) {
 			case "폴더" :
@@ -613,7 +650,8 @@ function addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath) {
 	html += "</tr>";
 	
 	$('.fileList').append(html);
-
+	
+	
 }
 
 // 폴더 생성

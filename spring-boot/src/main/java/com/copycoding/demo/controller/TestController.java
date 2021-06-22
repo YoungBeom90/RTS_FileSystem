@@ -1,33 +1,27 @@
 package com.copycoding.demo.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.copycoding.demo.common.FileList;
 import com.copycoding.demo.common.WriteFile;
 import com.copycoding.demo.service.FileListService;
@@ -35,8 +29,6 @@ import com.copycoding.demo.service.UserInfoService;
 import com.copycoding.demo.vo.FileListVO;
 import com.copycoding.demo.vo.FolderListVO;
 import com.copycoding.demo.vo.UserInfoVO;
-
-import lombok.val;
 
 @Component
 @Controller
@@ -277,5 +269,15 @@ public class TestController {
 		//fileListService.searchFolderList(param);
 		return list;
 	}
+	
+	@RequestMapping(value="/ajax/searchSubmit", method=RequestMethod.POST)
+	@ResponseBody
+	public List<FileListVO> searchSubmit(@RequestBody String fileName){
+		List<FileListVO> list = new ArrayList<FileListVO>();
+		System.out.println("fileName:" + fileName);
+		return list;
+	}
+	
+	
 	
 }
