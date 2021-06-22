@@ -196,15 +196,18 @@ $(document).ready(function() {
 		let checkBox = $(".checkBox");
 		let fileNameList = $(".fileName");
 		let fileExtList = $(".fileExt");
+		//let pathList = $(".filePath");
 		let fileName;
 		let fileExt;
 		let encodeUri;
 		let reqCnt = 0;
 		let fileIdx = 0;
 		let fileInfo = [];
+		//let path;
 		for await (let target of checkBox) {
 			
 			if(target.checked) {
+				//path = pathList[fileIdx].innerText;
 				fileName = fileNameList[fileIdx].innerText; //파일명 가져오기 
 				fileExt = fileExtList[fileIdx].innerText;//확장자명 가져오기
 				fileInfo.push(fileName.trim()+fileExt.trim());
@@ -295,8 +298,9 @@ $(document).ready(function() {
 					let fileSize = json[i].fsize;
 					let ext = json[i].fext;
 					let mdfDate = json[i].fdate;
+					let fullPath = json[i].fpath;
 					console.log(json[i].fpath);
-					addFileList(fileName, fileSize, ext, mdfDate);
+					addFileList(fileName, fileSize, ext, mdfDate, null, fullPath);
 					}
 					//downloadFile(json[i].fpath);
 				}else{
