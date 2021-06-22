@@ -67,4 +67,10 @@
 		ORDER BY 3
 	</select>
 	
+	<select id="searchFolder" resultType="com.copycoding.demo.vo.FolderListVO" parameterType="String">
+		SELECT distinct fo.fid, fo.fname, fo.fpath, fo.ppath, fo.fsize, fo.fdate
+		FROM filelist fi, folderlist fo
+		WHERE fi.pid = fo.fid AND fo.fname LIKE '%'||#{fname}||'%'
+	</select>
+	
 </mapper>

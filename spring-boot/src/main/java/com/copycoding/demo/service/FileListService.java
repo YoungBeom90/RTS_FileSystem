@@ -31,6 +31,8 @@ public interface FileListService {
 	//파일 이동
 	public int moveFile(String prevPath, String nextPath);
 	//파일 검색
-	public List<FileListVO> searchFileList(String fname);
+	public List<FileListVO> searchFileList(String fileName, String fpath);
+	//폴더 검색
+	public List<FolderListVO> searchFolderList(String param);
 	
 }

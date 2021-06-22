@@ -29,5 +29,7 @@ public interface FolderListDao {
 	public List<FolderListVO> selectFolderList(String ppath);
 	//JTree 폴더 목록 불러오기
 	public List<FolderListVO> showFolderTree(String fpath);
+	//폴더 검색
+	public List<FolderListVO> searchFolder(String param);
 
 }

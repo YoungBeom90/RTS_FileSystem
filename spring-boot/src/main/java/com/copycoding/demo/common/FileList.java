@@ -341,7 +341,7 @@ public class FileList implements WriteFile {
 	}
 
 	@Override
-	public void donwloadFile(HttpServletResponse response, String[] fname, String fpath) throws IOException {
+	public String donwloadFile(HttpServletResponse response, String[] fname, String fpath) throws IOException {
 		
 		if(fname.length==1) {
 			System.out.println("파일을 다운받습니다.");
@@ -424,5 +424,7 @@ public class FileList implements WriteFile {
 				}//try~catch~finally end
 				
 		}//if~else end
+		
+		return "다운로드 완료";
 	}
 }

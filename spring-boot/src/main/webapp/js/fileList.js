@@ -211,20 +211,22 @@ $(document).ready(function() {
 		return reqCnt;
 	}//파일 다운로드 end
 	
-	//파일검색 ajax test중... DB에서 값 받아와서 검색 버튼눌러서넘어갈지 아니면
-	//즉시 해당경로 띄울지 생각
-	$('#searchFileName').on("keyup", function(){
-		const searchData = $("#searchFileName").val();
+	$('#searchText').on("keyup", function(){
+		const searchData = $("#searchText").val();
 		$.ajax({
 			url : "/ajax/searchFile",
 			data : {"fileName" : searchData},
 			dataType : "json",
 			success : function(json){
 				console.log(json);
-				if(json.result)
-					selectList(json.fpath);
-				//else
+				if(json.length!=0) {
+					for(let i = 0; i<json.length;i++){
+					//console.log(json[0].fpath);
+					//addFileList(json[i].fname, json[i].fext, json[i].fdate, json[i].fsize);
+					}
+				}else{
 					//alert("검색결과가 없습니다.");
+				}//if~else end
 			},
 			error : function(xhr, error){
 				console.log(error)
@@ -233,24 +235,41 @@ $(document).ready(function() {
 		})
 	})// searchFile end
 	
-	$("#searchSubmit").on("click", function() {
-		console.log("clicked : " + $("#searchFileName").val());
-		let name = $("#searchFileName").val();
-		
+	$("#searchBtn").on("click", function() {
+		console.log("clicked : " + $("#searchText").val());
+		let name = $("#searchText").val();
+		console.log(name);
+		console.log(selectParentPath);
+/*
 		let json = {
 			fileName: name
 		}
-		
+		console.log(json);
+*/		
 		$.ajax({
-			url: '/ajax/searchSubmit',
+			url: '/ajax/searchFile',
 			async: true,
-			type: "POST",
-			data: JSON.stringify(json)
-			,
+			type: 'post',
+			data: {"fileName" : name,
+			"fpath" : selectParentPath},
 			dataType: 'json',
-			contentType: "application/json; charset=UTF-8",  
-			success: function(res) {
-				console.log(res);
+//			contentType: "application/json; charset=UTF-8",  
+			success: function(json) {
+				console.log(json);
+				if(json.length!=0) {
+					$(".fileList").empty();
+					for(let i = 0; i<json.length;i++){
+					let fileName = json[i].fname;
+					let fileSize = json[i].fsize;
+					let ext = json[i].fext;
+					let mdfDate = json[i].fdate;
+					console.log(json[i].fpath);
+					addFileList(fileName, fileSize, ext, mdfDate);
+					}
+					//downloadFile(json[i].fpath);
+				}else{
+					alert("검색결과가 없습니다.");
+				}//if~else end
 			},
 			error: function(err) {
 				console.log(err);
@@ -318,6 +337,7 @@ function renameFolderListener(obj) {
 // 선택된 폴더에 대한 자식요소 리스트 불러오기
 async function selectList(firstDir) {
 	loadingStart();
+	console.log(firstDir);
 	await $.ajax({
 		type : 'post',
 		url : '/ajax/selectFileList',

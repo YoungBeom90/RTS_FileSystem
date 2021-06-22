@@ -33,6 +33,6 @@ public interface WriteFile {
 	public String fileCopy(File prevFile, File nextFile);
 	
 	//파일 다운
-	public void donwloadFile(HttpServletResponse response, String[] fname, String fpath) throws IOException;
+	public String donwloadFile(HttpServletResponse response, String[] fname, String fpath) throws IOException;
 	
 }

@@ -242,24 +242,39 @@ public class TestController {
 	public void downloadFile(HttpServletResponse response,
 			@RequestParam(value = "fileName") String[] fname, 
 			@RequestParam(value = "parent") String fpath) throws IOException {
+/*
 		for (String string : fname) {
 			System.out.println("fname is :" + string);
 			System.out.println("파일명 : "+ URLDecoder.decode(string,"utf-8"));
-		}	
+		}
+*/	
 		System.out.println(fname.length);
-				WriteFile wf = new FileList();
-				wf.donwloadFile(response, fname, fpath);
-//				wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
+			WriteFile wf = new FileList();
+			Thread thread1 = new Thread(wf.donwloadFile(response, fname, fpath));
+			Thread thread2 = new Thread(wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip"));
+
+			try {
+				thread1.start();
+				thread1.join();
+				
+				thread2.start();
+				thread2.join();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+				
 	}//downloadFile end
-	
 	
 	@RequestMapping("/ajax/searchFile")
 	@ResponseBody
-	public List<FileListVO> searchFile(@RequestParam(value ="fileName") String fileName) {
+	public List<FileListVO> searchFile(
+			@RequestParam(value ="fileName") String fileName,
+			@RequestParam(value ="fpath") String fpath) {
 		
 		List<FileListVO> list = new ArrayList<FileListVO>();
-		list = fileListService.searchFileList(fileName);
-		
+		list = fileListService.searchFileList(fileName, fpath);
+		//새로운 list에 담아서 json전송
+		//fileListService.searchFolderList(param);
 		return list;
 	}
 	

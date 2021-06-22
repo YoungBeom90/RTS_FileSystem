@@ -252,10 +252,16 @@ public class FileListServiceImpl implements FileListService{
 	}
 	
 	@Override
-	public List<FileListVO> searchFileList(String fname) {
+	public List<FileListVO> searchFileList(String fileName, String fpath) {
 
 		
-		return fileListDao.searchFile(fname);
+		return fileListDao.searchFile(fileName, fpath);
+	}
+	
+	@Override
+	public List<FolderListVO> searchFolderList(String param) {
+
+		return folderListDao.searchFolder(param);
 	}
 	
 }
