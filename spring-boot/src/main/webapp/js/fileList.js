@@ -323,6 +323,11 @@ $(document).ready(function() {
 		}
 	})
 	
+	$("#goParent").on("click", function() {
+		let clickedNode = $(".jstree-clicked");
+		console.log();
+		clickedNode.parent().parent().prev().click();
+	});
 	
 });//$(document).ready 종료
 

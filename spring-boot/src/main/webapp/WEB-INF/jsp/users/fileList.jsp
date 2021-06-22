@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
   	<link rel="stylesheet" href="/css/fileList.css" />
+  	<link rel="stylesheet" href="/css/bootstrap.css" />
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/buttons.css" />
     <link rel="stylesheet" href="/css/themes/default/style.css" />
@@ -32,9 +33,9 @@
 	        <div id="jstree"></div>
 		</div>
 		<div id="fileContainer">
-			
 			<form name="uploadForm" id="uploadForm" enctype="multipart/form-data" method="POST">
 				<div id="fileTool">
+					<button type="button" id="goParent" class="btn btn-info btn-sm">상위폴더</button>
 					<button type="button" id="uploadFileBtn" data-toggle="modal" data-target="#uploadModal" onclick="modalPopup()" class="btn btn-primary btn-sm">업로드</button>
 					<!-- <button type="button" id="searchBtn" data-toggle="modal" data-target="#searchModal" onclick="searchModalPopup()" class="btn btn-primary btn-sm">검색</button> -->
 			    	<button type="button" id="createFolderBtn" class="btn btn-primary btn-sm">폴더생성</button>
@@ -46,9 +47,10 @@
 						<option value="file">파일</option>
 						<option value="folder">폴더</option>
 					</select>
-					<input type="text" id="searchText" class="form-control input-sm" placeholder="검색"/>
+					<input type="search" id="searchText" class="form-control input-sm" placeholder="검색"/>
 					<button type="button" id="searchBtn" class="btn btn-warning btn-sm">확인</button>
 				</div>
+				
 		        <div class="dropZone" style="overflow-x:hidden">
 		            <table id="fileTable" class="table table-hover table-sm">
 		                <thead>
@@ -56,12 +58,12 @@
 		                    	<th style="width:5%; font-size: 15px; text-align: center;">
 		                    		<input type="checkbox" id="allCheck" onclick="checkAll()" style="cursor: pointer;">
 		                    	</th>
-		                        <th style="width:400px; max-width:400px;">파일명</th>
-		                        <th style="width:100px; max-width:100px;">파일형식</th>
-		                        <th style="width:160px; max-width:160px;">수정된날짜</th>
-		                        <th style="width:100px; max-width:100px;">파일크기</th>
-		                        <th style="width:300px; max-width:300px;">파일경로</th>
-		                        <th style="width:100px; max-width:100px;">게시자</th>
+		                        <th style="width:400px;">파일명</th>
+		                        <th style="width:100px;">파일형식</th>
+		                        <th style="width:160px;">수정된날짜</th>
+		                        <th style="width:100px;">파일크기</th>
+		                        <th style="width:300px;">파일경로</th>
+		                        <th style="width:100px;">게시자</th>
 		                    </tr>
 		                </thead>
 		                <tbody class="fileList"></tbody>
