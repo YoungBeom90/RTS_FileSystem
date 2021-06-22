@@ -53,6 +53,6 @@
 	<select id="searchFile" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
 		SELECT distinct fi.fid, fi.pid, fi.fname, fi.fpath, fi.fsize, fi.fext, fi.fdate
 		FROM filelist fi, folderlist fo
-		WHERE fi.pid = fo.fid AND fi.fpath LIKE #{fpath}||'%' OR fi.fname LIKE '%'||#{fileName}||'%' OR fi.fext LIKE '%'||#{fileName}||'%'
+		WHERE fi.pid = fo.fid AND fi.fpath LIKE #{fpath}||'%' AND fi.fname LIKE '%'||#{fileName}||'%'
 	</select>
 </mapper>

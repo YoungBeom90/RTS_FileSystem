@@ -100,6 +100,8 @@ $(document).ready(function() {
 			let checkBox = $(".checkBox");
 			let fileNameList = $(".fileName");
 			let fileExtList = $(".fileExt");
+			let pathList = $(".fullPath");
+			let path;	
 			let fileName;
 			let fileExt;
 			let reqCnt = 0;
@@ -108,10 +110,11 @@ $(document).ready(function() {
 			for await(let target of checkBox) {
 				
 				if(target.checked) {
+					path = pathList[fileIdx].innerText; 
 					fileName = fileNameList[fileIdx].innerText; //파일명 가져오기 
 					fileExt = fileExtList[fileIdx].innerText;//확장자명 가져오기
 					await axios.post("/axios/deleteFile", null, {params : {
-						'parent': filePath,
+						'parent': path,
 						'fileName' : fileName.trim(),
 						'fileExt' : fileExt.trim()
 					}}).then((res) => {
@@ -196,6 +199,8 @@ $(document).ready(function() {
 		let checkBox = $(".checkBox");
 		let fileNameList = $(".fileName");
 		let fileExtList = $(".fileExt");
+		let pathList = $(".fullPath");
+		let path;
 		let fileName;
 		let fileExt;
 		let encodeUri;
@@ -205,6 +210,7 @@ $(document).ready(function() {
 		for await (let target of checkBox) {
 			
 			if(target.checked) {
+				path = pathList[fileIdx].innerText; 
 				fileName = fileNameList[fileIdx].innerText; //파일명 가져오기 
 				fileExt = fileExtList[fileIdx].innerText;//확장자명 가져오기
 				fileInfo.push(fileName.trim()+fileExt.trim());
@@ -214,14 +220,14 @@ $(document).ready(function() {
 					
 		await axios.get("/axios/downloadFile", {
 				params : {
-					'parent' : filePath,	
+					'parent' : path,	
 					'fileName' : encodeURI(fileInfo)
 				},
 			    paramsSerializer : function(params){
 			      return jQuery.param(params)
 			    }}).then((res) => {
 					console.log(res);
-					encodeUri = encodeURI(filePath);
+					encodeUri = encodeURI(path);
 					for(let i = 0; i<res.config.params.fileName.split(",").length;i++){
 						console.log(res.config.params.fileName.split(",").length);
 
@@ -296,6 +302,7 @@ $(document).ready(function() {
 					let fileName = json[i].fname;
 					let ext = json[i].fext;
 					let fullPath = json[i].fpath;
+					let filePath = json[i].fpath;
 
 					let fileSize = json[i].fsize / 1024 / 1024;
 					fileSize = fileSize.toFixed(3);
@@ -308,10 +315,9 @@ $(document).ready(function() {
 					let seconds = date.getSeconds()>=10?date.getSeconds():"0"+date.getSeconds();
 					let mdfDate = year+"-"+month+"-"+day+" "+hour+":"+minutes+":"+seconds;
 					pathList.push(json[i].fpath);
-					addFileList(fileName, fileSize, ext, mdfDate, null, fullPath);
+					addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath);
 					}
 					console.log(pathList);
-					//downloadFile(json[i].fpath);
 				}else{
 					alert("검색결과가 없습니다.");
 				}//if~else end
@@ -416,11 +422,16 @@ async function selectList(firstDir) {
 					let seconds = date.getSeconds()>=10?date.getSeconds():"0"+date.getSeconds();
 					let mdfDate = year+"-"+month+"-"+day+" "+hour+":"+minutes+":"+seconds;
 					let filePath = data[idx].fpath;
-					
-					let lastIdx = filePath.lastIndexOf("\\");
-					filePath = filePath.substr(0, lastIdx);
-					let fullPath = filePath;
-					addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath);	
+					let fullPath;
+					console.log(filePath);
+					if(ext==="폴더"){
+						let lastIdx = filePath.lastIndexOf("\\\\");
+						filePath = filePath.substr(0, lastIdx);
+						fullPath = filePath;
+						addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath);	
+					}else{
+						addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath);	
+					}
 					
 				}
 				if($(".fileList").children().length === 0) {
@@ -615,7 +626,6 @@ function addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath) {
 	let minute = udTime.getMinutes();
 	let seconds = udTime.getSeconds();
 	let fileDate = year+"-"+month+"-"+day+" "+hour+":"+minute+":"+seconds;
-	
 	if(mdfDate) {
 		fileDate = mdfDate;
 	}
@@ -666,7 +676,11 @@ function addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath) {
 		html += "<td class='fileSize'></td>";
 	}
 	html += "<td class='fullPath''>";
-	html += fullPath + "</td>";
+	if(ext === '폴더'){
+		html += fullPath + "</td>";
+	}else{
+		html += filePath + "</td>";
+	}
 	html += "<td class='fileAuth'>admin</td>";
 	html += "</tr>";
 	

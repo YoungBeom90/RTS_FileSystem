@@ -234,13 +234,14 @@ public class TestController {
 	public void downloadFile(HttpServletResponse response,
 			@RequestParam(value = "fileName") String[] fname, 
 			@RequestParam(value = "parent") String fpath) throws IOException {
-/*
+		System.out.println("다운로드로직시작");
+		System.out.println(fpath);
 		for (String string : fname) {
 			System.out.println("fname is :" + string);
 			System.out.println("파일명 : "+ URLDecoder.decode(string,"utf-8"));
 		}
-*/	
 		System.out.println(fname.length);
+
 			WriteFile wf = new FileList();
 			Thread thread1 = new Thread(wf.donwloadFile(response, fname, fpath));
 			Thread thread2 = new Thread(wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip"));
