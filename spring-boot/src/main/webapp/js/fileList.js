@@ -650,7 +650,7 @@ function addFileList(fileName, fileSize, ext, mdfDate, filePath, fullPath) {
 	}else{
 		html += "<td class='fileSize'></td>";
 	}
-	html += "<td class='filePath''>";
+	html += "<td class='fullPath''>";
 	html += fullPath + "</td>";
 	html += "<td class='fileAuth'>admin</td>";
 	html += "</tr>";
@@ -665,7 +665,7 @@ function createFolder(btn) {
     btn.addEventListener("click", function() {
 		let newFolder = $("#fileNameInput").html();
 		let prtPath = $("#filePath").val();
-	
+		console.log("폴더생성을 시작합니다.");
 		if(prtPath === undefined) {
 			Swal.fire({
 				title: "상위 폴더를 선택하세요.",

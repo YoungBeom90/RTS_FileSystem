@@ -112,6 +112,16 @@ th:last-child {
 	text-align: center;
 }
 
+.fileTr > td:nth-child(2) {
+	max-width: 200px;
+	overflow: auto;
+ 	white-space: nowrap;
+}
+
+.fileTr > td:nth-child(2)::-webkit-scrollbar {
+	display: none;
+}
+
 .fullPath {
 	max-width: 300px;
  	overflow: auto;

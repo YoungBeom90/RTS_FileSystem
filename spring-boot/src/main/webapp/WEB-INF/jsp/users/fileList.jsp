@@ -56,12 +56,12 @@
 		                    	<th style="width:5%; font-size: 15px; text-align: center;">
 		                    		<input type="checkbox" id="allCheck" onclick="checkAll()" style="cursor: pointer;">
 		                    	</th>
-		                        <th style="width:400px;">파일명</th>
-		                        <th style="width:100px;">파일형식</th>
-		                        <th style="width:160px;">수정된날짜</th>
-		                        <th style="width:100px;">파일크기</th>
-		                        <th style="width:300px;">파일경로</th>
-		                        <th style="width:100px;">게시자</th>
+		                        <th style="width:400px; max-width:400px;">파일명</th>
+		                        <th style="width:100px; max-width:100px;">파일형식</th>
+		                        <th style="width:160px; max-width:160px;">수정된날짜</th>
+		                        <th style="width:100px; max-width:100px;">파일크기</th>
+		                        <th style="width:300px; max-width:300px;">파일경로</th>
+		                        <th style="width:100px; max-width:100px;">게시자</th>
 		                    </tr>
 		                </thead>
 		                <tbody class="fileList"></tbody>
