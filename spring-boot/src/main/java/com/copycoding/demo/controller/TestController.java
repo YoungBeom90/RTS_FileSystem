@@ -264,10 +264,10 @@ public class TestController {
 	@ResponseBody
 	public void deleteZip(@RequestParam(value = "fileName") String[] fname, 
 		@RequestParam(value = "parent") String fpath) throws IOException {
-		System.out.println("zip삭제 : "+fname[0]);
+		System.out.println("zip삭제 : "+URLDecoder.decode(fname[0].substring(0,fname[0].lastIndexOf(".")),"utf-8"));
 		System.out.println("zip삭제 : "+fpath);
 		WriteFile wf = new FileList();
-		wf.fileDelete(URLDecoder.decode(fpath, "utf-8")+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
+		wf.fileDelete(URLDecoder.decode(fpath, "utf-8")+"\\\\"+URLDecoder.decode(fname[0].substring(0,fname[0].lastIndexOf(".")),"utf-8")+".zip");
 	
 	}
 	
