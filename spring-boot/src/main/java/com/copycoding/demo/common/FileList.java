@@ -254,7 +254,7 @@ public class FileList implements WriteFile {
 			e.printStackTrace();
 		}//try~catch end
 		
-		return fl.getName()+"을 삭제하였습니다.";
+		return fl.getName();
 	}
 
 
@@ -342,10 +342,11 @@ public class FileList implements WriteFile {
 
 	@Override
 	public String donwloadFile(HttpServletResponse response, String[] fname, String fpath) throws IOException {
-		
+		System.out.println(fname.length);
 		if(fname.length==1) {
 			System.out.println("파일을 다운받습니다.");
 			for (String fileName : fname) {
+				System.out.println(URLDecoder.decode(fileName,"utf-8"));
 				if(fileName.lastIndexOf(".") != -1) {
 					File downloadFile = new File(fpath+"\\\\"+URLDecoder.decode(fileName,"utf-8"));
 					response.setContentType("application/download; charset=utf-8");
@@ -375,20 +376,28 @@ public class FileList implements WriteFile {
 		}else{
 			System.out.println("zip을 만듭니다.");
 			ZipOutputStream zout = null;
+			//zip파일 이름설정
 			String zn = URLDecoder.decode(fname[0],"utf-8");
 			String zipName = zn.substring(0,zn.lastIndexOf("."))+".zip";
+			System.out.println("zn : "+zn);
 			System.out.println(zipName);
+
 				try {
+					//zip파일 압축 start
 					zout = new ZipOutputStream(new FileOutputStream(fpath+"\\\\"+zipName));
 					byte[] buffer = new byte[1024];
 					FileInputStream in = null;
 					
 					for(int i=0; i<fname.length; i++) {
+						System.out.println(fpath+"\\\\"+URLDecoder.decode(fname[i],"utf-8"));
+						//압축대상 파일
 						in = new FileInputStream(fpath+"\\\\"+URLDecoder.decode(fname[i],"utf-8"));
+						//압축에 저장될 파일명
 						zout.putNextEntry(new ZipEntry(URLDecoder.decode(fname[i],"utf-8")));
 						
 						int len;
 						while((len = in.read(buffer))>0) {
+							//읽은 파일 zipOutputStream에 write
 							zout.write(buffer, 0, len);
 						}//while end
 						
@@ -396,12 +405,15 @@ public class FileList implements WriteFile {
 						in.close();
 					}//for end
 					
-					zout.close();
+					zout.close();//zip파일 압축 end
 					
+					
+					//파일 다운로드  start
 					response.setContentType("application/zip; charset=UTF-8");
 					response.addHeader("Content-Disposition","attachment; filename="+zipName);
 					
 					FileInputStream fis = new FileInputStream(fpath+"\\\\"+zipName);
+					System.out.println(fpath+"\\\\"+zipName);
 					BufferedInputStream bis = new BufferedInputStream(fis);
 					ServletOutputStream sos = response.getOutputStream();
 					BufferedOutputStream bos = new BufferedOutputStream(sos);
@@ -416,7 +428,7 @@ public class FileList implements WriteFile {
 					if(bis!=null) bis.close();
 					if(sos!=null) sos.close();
 					if(fis!=null) fis.close();
-					
+					//파일 다운로드 end
 				} catch (Exception e) {
 					e.printStackTrace();
 				}finally {

@@ -2,6 +2,7 @@ package com.copycoding.demo.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.ProcessBuilder.Redirect;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -236,27 +237,36 @@ public class TestController {
 			@RequestParam(value = "parent") String fpath) throws IOException {
 		System.out.println("다운로드로직시작");
 		System.out.println(fpath);
+		System.out.println(fname.length);
 		for (String string : fname) {
 			System.out.println("fname is :" + string);
 			System.out.println("파일명 : "+ URLDecoder.decode(string,"utf-8"));
 		}
-		System.out.println(fname.length);
 
 			WriteFile wf = new FileList();
 			Thread thread1 = new Thread(wf.donwloadFile(response, fname, fpath));
-			Thread thread2 = new Thread(wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip"));
+			//Thread thread2 = new Thread(wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip"));
 
 			try {
 				thread1.start();
 				thread1.join();
 				
-				thread2.start();
-				thread2.join();
+				//thread2.start();
+				//thread2.join();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 				
 	}//downloadFile end
+	
+	@RequestMapping("/axios/deleteZip")
+	@ResponseBody
+	public void deleteZip(@RequestParam(value = "fileName") String[] fname, 
+		@RequestParam(value = "parent") String fpath) {
+		WriteFile wf = new FileList();
+		wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
+	
+	}
 	
 	@RequestMapping("/ajax/searchFile")
 	@ResponseBody

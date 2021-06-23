@@ -223,11 +223,30 @@ $(document).ready(function() {
 					'parent' : path,	
 					'fileName' : encodeURI(fileInfo)
 				},
+				header:{responseType:'arraybuufer'},
 			    paramsSerializer : function(params){
 			      return jQuery.param(params)
 			    }}).then((res) => {
-					console.log(res);
+					console.log([res.data]);
 					encodeUri = encodeURI(path);
+					/*
+					const url = window.URL.createObjectURL(new Blob([res.data]));
+					const link = document.createElement('a');
+					const contentDisposition = decodeURI(res.headers['content-disposition']); // 파일 이름
+					console.log(contentDisposition);
+					let fileName = 'unknown';
+					if (contentDisposition) {
+					  const [ fileNameMatch ] = contentDisposition.split(';').filter(str => str.includes('filename'));
+					  if (fileNameMatch)
+					  	[ , fileName ] = fileNameMatch.split('=');
+					}
+					link.href = url;
+					link.setAttribute('download', `${fileName}`);
+					link.style.cssText = 'display:none';
+					document.body.appendChild(link);
+					link.click();
+					link.remove();
+					*/
 					for(let i = 0; i<res.config.params.fileName.split(",").length;i++){
 						console.log(res.config.params.fileName.split(",").length);
 
@@ -236,43 +255,23 @@ $(document).ready(function() {
 									window.location =`/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[i]}&parent=${encodeUri}`
 								} else {
 									window.location = `/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[0].substring(0,res.config.params.fileName.split(",")[0].lastIndexOf("."))+".zip"}&parent=${encodeUri}`
+									window.location = `/axios/deleteZip?fileName=${res.config.params.fileName.split(",")[0].substring(0,res.config.params.fileName.split(",")[0].lastIndexOf("."))+".zip"}&parent=${encodeUri}`
+									window.location = document.location.href;
 								}//if~else end
 								
 							reqCnt++;
 							}//if end
 						console.log("다운")
 					}//for 
+				}).then((res)=> {
+						console.log("다운후 지우기");
+						console.log(res)
 				}).catch( function(error) {
 					console.log(error);
 			})//axios end
 		
 		return reqCnt;
 	}//파일 다운로드 end
-	/*
-	$('#searchText').on("keyup", function(){
-		const searchData = $("#searchText").val();
-		$.ajax({
-			url : "/ajax/searchFile",
-			data : {"fileName" : searchData},
-			dataType : "json",
-			success : function(json){
-				console.log(json);
-				if(json.length!=0) {
-					for(let i = 0; i<json.length;i++){
-					//console.log(json[0].fpath);
-					//addFileList(json[i].fname, json[i].fext, json[i].fdate, json[i].fsize);
-					}
-				}else{
-					//alert("검색결과가 없습니다.");
-				}//if~else end
-			},
-			error : function(xhr, error){
-				console.log(error)
-			}
-			
-		})
-	})// searchFile end
-	*/
 	
 	$("#searchBtn").on("click", function() {
 		console.log("clicked : " + $("#searchText").val());
