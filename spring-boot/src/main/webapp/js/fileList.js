@@ -229,25 +229,6 @@ $(document).ready(function() {
 			    }}).then((res) => {
 					console.log([res.data]);
 					encodeUri = encodeURI(path);
-					/*
-					const url = window.URL.createObjectURL(new Blob([res.data]));
-					const link = document.createElement('a');
-					const contentDisposition = decodeURI(res.headers['content-disposition']); // 파일 이름
-					console.log(contentDisposition);
-					let fileName = 'unknown';
-					if (contentDisposition) {
-					  const [ fileNameMatch ] = contentDisposition.split(';').filter(str => str.includes('filename'));
-					  if (fileNameMatch)
-					  	[ , fileName ] = fileNameMatch.split('=');
-					}
-					console.log(fileName);
-					link.href = url;
-					link.setAttribute('download', `${fileName}`);
-					link.style.cssText = 'display:none';
-					document.body.appendChild(link);
-					link.click();
-					link.remove();
-					*/
 					for(let i = 0; i<res.config.params.fileName.split(",").length;i++){
 						console.log(res.config.params.fileName.split(",").length);
 
@@ -303,12 +284,8 @@ $(document).ready(function() {
 		let pathList=[];
 		console.log(name);
 		console.log(selectParentPath);
-/*
-		let json = {
-			fileName: name
-		}
-		console.log(json);
-*/		if(name!=""){
+
+		if(name!=""){
 		$.ajax({
 			url: '/ajax/searchFile',
 			async: true,
@@ -342,7 +319,12 @@ $(document).ready(function() {
 					}
 					console.log(pathList);
 				}else{
-					alert("검색결과가 없습니다.");
+					Swal.fire({
+						title: "검색결과가 없습니다.",
+						icon: "warning",
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: "확인"
+					});
 				}//if~else end
 			},
 			error: function(err) {
@@ -891,14 +873,14 @@ function doUpload(files){
 		for(let i=0; i<files.length; i++) {
 			
 			for(let j=0; j<globalData.length; j++) {
-				if(files[i].name === globalData[j].text) {
+				if(files[i].name == globalData[j].fname+globalData[j].fext) {
 					dupCheck = true;
 					break;	
-				} 
+				}//if EDN 
 				
-			}
+			}// 2nd for END
 			
-		}
+		}// 1st for END
 		
 		if(dupCheck) {
 			Swal.fire({

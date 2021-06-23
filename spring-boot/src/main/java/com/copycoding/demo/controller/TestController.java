@@ -279,8 +279,6 @@ public class TestController {
 		
 		List<FileListVO> list = new ArrayList<FileListVO>();
 		list = fileListService.searchFileList(fileName, fpath);
-		//새로운 list에 담아서 json전송
-		//fileListService.searchFolderList(param);
 		return list;
 	}
 	
