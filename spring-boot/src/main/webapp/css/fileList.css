@@ -202,7 +202,7 @@ tbody tr:nth-child(2n+1) {
 }
 
 #search {
-	width: 325px;
+	width: 350px;
 	padding: 5px 5px 5px 12px;
 	margin-bottom: 0px;
 	margin-right: 30px;
@@ -223,8 +223,17 @@ tbody tr:nth-child(2n+1) {
 	display: inline;
 }
 
+.searchClear {
+	position: fixed;
+	width: 20px;
+	height: 20px;
+	margin-top: 10px;
+	font-size: 15px;
+	cursor: pointer;
+}
+
 #searchBtn {
-	margin: 4px 0px 6px 5px; 
+	margin: 4px 0px 6px 25px; 
 	display: inline;
 	height: 2.8em;
 }

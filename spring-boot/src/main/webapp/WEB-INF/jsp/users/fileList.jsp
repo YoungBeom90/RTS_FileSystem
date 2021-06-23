@@ -48,6 +48,7 @@
 						<option value="folder">폴더</option>
 					</select>
 					<input type="search" id="searchText" class="form-control input-sm" placeholder="검색"/>
+					<img class="searchClear" alt="clear" src="/images/xButton.png" />
 					<button type="button" id="searchBtn" class="btn btn-warning btn-sm">확인</button>
 				</div>
 				

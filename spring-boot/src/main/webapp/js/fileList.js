@@ -25,7 +25,7 @@ const loadingEnd = () => {
 }
 
 $(document).ready(function() {
-	
+	this.addEventListener("submit", (e) => e.preventDefault());
 	
 	tree_Common.init(); // 트리 초기렌더링 시작
 	tree_Common.loadedTree(); // 트리 렌더링 이후 이벤트
@@ -274,6 +274,16 @@ $(document).ready(function() {
 	}//파일 다운로드 end
 	
 	$("#searchBtn").on("click", function() {
+		
+		if($("#searchText").val() === "") {
+			Swal.fire({
+				title: "파일명을 입력해주세요.",
+				icon: "warning",
+				confirmButtonColor: '#3085d6',
+				confirmButtonText: "확인"
+			});
+		}
+		
 		console.log("clicked : " + $("#searchText").val());
 		let name = $("#searchText").val();
 		let pathList=[];
@@ -328,15 +338,39 @@ $(document).ready(function() {
 		}
 	})
 	
+	// 상위버튼 클릭 이벤트
 	$("#goParent").on("click", function() {
 		let clickedNode = $(".jstree-clicked");
 		console.log();
 		clickedNode.parent().parent().prev().click();
 	});
 	
+	// 검색창 검색어 제어
+	const searchInput = document.getElementById("searchText");
+	searchInput.addEventListener("keyup", () => {
+		handleKeyup(searchInput);
+	});
+	// clear 버튼 제어
+	$(".searchClear").click(function() {
+		searchInput.value = "";
+		showResetButton(false);
+	});
+	// clearBtn 초기화
+	showResetButton();
 });//$(document).ready 종료
 
+function handleKeyup(el) {
+	/*console.log("handleEvent! = ", el.value);*/
+	const value = el.value;
+	showResetButton(value.length > 0);
+}
 
+function showResetButton(visible = false) {
+	console.log("showResetButton");
+	const clearBtn = document.getElementsByClassName("searchClear");
+	 
+	clearBtn[0].style.display = visible ? "inline" : "none";
+}
 
 function checkAll() {
 	let trigger = $("#allCheck");
@@ -795,11 +829,6 @@ function axiosCreateFolder(fldNm, fldPrt) {
 	
 }
 
-// 폴더 이름수정
-function renameFolder(obj) {
-	$("#")
-}
-
 // 업로드 모달창
 function modalPopup() {
 	console.log(globalSelectFolder);
@@ -920,3 +949,4 @@ function doUpload(files){
     }
 	$("#uploadModal").modal('hide');
 }
+
