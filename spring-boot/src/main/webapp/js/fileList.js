@@ -275,6 +275,16 @@ $(document).ready(function() {
 	*/
 	
 	$("#searchBtn").on("click", function() {
+		
+		if($("#searchText").val() === "") {
+			Swal.fire({
+				title: "파일명을 입력해주세요.",
+				icon: "warning",
+				confirmButtonColor: '#3085d6',
+				confirmButtonText: "확인"
+			});
+		}
+		
 		console.log("clicked : " + $("#searchText").val());
 		let name = $("#searchText").val();
 		let pathList=[];
