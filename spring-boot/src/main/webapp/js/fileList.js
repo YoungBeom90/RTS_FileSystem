@@ -25,7 +25,7 @@ const loadingEnd = () => {
 }
 
 $(document).ready(function() {
-	
+	this.addEventListener("submit", (e) => e.preventDefault());
 	
 	tree_Common.init(); // 트리 초기렌더링 시작
 	tree_Common.loadedTree(); // 트리 렌더링 이후 이벤트
@@ -828,11 +828,6 @@ function axiosCreateFolder(fldNm, fldPrt) {
 	    });
 	}
 	
-}
-
-// 폴더 이름수정
-function renameFolder(obj) {
-	$("#")
 }
 
 // 업로드 모달창
