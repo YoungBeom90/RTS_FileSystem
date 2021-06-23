@@ -339,15 +339,39 @@ $(document).ready(function() {
 		}
 	})
 	
+	// 상위버튼 클릭 이벤트
 	$("#goParent").on("click", function() {
 		let clickedNode = $(".jstree-clicked");
 		console.log();
 		clickedNode.parent().parent().prev().click();
 	});
 	
+	// 검색창 검색어 제어
+	const searchInput = document.getElementById("searchText");
+	searchInput.addEventListener("keyup", () => {
+		handleKeyup(searchInput);
+	});
+	// clear 버튼 제어
+	$(".searchClear").click(function() {
+		searchInput.value = "";
+		showResetButton(false);
+	});
+	// clearBtn 초기화
+	showResetButton();
 });//$(document).ready 종료
 
+function handleKeyup(el) {
+	/*console.log("handleEvent! = ", el.value);*/
+	const value = el.value;
+	showResetButton(value.length > 0);
+}
 
+function showResetButton(visible = false) {
+	console.log("showResetButton");
+	const clearBtn = document.getElementsByClassName("searchClear");
+	 
+	clearBtn[0].style.display = visible ? "inline" : "none";
+}
 
 function checkAll() {
 	let trigger = $("#allCheck");
@@ -931,3 +955,4 @@ function doUpload(files){
     }
 	$("#uploadModal").modal('hide');
 }
+
