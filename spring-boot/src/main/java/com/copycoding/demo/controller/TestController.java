@@ -236,6 +236,7 @@ public class TestController {
 			@RequestParam(value = "fileName") String[] fname, 
 			@RequestParam(value = "parent") String fpath) throws IOException {
 		System.out.println("다운로드로직시작");
+		URLDecoder.decode(fpath, "utf-8");
 		System.out.println(fpath);
 		System.out.println(fname.length);
 		for (String string : fname) {
@@ -259,12 +260,14 @@ public class TestController {
 				
 	}//downloadFile end
 	
-	@RequestMapping("/axios/deleteZip")
+	@RequestMapping("/ajax/deleteZip")
 	@ResponseBody
 	public void deleteZip(@RequestParam(value = "fileName") String[] fname, 
-		@RequestParam(value = "parent") String fpath) {
+		@RequestParam(value = "parent") String fpath) throws IOException {
+		System.out.println("zip삭제 : "+fname[0]);
+		System.out.println("zip삭제 : "+fpath);
 		WriteFile wf = new FileList();
-		wf.fileDelete(fpath+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
+		wf.fileDelete(URLDecoder.decode(fpath, "utf-8")+"\\\\"+fname[0].substring(0,fname[0].lastIndexOf("."))+".zip");
 	
 	}
 	

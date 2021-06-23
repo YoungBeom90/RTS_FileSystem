@@ -254,7 +254,7 @@ public class FileList implements WriteFile {
 			e.printStackTrace();
 		}//try~catch end
 		
-		return fl.getName();
+		return fl.getName()+"을 삭제하였습니다.";
 	}
 
 
@@ -346,7 +346,6 @@ public class FileList implements WriteFile {
 		if(fname.length==1) {
 			System.out.println("파일을 다운받습니다.");
 			for (String fileName : fname) {
-				System.out.println(URLDecoder.decode(fileName,"utf-8"));
 				if(fileName.lastIndexOf(".") != -1) {
 					File downloadFile = new File(fpath+"\\\\"+URLDecoder.decode(fileName,"utf-8"));
 					response.setContentType("application/download; charset=utf-8");

@@ -240,6 +240,7 @@ $(document).ready(function() {
 					  if (fileNameMatch)
 					  	[ , fileName ] = fileNameMatch.split('=');
 					}
+					console.log(fileName);
 					link.href = url;
 					link.setAttribute('download', `${fileName}`);
 					link.style.cssText = 'display:none';
@@ -255,8 +256,7 @@ $(document).ready(function() {
 									window.location =`/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[i]}&parent=${encodeUri}`
 								} else {
 									window.location = `/axios/downloadFile?fileName=${res.config.params.fileName.split(",")[0].substring(0,res.config.params.fileName.split(",")[0].lastIndexOf("."))+".zip"}&parent=${encodeUri}`
-									window.location = `/axios/deleteZip?fileName=${res.config.params.fileName.split(",")[0].substring(0,res.config.params.fileName.split(",")[0].lastIndexOf("."))+".zip"}&parent=${encodeUri}`
-									window.location = document.location.href;
+									//window.location = `/axios/deleteZip?fileName=${res.config.params.fileName.split(",")[0].substring(0,res.config.params.fileName.split(",")[0].lastIndexOf("."))+".zip"}&parent=${encodeUri}`
 								}//if~else end
 								
 							reqCnt++;
@@ -266,6 +266,20 @@ $(document).ready(function() {
 				}).then((res)=> {
 						console.log("다운후 지우기");
 						console.log(res)
+					$.ajax({
+						url : "/ajax/deleteZip",
+						data : {
+							"fileName": encodeURI(fileInfo),
+							"parent" : path
+						},
+						success:function(json){
+							console.log("성공");
+						},
+						error:function(err){
+							console.log(err);
+						}
+					})//ajax end
+						
 				}).catch( function(error) {
 					console.log(error);
 			})//axios end
