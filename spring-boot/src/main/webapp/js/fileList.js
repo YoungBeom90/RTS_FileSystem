@@ -25,7 +25,17 @@ const loadingEnd = () => {
 }
 
 $(document).ready(function() {
+	// input 엔터 keydown submit 방지
 	this.addEventListener("submit", (e) => e.preventDefault());
+		
+	// 단일 체크박스 이벤트
+	this.addEventListener("click", (e) => {
+		if(e.target.checked) {
+			e.path[2].setAttribute("style", "background-color: #2257d4;");
+		} else {
+			e.path[2].removeAttribute("style");
+		}
+	});
 	
 	tree_Common.init(); // 트리 초기렌더링 시작
 	tree_Common.loadedTree(); // 트리 렌더링 이후 이벤트
@@ -162,7 +172,7 @@ $(document).ready(function() {
 	});//파일다운로드 이벤트 end
 	
 	
-	
+	// 폴더 더블클릭 이벤트
 	$(document).dblclick((e) => {
 		let selectFolder = e.target.innerText.trim();
 		let clicked = document.querySelector(".jstree-clicked");
@@ -368,21 +378,23 @@ function showResetButton(visible = false) {
 	clearBtn[0].style.display = visible ? "inline" : "none";
 }
 
+// Check Box 전체 선택
 function checkAll() {
 	let trigger = $("#allCheck");
 	let chkbox = $(".checkBox");
+
 	if(trigger[0].checked) {
-		for(let i=0; i<chkbox.length; i++) {
-			chkbox[i].checked = true;
-			chkbox.eq(i).parent().parent().attr("style", "background-color: #2257d4;");
-		}
+		chkbox.map((i) => {
+			chkbox[i].parentNode.parentNode.setAttribute("style", "background-color: #2257d4;");
+		});
 	} else if(trigger[0].checked === false){
-		for(let i=0; i<chkbox.length; i++) {
-			chkbox[i].checked = false;
-			chkbox.eq(i).parent().parent().removeAttr("style");
-		}
+		chkbox.map((i) => {
+			chkbox[i].parentNode.parentNode.removeAttribute("style");
+		});
 	}
 }
+
+
 
 // 폴더 추가시 실행
 async function addFolderListener(parent, child) {
