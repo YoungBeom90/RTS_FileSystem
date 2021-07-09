@@ -1,4 +1,4 @@
-package com.copycoding.demo.service;
+package com.rts.service;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -17,12 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.copycoding.demo.common.FileList;
-import com.copycoding.demo.common.WriteFile;
-import com.copycoding.demo.dao.FileListDao;
-import com.copycoding.demo.dao.FolderListDao;
-import com.copycoding.demo.vo.FileListVO;
-import com.copycoding.demo.vo.FolderListVO;
+import com.rts.common.FileList;
+import com.rts.common.WriteFile;
+import com.rts.dao.FileListDao;
+import com.rts.dao.FolderListDao;
+import com.rts.vo.FileListVO;
+import com.rts.vo.FolderListVO;
 
 @Service
 public class FileListServiceImpl implements FileListService{

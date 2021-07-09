@@ -1,10 +1,10 @@
-package com.copycoding.demo.dao;
+package com.rts.dao;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.copycoding.demo.vo.UserInfoVO;
+import com.rts.vo.UserInfoVO;
 
 @Mapper
 public interface UserInfoDao {

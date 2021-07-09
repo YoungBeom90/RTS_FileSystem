@@ -1,12 +1,12 @@
-package com.copycoding.demo.service;
+package com.rts.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.copycoding.demo.dao.UserInfoDao;
-import com.copycoding.demo.vo.UserInfoVO;
+import com.rts.dao.UserInfoDao;
+import com.rts.vo.UserInfoVO;
 
 @Service
 public class UserInfoServiceImpl implements UserInfoService {

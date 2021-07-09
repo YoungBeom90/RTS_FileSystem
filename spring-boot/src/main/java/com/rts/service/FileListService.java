@@ -1,12 +1,12 @@
-package com.copycoding.demo.service;
+package com.rts.service;
 
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.copycoding.demo.vo.FileListVO;
-import com.copycoding.demo.vo.FolderListVO;
+import com.rts.vo.FileListVO;
+import com.rts.vo.FolderListVO;
 
 public interface FileListService {
 	//파일 등록

@@ -1,4 +1,4 @@
-package com.copycoding.demo;
+package com.rts;
 
 import java.nio.charset.Charset;
 
@@ -14,7 +14,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
-		"com.copycoding.demo.**"})
+		"com.rts.**"})
 public class Application {
 
 	public static void main(String[] args) {

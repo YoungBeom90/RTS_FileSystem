@@ -1,4 +1,4 @@
-package com.copycoding.demo;
+package com.rts;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.filter.OrderedCharacterEncodingFilter;

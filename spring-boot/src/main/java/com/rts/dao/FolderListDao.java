@@ -1,11 +1,11 @@
-package com.copycoding.demo.dao;
+package com.rts.dao;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.copycoding.demo.vo.FileListVO;
-import com.copycoding.demo.vo.FolderListVO;
+import com.rts.vo.FileListVO;
+import com.rts.vo.FolderListVO;
 
 @Mapper
 public interface FolderListDao {

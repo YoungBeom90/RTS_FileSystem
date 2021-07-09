@@ -1,4 +1,4 @@
-package com.copycoding.demo.common;
+package com.rts.common;
 
 import java.io.File;
 import java.io.IOException;

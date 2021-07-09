@@ -83,12 +83,10 @@ $(document).ready(function() {
 						Swal.fire({
 							title: reqCnt + "개 파일을 삭제하였습니다.",
 							icon: "success",
-							confirmButtonColor: '#3085d6',
-							confirmButtonText: "확인"				
-						}).then(() => {
-							$(".jstree-clicked").trigger("click");
-							tree_Common.treeRefresh();
+							showConfirmButton: false,
+							timer: 1500		
 						});
+						tree_Common.treeRefresh();
 					});
 				}
 			});
@@ -96,8 +94,8 @@ $(document).ready(function() {
 			Swal.fire({
 				title: "파일을 선택해주세요.",
 				icon: "info",
-				confirmButtonColor: '#3085d6',
-				confirmButtonText: "확인"				
+				showConfirmButton: false,
+				timer: 1500				
 			});
 		}
 		
@@ -284,8 +282,8 @@ $(document).ready(function() {
 			Swal.fire({
 				title: "파일명을 입력해주세요.",
 				icon: "warning",
-				confirmButtonColor: '#3085d6',
-				confirmButtonText: "확인"
+				showConfirmButton: false,
+				timer: 1500
 			});
 		}
 		
@@ -332,8 +330,8 @@ $(document).ready(function() {
 					Swal.fire({
 						title: "검색결과가 없습니다.",
 						icon: "warning",
-						confirmButtonColor: '#3085d6',
-						confirmButtonText: "확인"
+						showConfirmButton: false,
+						timer: 1500
 					});
 				}//if~else end
 			},
@@ -424,8 +422,8 @@ function renameFolderListener(obj) {
 				Swal.fire({
 					title: "이름 수정 완료",
 					icon: "success",
-					confirmButtonColor: '#3085d6',
-					confirmButtonText: "확인"
+					showConfirmButton: false,
+					timer: 1500
 				});
 			}
 		});
@@ -624,24 +622,24 @@ function selectFile(files) {
                 Swal.fire({
 					title: "등록불가 확장자 입니다.",
 					icon: "warning",
-					confirmButtonColor: '#3085d6',
-					confirmButtonText: "확인"
+					showConfirmButton: false,
+					timer: 1500
 				})
                 return -1;
             } else if(fileSize > uploadSize) {
 				Swal.fire({
 					title: "용량 초과!\n(업로드 가능용량: " + uploadSize + "MB",
 					icon: "warning",
-					confirmButtonColor: '#3085d6',
-					confirmButtonText: "확인"
+					showConfirmButton: false,
+					timer: 1500
 				});
                 return -1;
             } else if(fileNameArr.length <= 1) {
 				Swal.fire({
 					title: "폴더를 업로드 할 수 없습니다.",
 					icon: "warning",
-					confirmButtonColor: '#3085d6',
-					confirmButtonText: "확인"
+					showConfirmButton: false,
+					timer: 1500
 				});
 				return -1;
             } 
@@ -740,8 +738,8 @@ function createFolder(btn) {
 			Swal.fire({
 				title: "상위 폴더를 선택하세요.",
 				icon: "info",
-				confirmButtonColor: '#3085d6',
-				confirmButtonText: "확인"
+				showConfirmButton: false,
+				timer: 1500
 			})
 			return;
 		}
@@ -782,6 +780,7 @@ function createFolder(btn) {
 	// 새폴더 이름수정 후 이벤트
 	$(document).on("click", "#fileNmSubmit", function() {
 		axiosCreateFolder($("#fileNameInput").val(), $("#filePath").val());
+		
 	});
 	
 }
@@ -807,30 +806,25 @@ function axiosCreateFolder(fldNm, fldPrt) {
 					Swal.fire({
 						title: "폴더경로를 읽어오지 못했습니다. 폴더 클릭 후 재시도 해주세요.",
 						icon: "error",
-						confirmButtonColor: '#3085d6',
-						confirmButtonText: "확인"
-					}).then((res) => {
-						return;
+						showConfirmButton: false,
+						timer: 1500
 					});
 				} else if(res.data === 1){
 					Swal.fire({
 						title: "폴더 생성 완료.",
 						icon: "success",
-						confirmButtonColor: '#3085d6',
-						confirmButtonText: "확인"
-					}).then((res) => {
-						if(res.value) {
-							tree_Common.treeRefresh();
-						}
+						showConfirmButton: false,
+						timer: 1500
 					});
 				} else {
 					Swal.fire({
 						title: "동일한 폴더 이름이 존재합니다.",
 						icon: "warning",
-						confirmButtonColor: '#3085d6',
-						confirmButtonText: "확인"
+						showConfirmButton: false,
+						timer: 1500
 					});
 				}
+				tree_Common.treeRefresh();
 	        }
 	    });
 	}

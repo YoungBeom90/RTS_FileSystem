@@ -1,4 +1,4 @@
-package com.copycoding.demo.vo;
+package com.rts.vo;
 
 public class UserInfoVO {
 	private String user_id;

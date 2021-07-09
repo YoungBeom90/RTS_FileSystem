@@ -1,4 +1,4 @@
-package com.copycoding.demo.common;
+package com.rts.common;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -251,7 +251,7 @@ public class FileList implements WriteFile {
 				}//if~else
 			}//while end
 		}catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();//예외 발생이유를 나눠서 체크
 		}//try~catch end
 		
 		return fl.getName()+"을 삭제하였습니다.";

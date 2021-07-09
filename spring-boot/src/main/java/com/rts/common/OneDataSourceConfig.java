@@ -1,4 +1,4 @@
-package com.copycoding.demo.common;
+package com.rts.common;
 
 import javax.sql.DataSource;
 

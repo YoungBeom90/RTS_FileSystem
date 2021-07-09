@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.copycoding.demo.dao.FolderListDao">
+<mapper namespace="com.rts.dao.FolderListDao">
 	
-	<select id="addFolder" resultType="String" parameterType="com.copycoding.demo.vo.FolderListVO">
+	<select id="addFolder" resultType="String" parameterType="com.rts.vo.FolderListVO">
 		INSERT INTO folderlist
 		VALUES(#{fid}, #{fname}, #{fpath}, #{ppath}, #{fsize}, #{fdate}, systimestamp)
 	</select>
@@ -13,7 +13,7 @@
 		WHERE fpath	= #{ppath}	
 	</select>
 	
-	<select id="sameFolderChk" resultType="int" parameterType="com.copycoding.demo.vo.FolderListVO">
+	<select id="sameFolderChk" resultType="int" parameterType="com.rts.vo.FolderListVO">
 		SELECT COUNT(*)
 		FROM folderlist
 		WHERE fpath = #{fpath} AND fname=#{fname}
@@ -50,7 +50,7 @@
 		WHERE ppath LIKE #{fpath}||'%' AND fpath LIKE #{fpath}||'%'
 	</select>	
 	
-	<select id="selectFolderList" resultType="com.copycoding.demo.vo.FolderListVO" parameterType="String">
+	<select id="selectFolderList" resultType="com.rts.vo.FolderListVO" parameterType="String">
 		SELECT fid, fname, fpath, ppath, fdate,
 		(SELECT SUM(fsize)
 		FROM filelist
@@ -60,14 +60,14 @@
 		ORDER BY 2
 	</select>
 	
-	<select id="showFolderTree" resultType="com.copycoding.demo.vo.FolderListVO" parameterType="String">
+	<select id="showFolderTree" resultType="com.rts.vo.FolderListVO" parameterType="String">
 		SELECT *
 		FROM folderlist
 		WHERE fpath LIKE #{fpath}||'%'
 		ORDER BY 3
 	</select>
 	
-	<select id="searchFolder" resultType="com.copycoding.demo.vo.FolderListVO" parameterType="String">
+	<select id="searchFolder" resultType="com.rts.vo.FolderListVO" parameterType="String">
 		SELECT distinct fo.fid, fo.fname, fo.fpath, fo.ppath, fo.fsize, fo.fdate
 		FROM filelist fi, folderlist fo
 		WHERE fi.pid = fo.fid AND fo.fname LIKE '%'||#{fname}||'%'

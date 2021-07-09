@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.copycoding.demo.dao.FileListDao">
+<mapper namespace="com.rts.dao.FileListDao">
 
 
-	<select id="addFile" resultType="String" parameterType="com.copycoding.demo.vo.FileListVO">
+	<select id="addFile" resultType="String" parameterType="com.rts.vo.FileListVO">
 		INSERT INTO filelist(fid, pid, fname, fpath, fsize, fext, fdate, udate)
 		VALUES(#{fid}, #{pid}, #{fname}, #{fpath}, #{fsize}, #{fext}, #{fdate}, systimestamp)
 	</select>
 
-	<select id="addFolderSizeUpdate" resultType="String" parameterType="com.copycoding.demo.vo.FileListVO">
+	<select id="addFolderSizeUpdate" resultType="String" parameterType="com.rts.vo.FileListVO">
 		UPDATE filelist
 		SET fsize = fsize + #{fsize}
 		WHERE fpath = #{ppath} AND fname != #{fname}
 	</select>
 	
-	<select id="sameFileChk" resultType="int" parameterType="com.copycoding.demo.vo.FileListVO">
+	<select id="sameFileChk" resultType="int" parameterType="com.rts.vo.FileListVO">
 		SELECT COUNT(*)
 		FROM filelist
 		WHERE fpath = #{fpath} AND fname=#{fname}
 	</select>
 	
-	<select id="updateFile" resultType="int" parameterType="com.copycoding.demo.vo.FileListVO">
+	<select id="updateFile" resultType="int" parameterType="com.rts.vo.FileListVO">
 		UPDATE filelist
 		SET fsize=#{fsize}, fDate=#{fdate}, udate=sysdate
 		WHERE fpath = #{fpath} AND fname=#{fname}
@@ -31,7 +31,7 @@
 		WHERE fname = #{fname} AND fpath= #{fpath}
 	</select>
 	
-	<select id="selectFileList" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
+	<select id="selectFileList" resultType="com.rts.vo.FileListVO" parameterType="String">
 		SELECT fi.fid, fi.pid,  fi.fpath, fo.fpath ppath, fi.fname, fi.fsize, fi.fext, fi.fdate
 		FROM filelist fi, folderlist fo
 		WHERE fi.pid = fo.fid AND fi.fpath = #{ppath}
@@ -50,7 +50,7 @@
 		WHERE fpath =#{prevPath} AND fname=#{fname}
 	</select>
 	
-	<select id="searchFile" resultType="com.copycoding.demo.vo.FileListVO" parameterType="String">
+	<select id="searchFile" resultType="com.rts.vo.FileListVO" parameterType="String">
 		SELECT distinct fi.fid, fi.pid, fi.fname, fi.fpath, fi.fsize, fi.fext, fi.fdate
 		FROM filelist fi, folderlist fo
 		WHERE fi.pid = fo.fid AND fi.fpath LIKE #{fpath}||'%' AND fi.fname LIKE '%'||#{fileName}||'%'

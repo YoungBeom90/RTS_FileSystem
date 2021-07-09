@@ -1,4 +1,4 @@
-package com.copycoding.demo.controller;
+package com.rts.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,17 +23,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.copycoding.demo.common.FileList;
-import com.copycoding.demo.common.WriteFile;
-import com.copycoding.demo.service.FileListService;
-import com.copycoding.demo.service.UserInfoService;
-import com.copycoding.demo.vo.FileListVO;
-import com.copycoding.demo.vo.FolderListVO;
-import com.copycoding.demo.vo.UserInfoVO;
+import com.rts.common.FileList;
+import com.rts.common.WriteFile;
+import com.rts.service.FileListService;
+import com.rts.service.UserInfoService;
+import com.rts.vo.FileListVO;
+import com.rts.vo.FolderListVO;
+import com.rts.vo.UserInfoVO;
 
 @Component
 @Controller
-public class TestController { 
+public class FileController { 
 	
 	@Autowired
 	private UserInfoService userInfoService;

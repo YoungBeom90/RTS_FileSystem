@@ -1,8 +1,8 @@
-package com.copycoding.demo.service;
+package com.rts.service;
 
 import java.util.List;
 
-import com.copycoding.demo.vo.UserInfoVO;
+import com.rts.vo.UserInfoVO;
 
 public interface UserInfoService {
 	public List<UserInfoVO> selectUserInfo() throws Exception;
